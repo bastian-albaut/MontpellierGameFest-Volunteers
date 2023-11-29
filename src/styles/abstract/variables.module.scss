@@ -1,0 +1,17 @@
+$textColor: #000000;
+$primaryColor: #6f9600;
+$secondaryColor: #fa14ff;
+$accentColor: #002663;
+$darkColor: #0D1F0D;
+$greyColor: #6C756C;
+$whiteColor: #EBF5EB;
+
+:export {
+  textColor: $textColor;
+  primaryColor: $primaryColor;
+  secondaryColor: $secondaryColor;
+  accentColor: $accentColor;
+  darkColor: $darkColor;
+  greyColor: $greyColor;
+  whiteColor: $whiteColor;
+}

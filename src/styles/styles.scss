@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500&family=Kalam&family=Raleway&display=swap');
+@import "./abstract/variables.module.scss";
+
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+html {
+  overflow-x: hidden;
+  background-color: $whiteColor;
+}

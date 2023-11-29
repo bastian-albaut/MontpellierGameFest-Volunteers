@@ -1,25 +1,123 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { StyledEngineProvider } from '@mui/material/styles';
 
-function App() {
+import "./styles/styles.scss"
+import variables from "./styles/abstract/variables.module.scss"
+import HomePage from './pages/HomePage/HomePage';
+
+
+let theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: variables.primaryColor,
+    },
+    secondary: {
+      main: variables.secondaryColor,
+    },
+    text: {
+      primary: variables.textColor,
+      disabled: variables.greyColor,
+    },
+    background: {
+      default: variables.whiteColor,
+      paper: variables.whiteColor,
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 480,
+      md: 600,
+      lg: 768,
+      xl: 992,
+    },
+  },
+  typography: {
+    h1: {
+      fontFamily: [
+        'Fredoka',
+        'cursive',
+      ].join(','),
+    },
+    h2: {
+      fontFamily: [
+        'Fredoka',
+        'cursive',
+      ].join(','),
+    },
+    h3: {
+      fontFamily: [
+        'Fredoka',
+        'sans-serif',
+      ].join(','),
+    },
+    h4: {
+      fontFamily: [
+        'Fredoka',
+        'sans-serif',
+      ].join(','),
+    },
+    h5: {
+      fontFamily: [
+        'Fredoka',
+        'sans-serif',
+      ].join(','),
+    },
+    h6: {
+      fontFamily: [
+        'Fredoka',
+        'sans-serif',
+      ].join(','),
+    },
+    subtitle1: {
+      fontFamily: [
+        'Raleway',
+        'sans-serif',
+      ].join(','),
+    },
+    body1: {
+      fontFamily: [
+        'Raleway',
+        'sans-serif',
+      ].join(','),
+    },
+    caption: {
+      fontFamily: [
+        'Raleway',
+        'sans-serif',
+      ].join(','),
+    },
+    button: {
+      fontFamily: [
+        'Fredoka',
+        'cursive',
+      ].join(','),
+      fontWeight: "bold",
+    }
+  },
+  shape: {
+    borderRadius: 30
+  },
+});
+
+theme = responsiveFontSizes(theme);
+
+const App = () => {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <StyledEngineProvider injectFirst>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />}/>
+            <Route path="*" element={<Navigate replace to="/" />} />
+          </Routes>
+        </BrowserRouter>
+      </StyledEngineProvider>
+    </ThemeProvider>
   );
 }
 
