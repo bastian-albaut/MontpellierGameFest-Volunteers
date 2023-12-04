@@ -28,11 +28,11 @@ let theme = createTheme({
   },
   breakpoints: {
     values: {
-      xs: 0,
-      sm: 480,
-      md: 600,
-      lg: 768,
-      xl: 992,
+      xs: variables.breakpointXS,
+      sm: variables.breakpointSM,
+      md: variables.breakpointMD,
+      lg: variables.breakpointLG,
+      xl: variables.breakpointXL,
     },
   },
   typography: {

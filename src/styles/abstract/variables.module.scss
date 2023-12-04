@@ -6,6 +6,12 @@ $darkColor: #0D1F0D;
 $greyColor: #6C756C;
 $whiteColor: #EBF5EB;
 
+$breakpointXS: 480px;
+$breakpointSM: 600px;
+$breakpointMD: 900px;
+$breakpointLG: 1200px;
+$breakpointXL: 1536px;
+
 :export {
   textColor: $textColor;
   primaryColor: $primaryColor;
@@ -14,4 +20,9 @@ $whiteColor: #EBF5EB;
   darkColor: $darkColor;
   greyColor: $greyColor;
   whiteColor: $whiteColor;
+  breakpointXS: $breakpointXS;
+  breakpointSM: $breakpointSM;
+  breakpointMD: $breakpointMD;
+  breakpointLG: $breakpointLG;
+  breakpointXL: $breakpointXL;
 }

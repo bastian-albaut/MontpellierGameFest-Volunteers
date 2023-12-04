@@ -87,3 +87,28 @@ git push origin <user-storie-name>
 
 6. **Merge the code into the main**
 > Note: Resolve any merge conflicts if necessary.
+
+## Responsive design
+
+Copy and paste this code to apply media queries on your components/pages:
+
+```scss
+@import "./abstract/variables.module.scss";
+
+/* MEDIA QUERIES */
+/* DEFAULT */
+/* Extra small devices (phones, $breakpointXS and down) */
+@media only screen and (max-width: $breakpointXS){}
+
+/* Small devices (large phones, between $breakpointXS and $breakpointMD) */
+@media only screen and (min-width: $breakpointXS) and (max-width: $breakpointMD) {}
+
+/* Medium devices (portrait tablets and large phones, between $breakpointMD and $breakpointLG) */
+@media only screen and (min-width: $breakpointMD) and (max-width: $breakpointLG) {}
+
+/* Large devices (landscape tablets, between $breakpointLG and $breakpointXL) */
+@media only screen and (min-width: $breakpointLG) and (max-width: $breakpointXL) {}
+
+/* Extra large devices (laptops/desktops, between $breakpointXL and up) */
+@media only screen and (min-width: $breakpointXL) {}
+```
