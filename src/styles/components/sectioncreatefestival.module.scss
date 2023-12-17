@@ -1,0 +1,27 @@
+@import '../abstract/variables.module.scss';
+
+#boxSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#title {
+    margin-bottom: 20px; 
+}
+
+#boxForm {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.fieldForm {
+    margin: 10px 0;
+}
+
+#button {
+    margin: 20px 0 10px 0;
+}
