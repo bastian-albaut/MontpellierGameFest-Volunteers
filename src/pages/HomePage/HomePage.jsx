@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material"
-import "../../styles/pages/homepage.scss" 
 
 const HomePage = () => {
 	return(

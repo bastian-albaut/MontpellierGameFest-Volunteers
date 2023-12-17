@@ -2,10 +2,14 @@ import React from 'react';
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { StyledEngineProvider } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import 'dayjs/locale/fr';
 
 import "./styles/styles.scss"
 import variables from "./styles/abstract/variables.module.scss"
 import HomePage from './pages/HomePage/HomePage';
+import CreateFestival from './pages/CreateFestival/CreateFestival';
 
 
 let theme = createTheme({
@@ -108,16 +112,19 @@ theme = responsiveFontSizes(theme);
 const App = () => {
 
   return (
-    <ThemeProvider theme={theme}>
-      <StyledEngineProvider injectFirst>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<HomePage />}/>
-            <Route path="*" element={<Navigate replace to="/" />} />
-          </Routes>
-        </BrowserRouter>
-      </StyledEngineProvider>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+        <ThemeProvider theme={theme}>
+        <StyledEngineProvider injectFirst>
+            <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<HomePage />}/>
+                <Route path="/festival/creation" element={<CreateFestival />}/>
+                <Route path="*" element={<Navigate replace to="/" />} />
+            </Routes>
+            </BrowserRouter>
+        </StyledEngineProvider>
+        </ThemeProvider>
+    </LocalizationProvider>
   );
 }
 
