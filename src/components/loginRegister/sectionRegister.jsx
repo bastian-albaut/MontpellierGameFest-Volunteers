@@ -10,7 +10,7 @@ import { CheckBox } from "@mui/icons-material";
 
 export default function Register(props) {
 
-    const [formData, setFormData] = useState({name: '', firstname: '', email: '', password: '', picture: '', associations: []});
+    const [formData, setFormData] = useState({firstName: '', lastName: '', address: ' ', email: '', password: '', file: '', associations: [] });
 
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -72,22 +72,17 @@ export default function Register(props) {
     const handleSignUp = async (event) => {
         event.preventDefault();
 
-        if(formData.email === '' || formData.password === '' || formData.firstname === '' || formData.lastname === '' || formData.file === '') {
+        if(formData.firstName === '' || formData.lastName === '' || formData.email === '' || formData.password === '') {
             props.handleShowError("Veuillez remplir tous les champs.");
             return;
         }
 
-        if(formData.password.length < 8) {
-            props.handleShowError("Le mot de passe doit contenir au moins 8 caractères.");
-            return;
-        }
-
-        if(formData.firstname.length < 2) {
+        if(formData.firstName.length < 2) {
             props.handleShowError("Le prénom doit contenir au moins 2 caractères.");
             return;
         }
 
-        if(formData.lastname.length < 2) {
+        if(formData.lastName.length < 2) {
             props.handleShowError("Le nom doit contenir au moins 2 caractères.");
             return;
         }
@@ -97,10 +92,16 @@ export default function Register(props) {
             props.handleShowError("L'adresse mail n'est pas valide.");
             return;
         }
+        
+        if(formData.password.length < 8) {
+            props.handleShowError("Le mot de passe doit contenir au moins 8 caractères.");
+            return;
+        }
 
         // Persist the user in the database
         try {
-            const res = await register(formData);
+            const { associations, ...formDataWithoutAssociations } = formData;
+            const res = await register(formDataWithoutAssociations);
             if(res && res.data) {
                 props.validateSignIn(res.data.token, 'Vous êtes enregistré avec succès !')
             }
@@ -130,8 +131,8 @@ export default function Register(props) {
         <Box id={styles.boxSection}>
             <Typography id={styles.typoTitle} variant="h3">Créer un compte</Typography>
             <form id={styles.boxFormRegister}>
-                <TextField onChange={(e) => setFormData({...formData, firstname: e.target.value})} label="Firstname" variant="standard" margin="dense" required />
-                <TextField onChange={(e) => setFormData({...formData, lastname: e.target.value})} label="Lastname" variant="standard" margin="dense" required />
+                <TextField onChange={(e) => setFormData({...formData, firstName: e.target.value})} label="Prénom" variant="standard" margin="dense" required />
+                <TextField onChange={(e) => setFormData({...formData, lastName: e.target.value})} label="Nom" variant="standard" margin="dense" required />
                 <TextField onChange={(e) => setFormData({...formData, email: e.target.value})} label="Adresse mail" variant="standard" margin="dense" required />
                 <TextField onChange={(e) => setFormData({...formData, password: e.target.value})} label="Mot de passe" variant="standard" margin="dense" required type={showPassword ? "text" : "password"} InputProps={{ // <-- This is where the toggle button is added.
                                                                                                                                                     endAdornment: (

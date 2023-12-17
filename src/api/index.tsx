@@ -10,6 +10,6 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const login = (data: any) => API.post('/user/login', data);
-export const register = (data: any) => API.post('/user/register', data);
+export const login = (data: any) => API.post('/login', data);
+export const register = (data: any) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/currentUser');
