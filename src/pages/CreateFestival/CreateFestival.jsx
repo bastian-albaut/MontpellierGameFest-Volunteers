@@ -1,4 +1,4 @@
-import SectionCreateFestival from "../../components/SectionCreateFestival/SectionCreateFestival"
+import SectionCreateFestival from "../../components/CreateFestival/SectionCreateFestival"
 
 const CreateFestival = () => {
 	return(
