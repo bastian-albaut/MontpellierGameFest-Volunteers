@@ -1,6 +1,6 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
 import styles from "../../styles/components/sectioncreatefestival.module.scss" 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs"
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
@@ -16,6 +16,52 @@ const SectionCreateFestival = () => {
     const handleOpenModalPost = () => setIsModalPostOpen(true);
     const handleCloseModalPost = () => setIsModalPostOpen(false);
 
+    // Save dataFestival, dataPosts and dataCreneau on local storage when they change
+    useEffect(() => {
+        // Prevent on first render
+        if(dataFestival.name === "") return;
+        
+        // Convert dayjs objects to JavaScript Date objects
+        const dataFestivalToStore = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate()};
+
+        localStorage.setItem("dataFestival", JSON.stringify(dataFestivalToStore));
+        
+    }, [dataFestival])
+
+    useEffect(() => {
+        // Prevent on first render
+        if(dataPosts.length === 0) return;
+        localStorage.setItem("dataPosts", JSON.stringify(dataPosts))
+    }, [dataPosts])
+
+    useEffect(() => {
+        // Prevent on first render
+        if(dataCreneau.length === 0) return;
+        localStorage.setItem("dataCreneau", JSON.stringify(dataCreneau))
+    }, [dataCreneau])
+
+    // Get dataFestival, dataPosts and dataCreneau from local storage when the page is loaded
+    useEffect(() => {
+        if(localStorage.getItem("dataFestival") !== null) {
+            let dataFestival = JSON.parse(localStorage.getItem("dataFestival")!);
+
+            // Convert JavaScript Date objects to dayjs objects
+            dataFestival.dateDebut = dayjs(dataFestival.dateDebut);
+            dataFestival.dateFin = dayjs(dataFestival.dateFin);
+            
+            setDataFestival(dataFestival)
+        }
+        if(localStorage.getItem("dataPosts") !== null) {
+            let dataPosts = JSON.parse(localStorage.getItem("dataPosts")!);
+            setDataPosts(dataPosts)
+        }
+        if(localStorage.getItem("dataCreneau") !== null) {
+            let dataCreneau = JSON.parse(localStorage.getItem("dataCreneau")!);
+            setDataCreneau(dataCreneau)
+        }
+    }, [])
+
+
     const columns: GridColDef[] = [
         { field: 'name', headerName: 'Nom', width: 150 },
         { field: 'capacity', headerName: 'Capacité', width: 100 },
@@ -26,7 +72,7 @@ const SectionCreateFestival = () => {
         <Box id={styles.boxSection}>
             <Typography id={styles.title} variant="h1" color="black">Créer un festival</Typography>
             <Box id={styles.boxForm}>
-                <TextField className={styles.fieldForm} label="Nom du festival" variant="standard" margin="dense" onChange={(e) => setDataFestival({...dataFestival, name: e.target.value})} required/>
+                <TextField className={styles.fieldForm} label="Nom du festival" variant="standard" margin="dense" value={dataFestival.name} onChange={(e) => setDataFestival({...dataFestival, name: e.target.value})} required/>
                 <DatePicker className={styles.fieldForm} label="Date de début" minDate={dayjs()} value={dataFestival.dateDebut || dayjs()} onChange={(e) => setDataFestival({...dataFestival, dateDebut: e || dayjs()})} />
                 <DatePicker className={styles.fieldForm} label="Date de fin" minDate={dayjs().add(1, 'day')} value={dataFestival.dateFin} onChange={(e) => setDataFestival({...dataFestival, dateFin: e || dayjs()})} />
                 <Box className={styles.boxTable}>
