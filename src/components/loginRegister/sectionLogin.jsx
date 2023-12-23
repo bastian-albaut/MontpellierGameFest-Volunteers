@@ -12,13 +12,16 @@ import styles from "../../styles/components/loginRegister/sectionLogin.module.sc
 export default function Login(props) {
     const [data, setData] = useState({ email: '', password: '' });
 
+    // Manage the login
     const handleSignIn = async () => {
 
+        // Check if the fields are not empty
         if(data.email === '' || data.password === '') {
             props.handleShowError("Erreur: Veuillez entrer votre adresse mail et votre mot de passe.");
             return;
         }
 
+        // Check if the email is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(data.email)) {
             props.handleShowError("Erreur: L'adresse mail n'est pas valide.");

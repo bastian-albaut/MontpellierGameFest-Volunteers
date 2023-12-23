@@ -12,11 +12,13 @@ function FileInput(props) {
       handleFileSelect(acceptedFiles[0]);
     };
   
+    // Remove the selected file if the user clicks on the remove icon
     const handleRemove = (e) => {
         e.stopPropagation();    
         setSelectedFile(null);
     };
   
+    // Configuration of the dropzone
     const {
         getRootProps,
         getInputProps,

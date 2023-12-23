@@ -64,35 +64,36 @@ export default function Register(props) {
         localStorage.setItem('token', JSON.stringify(userToken));
     }
 
-    // Visibility password
-    const [showPassword, setShowPassword] = useState(false);
-    const handleClickShowPassword = () => setShowPassword(!showPassword);
-    const handleMouseDownPassword = () => setShowPassword(!showPassword);
-
+    // Manage the register
     const handleSignUp = async (event) => {
         event.preventDefault();
 
+        // Check if the fields are not empty
         if(formData.firstName === '' || formData.lastName === '' || formData.email === '' || formData.password === '') {
             props.handleShowError("Veuillez remplir tous les champs.");
             return;
         }
 
+        // Check if the firstname is valid
         if(formData.firstName.length < 2) {
             props.handleShowError("Le prénom doit contenir au moins 2 caractères.");
             return;
         }
 
+        // Check if the lastname is valid
         if(formData.lastName.length < 2) {
             props.handleShowError("Le nom doit contenir au moins 2 caractères.");
             return;
         }
 
+        // Check if the email is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(formData.email)) {
             props.handleShowError("L'adresse mail n'est pas valide.");
             return;
         }
         
+        // Check if the password is valid
         if(formData.password.length < 8) {
             props.handleShowError("Le mot de passe doit contenir au moins 8 caractères.");
             return;
@@ -115,6 +116,11 @@ export default function Register(props) {
             }
         }
     }
+
+    // Visibility password
+    const [showPassword, setShowPassword] = useState(false);
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
+    const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
