@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 
 // Modal with name and capacity into a form
 const ModalCreateUpdatePost = (props: any) => {
-    const [currentPost, setCurrentPost] = useState({ name: "", capacity: 1 });
+    const [currentPost, setCurrentPost] = useState({ name: props.isUpdate ? props.objectToUpdate.name : "", capacity: props.isUpdate ? props.objectToUpdate.capacity : 1 });
+
+    // Update currentPost when props.objectToUpdate changes
+    useEffect(() => {
+        if(props.isUpdate) {
+            setCurrentPost({ name: props.objectToUpdate.name, capacity: props.objectToUpdate.capacity });
+        }
+    }, [props.objectToUpdate, props.isUpdate])
 
     const handleAddPost = () => {
         // Check if name is not empty
@@ -31,6 +38,32 @@ const ModalCreateUpdatePost = (props: any) => {
         props.handleClose();
     };
 
+    const handleUpdatePost = () => {
+        // Check if name is not empty
+        if(currentPost.name === "") {
+            // TODO: display error message
+            return;
+        }
+
+        // Check if name is not already taken
+        if(props.dataPosts.find((post: any) => post.name === currentPost.name && post.id !== props.objectToUpdate.id)) {
+            // TODO: display error message
+            return;
+        }
+
+        // Check if capacity is not negative or 0
+        if(currentPost.capacity <= 0) {
+            // TODO: display error message
+            return;
+        }
+
+        const updatedPost = { id: props.objectToUpdate.id, name: currentPost.name, capacity: currentPost.capacity};
+        props.setDataPosts(props.dataPosts.map((post: any) => post.id === updatedPost.id ? updatedPost : post));
+        setCurrentPost({ name: "", capacity: 1 });
+        props.handleClose();
+    }
+
+
     return (
         <Modal
             open={props.open}
@@ -39,9 +72,15 @@ const ModalCreateUpdatePost = (props: any) => {
             aria-describedby="modal-modal-description"
         >
             <Box id={styles.boxModal}>
+                {props.isUpdate ? (
+                <Typography variant="h3" color="initial">
+                    Modification du poste
+                </Typography>  
+                ) : (
                 <Typography variant="h3" color="initial">
                     Création d'un poste
                 </Typography>
+                )}
                 <TextField
                     className={styles.fieldForm}
                     label="Nom du poste"
@@ -67,6 +106,16 @@ const ModalCreateUpdatePost = (props: any) => {
                     value={currentPost.capacity}
                     required
                 />
+                {props.isUpdate ? (
+                <Button
+                    id={styles.button}
+                    variant="text"
+                    color="primary"
+                    onClick={() => handleUpdatePost()}
+                >
+                    Modifier le poste
+                </Button> 
+                ) : (
                 <Button
                     id={styles.button}
                     variant="text"
@@ -75,6 +124,7 @@ const ModalCreateUpdatePost = (props: any) => {
                 >
                     Créer le poste
                 </Button>
+                )}
             </Box>
         </Modal>
     );

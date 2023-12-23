@@ -1,10 +1,11 @@
-import { Box, Button, TextField, Typography } from "@mui/material"
+import { Box, Button, Icon, IconButton, TextField, Typography } from "@mui/material"
 import styles from "../../styles/components/sectioncreatefestival.module.scss" 
 import { useEffect, useState } from "react"
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs"
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridValueGetterParams } from '@mui/x-data-grid';
 import ModalCreateUpdatePost from "./ModalCreateUpdatePost";
+import { Delete, Edit } from "@mui/icons-material";
 
 const SectionCreateFestival = () => {
 
@@ -65,8 +66,38 @@ const SectionCreateFestival = () => {
     const columns: GridColDef[] = [
         { field: 'name', headerName: 'Nom', width: 150 },
         { field: 'capacity', headerName: 'Capacité', width: 100 },
-        { field: 'actions', headerName: 'Actions', width: 150, sortable: false },
+        { 
+            field: 'actions', 
+            headerName: 'Actions', 
+            width: 150, 
+            sortable: false,
+            renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
+                <>
+                    <IconButton aria-label="edit" onClick={() => handleEdit(params.row)}>
+                        <Edit />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => handleDelete(params.row)}>
+                        <Delete />
+                    </IconButton>
+                </>
+            )
+        },
     ];
+
+    const [isUpdate, setIsUpdate] = useState(false);
+    const [objectToUpdate, setObjectToUpdate] = useState({} as any);
+
+    const handleEdit = (row: any) => {
+        setIsUpdate(true);
+        setObjectToUpdate(row);
+        handleOpenModalPost();
+    }
+
+    const handleDelete = (row: any) => {
+        const newDataPosts = dataPosts.filter((post: any) => post.id !== row.id);
+        setDataPosts(newDataPosts);
+    }
+
     return(
         <>
         <Box id={styles.boxSection}>
@@ -95,7 +126,7 @@ const SectionCreateFestival = () => {
                 <Button id={styles.button} variant="contained" color="primary" onClick={() => console.log("création")}>Créer le festival</Button>
             </Box>
         </Box>
-        <ModalCreateUpdatePost open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
+        <ModalCreateUpdatePost isUpdate={isUpdate} objectToUpdate={objectToUpdate} open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
         </>
 	)
 }
