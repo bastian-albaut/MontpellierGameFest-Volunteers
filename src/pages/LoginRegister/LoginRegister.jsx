@@ -25,7 +25,17 @@ const LoginRegister = () => {
     
     // Get the token from the local storage
     const getToken = () => {
+        // Check if the token is in the local storage
+        if (!localStorage.getItem('token')) {
+            return null;
+        }
         const tokenString = localStorage.getItem('token');
+
+        // Check if the token is not undefined
+        if (tokenString === 'undefined') {
+            return null;
+        }
+
         const userToken = JSON.parse(tokenString);
         return userToken;
     };
