@@ -1,0 +1,6 @@
+@import "../../abstract/variables.module.scss";
+
+#toolbar {
+    background-color: $secondaryColor;
+    min-height: $minHeightAppBarWideScreen;
+}
