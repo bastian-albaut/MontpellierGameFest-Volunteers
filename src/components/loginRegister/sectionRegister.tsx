@@ -5,10 +5,11 @@ import styles from "../../styles/components/loginRegister/sectionRegister.module
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
-import { register, postResult } from "../../api";
+import { register } from "../../api";
 import { CheckBox } from "@mui/icons-material";
+import { User } from "../../types/User";
 
-export default function Register(props) {
+export default function Register(props: any) {
 
     const [formData, setFormData] = useState({firstName: '', lastName: '', address: ' ', email: '', password: '', file: '', associations: [] });
 
@@ -16,28 +17,28 @@ export default function Register(props) {
 
     // Get all the associations on mount
     const [associations, setAssociations] = useState(["Women in Games France", "Push Start", "TrainHard Esport", "Terra"]);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // TO DO
-                // const res = await getAssociations();
-                // if(res && res.data) {
-                //     setAssociations(res.data);
-                // }
-            } catch(error) {
-                console.log(error);
-            }
-        }
-        fetchData();
-    }, [])
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             // TO DO
+    //             // const res = await getAssociations();
+    //             // if(res && res.data) {
+    //             //     setAssociations(res.data);
+    //             // }
+    //         } catch(error) {
+    //             console.log(error);
+    //         }
+    //     }
+    //     fetchData();
+    // }, [])
 
-    const handleFileSelect = async (file) => {
+    const handleFileSelect = async (file: any) => {
         setSelectedFile(file);
         const base64 = await convertBase64(file);
-        setFormData({...formData, picture: base64})
+        setFormData({...formData, file: base64 as string})
     };
 
-    const convertBase64 = (file) => {
+    const convertBase64 = (file: any) => {
         return new Promise((resolve, reject) => {
           if (!file || !(file instanceof Blob)) {
             reject(new Error('Invalid file'));
@@ -60,12 +61,12 @@ export default function Register(props) {
 
     const navigate = useNavigate();
 
-    const setToken = (userToken) => {
+    const setToken = (userToken: any) => {
         localStorage.setItem('token', JSON.stringify(userToken));
     }
 
     // Manage the register
-    const handleSignUp = async (event) => {
+    const handleSignUp = async (event: any) => {
         event.preventDefault();
 
         // Check if the fields are not empty
@@ -100,20 +101,36 @@ export default function Register(props) {
         }
 
         // Persist the user in the database
+        const { associations, ...formDataWithoutAssociations } = formData;
+
+        const user: User = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            address: " ",
+            email: formData.email,
+            password: formData.password,
+            file: formData.file,
+        }
+
+        console.log(user);
         try {
-            const { associations, ...formDataWithoutAssociations } = formData;
-            const res = await register(formDataWithoutAssociations);
+            console.log("test")
+            const res = await register(user);
+            console.log(res);
             if(res && res.data) {
                 props.validateSignIn(res.data.token, 'Vous êtes enregistré avec succès !')
             }
         } catch(error) {
-            if(error.code === "ERR_NETWORK") {
-                props.handleShowError("Erreur: Serveur inaccessible.");
-            } else if (error.response.data.message !== undefined) {
-                props.handleShowError(`Erreur:${error.response.data.message}`);
-            } else {
+            // if(error.code === "ERR_NETWORK") {
+                //     props.handleShowError("Erreur: Serveur inaccessible.");
+                // } else if (error.response.data.message !== undefined) {
+                    //     props.handleShowError(`Erreur:${error.response.data.message}`);
+                    // } else {
+                        console.log("error");
+                        console.log(error)
+                        // console.log(error.message);
                 props.handleShowError("Erreur: Une erreur est survenue.");
-            }
+            // }
         }
     }
 
@@ -156,10 +173,10 @@ export default function Register(props) {
 
                 <FormControl id={styles.multipleSelect} sx={{ width: 300 }}>
                     <InputLabel id="multipleCheckboxLabel" sx={{ marginLeft: "-14px" }}>Associations</InputLabel>
-                    <Select multiple value={formData.associations} onChange={(e) => setFormData({...formData, associations: e.target.value})} input={<Input label="Associations" />} labelId="multipleCheckboxLabel" renderValue={(selected) => selected.join(', ')} margin="dense" MenuProps={MenuProps}>
+                    <Select multiple value={formData.associations || []} onChange={(e) => setFormData({...formData, associations: e.target.value as never[]})} input={<Input />} labelId="multipleCheckboxLabel" renderValue={(selected) => selected.join(', ')} margin="dense" MenuProps={MenuProps}>
                     {associations.map((name) => (
                         <MenuItem key={name} value={name}>
-                            <CheckBox checked={formData.associations.indexOf(name) > -1} />
+                            {/* <CheckBox checked={formData.associations.indexOf(name) > -1} /> */}
                             <ListItemText primary={name} />
                         </MenuItem>
                     ))}
