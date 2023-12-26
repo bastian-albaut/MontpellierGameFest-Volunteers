@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { User } from '../types/User';
 
-const API = axios.create({ baseURL : 'https://localhost:8000' })
+const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
 
 // Executé à chaque requête
 API.interceptors.request.use((req) => {
@@ -10,5 +11,6 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const login = (data: any) => API.post('/user/login', data);
-export const register = (data: any) => API.post('/user/register', data);
+export const login = (data: any) => API.post('/login', data);
+export const register = (data: User) => API.post('/register', data);
+export const getCurrentUser = () => API.get('/currentUser');

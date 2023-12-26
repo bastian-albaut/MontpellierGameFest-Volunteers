@@ -10,6 +10,7 @@ import "./styles/styles.scss"
 import variables from "./styles/abstract/variables.module.scss"
 import HomePage from './pages/HomePage/HomePage';
 import CreateFestival from './pages/CreateFestival/CreateFestival';
+import LoginRegister from './pages/LoginRegister/LoginRegister';
 
 
 let theme = createTheme({
@@ -112,19 +113,18 @@ theme = responsiveFontSizes(theme);
 const App = () => {
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-        <ThemeProvider theme={theme}>
-        <StyledEngineProvider injectFirst>
-            <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<HomePage />}/>
-                <Route path="/festival/creation" element={<CreateFestival />}/>
-                <Route path="*" element={<Navigate replace to="/" />} />
-            </Routes>
-            </BrowserRouter>
-        </StyledEngineProvider>
-        </ThemeProvider>
-    </LocalizationProvider>
+    <ThemeProvider theme={theme}>
+      <StyledEngineProvider injectFirst>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />}/>
+            <Route path="/connexion" element={<LoginRegister />} />
+            <Route path="/festival/creation" element={<CreateFestival />}/>
+            <Route path="*" element={<Navigate replace to="/" />} />
+          </Routes>
+        </BrowserRouter>
+      </StyledEngineProvider>
+    </ThemeProvider>
   );
 }
 

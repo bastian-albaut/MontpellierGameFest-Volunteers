@@ -1,0 +1,23 @@
+@import '../../abstract/variables.module.scss';
+
+#boxSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#titleSignIn {
+    margin-bottom: 20px; 
+}
+
+#boxFormSignIn {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+#buttonLogin {
+    margin: 20px 0 10px 0;
+}
