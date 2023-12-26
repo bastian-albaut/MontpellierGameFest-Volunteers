@@ -1,5 +1,5 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
-import styles from "../../styles/components/modalCreateUpdatePost.module.scss";
+import styles from "../../styles/components/createFestival/modalCreateUpdatePost.module.scss";
 import { useEffect, useState } from "react";
 
 // Modal with name and capacity into a form
@@ -14,21 +14,23 @@ const ModalCreateUpdatePost = (props: any) => {
     }, [props.objectToUpdate, props.isUpdate])
 
     const handleAddPost = () => {
+        setFormError("");
+
         // Check if name is not empty
         if(currentPost.name === "") {
-            // TODO: display error message
+            setFormError("Le nom du poste ne peut pas être vide.");
             return;
         }
 
         // Check if name is not already taken
         if(props.dataPosts.find((post: any) => post.name === currentPost.name)) {
-            // TODO: display error message
+            setFormError("Le nom du poste est déjà pris.");
             return;
         }
 
         // Check if capacity is not negative or 0
         if(currentPost.capacity <= 0) {
-            // TODO: display error message
+            setFormError("La capacité ne peut pas être négative ou nulle.");
             return;
         }
 
@@ -36,33 +38,38 @@ const ModalCreateUpdatePost = (props: any) => {
         props.setDataPosts([...props.dataPosts, newPost]);
         setCurrentPost({ name: "", capacity: 1 });
         props.handleClose();
+        props.handleShowAlertMessage(`Le poste "${currentPost.name}" a bien été créé.`, "success");
     };
 
     const handleUpdatePost = () => {
+        setFormError("");
+
         // Check if name is not empty
         if(currentPost.name === "") {
-            // TODO: display error message
+            setFormError("Le nom du poste ne peut pas être vide.");
             return;
         }
 
         // Check if name is not already taken
         if(props.dataPosts.find((post: any) => post.name === currentPost.name && post.id !== props.objectToUpdate.id)) {
-            // TODO: display error message
+            setFormError("Le nom du poste est déjà pris.");
             return;
         }
 
         // Check if capacity is not negative or 0
         if(currentPost.capacity <= 0) {
-            // TODO: display error message
+            setFormError("La capacité ne peut pas être négative ou nulle.");
             return;
         }
 
         const updatedPost = { id: props.objectToUpdate.id, name: currentPost.name, capacity: currentPost.capacity};
         props.setDataPosts(props.dataPosts.map((post: any) => post.id === updatedPost.id ? updatedPost : post));
         setCurrentPost({ name: "", capacity: 1 });
+        props.handleShowAlertMessage(`Le poste "${currentPost.name}" a bien été modifié.`, "success");
         props.handleClose();
     }
 
+    const[formError, setFormError] = useState("");
 
     return (
         <Modal
@@ -73,13 +80,16 @@ const ModalCreateUpdatePost = (props: any) => {
         >
             <Box id={styles.boxModal}>
                 {props.isUpdate ? (
-                <Typography variant="h3" color="initial">
+                <Typography className={styles.typoTitle} variant="h3" color="initial">
                     Modification du poste
                 </Typography>  
                 ) : (
-                <Typography variant="h3" color="initial">
+                <Typography className={styles.typoTitle} variant="h3" color="initial">
                     Création d'un poste
                 </Typography>
+                )}
+                {formError !== "" && (
+                    <Typography variant="body1" color="error">{formError}</Typography>
                 )}
                 <TextField
                     className={styles.fieldForm}

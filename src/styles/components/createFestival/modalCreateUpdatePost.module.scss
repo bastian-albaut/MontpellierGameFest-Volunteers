@@ -1,4 +1,4 @@
-@import '../abstract/variables.module.scss';
+@import '../../abstract/variables.module.scss';
 
 #boxModal {
     position: absolute;
@@ -18,4 +18,8 @@
 
 #button {
     margin-top: 20px;
+}
+
+.typoTitle {
+    text-align: center;
 }

@@ -113,18 +113,20 @@ theme = responsiveFontSizes(theme);
 const App = () => {
 
   return (
-    <ThemeProvider theme={theme}>
-      <StyledEngineProvider injectFirst>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<HomePage />}/>
-            <Route path="/connexion" element={<LoginRegister />} />
-            <Route path="/festival/creation" element={<CreateFestival />}/>
-            <Route path="*" element={<Navigate replace to="/" />} />
-          </Routes>
-        </BrowserRouter>
-      </StyledEngineProvider>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+        <ThemeProvider theme={theme}>
+        <StyledEngineProvider injectFirst>
+            <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<HomePage />}/>
+                <Route path="/connexion" element={<LoginRegister />} />
+                <Route path="/festival/creation" element={<CreateFestival />}/>
+                <Route path="*" element={<Navigate replace to="/" />} />
+            </Routes>
+            </BrowserRouter>
+        </StyledEngineProvider>
+        </ThemeProvider>
+    </LocalizationProvider>
   );
 }
 

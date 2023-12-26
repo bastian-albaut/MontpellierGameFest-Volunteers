@@ -1,11 +1,12 @@
 import { Box, Button, Icon, IconButton, TextField, Typography } from "@mui/material"
-import styles from "../../styles/components/sectioncreatefestival.module.scss" 
+import styles from "../../styles/components/createFestival/sectioncreatefestival.module.scss" 
 import { useEffect, useState } from "react"
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs"
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridValueGetterParams } from '@mui/x-data-grid';
 import ModalCreateUpdatePost from "./ModalCreateUpdatePost";
 import { Delete, Edit } from "@mui/icons-material";
+import AlertComponent from "../general/Alert";
 
 const SectionCreateFestival = () => {
 
@@ -73,10 +74,10 @@ const SectionCreateFestival = () => {
             sortable: false,
             renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
                 <>
-                    <IconButton aria-label="edit" onClick={() => handleEdit(params.row)}>
+                    <IconButton aria-label="edit" onClick={() => handleEditPost(params.row)}>
                         <Edit />
                     </IconButton>
-                    <IconButton aria-label="delete" onClick={() => handleDelete(params.row)}>
+                    <IconButton aria-label="delete" onClick={() => handleDeletePost(params.row)}>
                         <Delete />
                     </IconButton>
                 </>
@@ -87,19 +88,38 @@ const SectionCreateFestival = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [objectToUpdate, setObjectToUpdate] = useState({} as any);
 
-    const handleEdit = (row: any) => {
+    // Edit a post
+    const handleEditPost = (row: any) => {
         setIsUpdate(true);
         setObjectToUpdate(row);
         handleOpenModalPost();
     }
 
-    const handleDelete = (row: any) => {
-        const newDataPosts = dataPosts.filter((post: any) => post.id !== row.id);
-        setDataPosts(newDataPosts);
+    // Delete a post
+    const handleDeletePost = (row: any) => {
+        try {
+            const newDataPosts = dataPosts.filter((post: any) => post.id !== row.id);
+            setDataPosts(newDataPosts);
+            // Remove the post from the localStorage
+            localStorage.setItem("dataPosts", JSON.stringify(newDataPosts));
+            handleShowAlertMessage(`Le poste "${row.name}" a bien été supprimé.`, "success");
+        } catch (error) {
+            handleShowAlertMessage(`Une erreur est survenue lors de la suppression du poste "${row.name}".`, "error");
+        }
+    }
+
+    // Display alert message
+    const [alertMessage, setAlertMessage] = useState({content: "", severity: "success"});
+    const handleShowAlertMessage = (msg: string, severity: "success" | "info" | "warning" | "error") => {
+        setAlertMessage({content: msg, severity: severity});
+        setTimeout(() => {
+            setAlertMessage({content: "", severity: "success"});
+        }, 5000)
     }
 
     return(
         <>
+        {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
         <Box id={styles.boxSection}>
             <Typography id={styles.title} variant="h1" color="black">Créer un festival</Typography>
             <Box id={styles.boxForm}>
@@ -126,7 +146,7 @@ const SectionCreateFestival = () => {
                 <Button id={styles.button} variant="contained" color="primary" onClick={() => console.log("création")}>Créer le festival</Button>
             </Box>
         </Box>
-        <ModalCreateUpdatePost isUpdate={isUpdate} objectToUpdate={objectToUpdate} open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
+        <ModalCreateUpdatePost handleShowAlertMessage={handleShowAlertMessage} isUpdate={isUpdate} objectToUpdate={objectToUpdate} open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
         </>
 	)
 }
