@@ -1,0 +1,12 @@
+.boxAlert {
+    top: 10px;
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+}
+
+.alert {
+    padding: 6px 24px;
+}

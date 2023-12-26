@@ -6,7 +6,7 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import "./styles/styles.scss"
 import variables from "./styles/abstract/variables.module.scss"
 import HomePage from './pages/HomePage/HomePage';
-
+import LoginRegister from './pages/LoginRegister/LoginRegister';
 
 let theme = createTheme({
   palette: {
@@ -113,6 +113,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />}/>
+            <Route path="/connexion" element={<LoginRegister />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </BrowserRouter>
