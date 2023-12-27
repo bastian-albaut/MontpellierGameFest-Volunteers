@@ -6,16 +6,21 @@
     min-height: $minHeightAppBarWideScreen;
 }
 
+#boxPagesWideScreen {
+    display: flex;
+    flex-grow: 1;
+}
+
 /* Extra small and small devices (phones, $breakpointMD and down) */
 @media only screen and (max-width: $breakpointMD){
     .wideScreen {
-        display: none;
+        display: none !important;
     }
 }
 
 /* Medium and Largedevices (tablets/laptops/desktops, $breakpointMD and up) */
 @media only screen and (min-width: $breakpointMD){
     .smallScreen {
-        display: none;
+        display: none !important;
     }
 }

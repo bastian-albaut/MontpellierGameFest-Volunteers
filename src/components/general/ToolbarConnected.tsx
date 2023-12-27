@@ -37,25 +37,24 @@ export default function ToolbarConnected(props: any) {
 
     const handleDashboard = () => {
         handleCloseNavMenu();
+        navigate(`/tableaudebord/${props.currentUser.id}`);
+    }
+
+    const handleHomepage = () => {
+        handleCloseNavMenu();
         navigate(`/`);
     }
     
-    let pages = [];
-    if(props.currentUser.isAdmin) {
-        pages = [
-            {
-              name: 'Tableau de bord',
-              function : handleDashboard
-            }, 
-        ];
-    } else {
-        pages = [
-            {
-                name: 'Tableau de bord',
-                function : handleDashboard
-            },
-        ];
-    }
+    const pages = [
+        {
+            name: 'Accueil',
+            function : handleHomepage
+        },
+        {
+            name: 'Tableau de bord',
+            function : handleDashboard
+        }, 
+    ];
 
   return (
     <AppBar position="static">
@@ -123,10 +122,9 @@ export default function ToolbarConnected(props: any) {
             component="a"
             href=""
             sx={{
-              mr: 2,
+              mr: 10,
               display: { xs: 'flex', md: 'none' },
               fontWeight: "bold",
-              flexGrow: 1,
               color: 'inherit',
               textDecoration: 'none',
             }}
@@ -134,7 +132,7 @@ export default function ToolbarConnected(props: any) {
           >
             Festival des jeux
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className={styles.wideScreen}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className={styles.wideScreen} id={styles.boxPagesWideScreen}>
             {pages.map((item, index) => (
                 <Button key={index} onClick={item.function} sx={{ my: 2, color: 'white', display: 'block' }}>{item.name}</Button>
             ))}

@@ -8,8 +8,8 @@ import Register from "../../components/loginRegister/sectionRegister";
 
 import Loading from "../../components/general/Loading";
 import AlertComponent from "../../components/general/Alert";
-import { getCurrentUser } from "../../api";
 import Appbar from "../../components/general/Appbar";
+import { useUser } from "../../contexts/UserContext";
 
 const LoginRegister = () => {
     const [haveAccount, setHaveAccount] = useState(false);
@@ -24,34 +24,6 @@ const LoginRegister = () => {
         }, 5000)
     }
     
-    // Check if the user is login on mount 
-    const [currentUser, setCurrentUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                console.log("user")
-                const user = await getCurrentUser();
-                console.log(user)
-                if (user) {
-                    setCurrentUser(user.data);
-                }
-            } catch (error) {
-                setCurrentUser(null);
-                setIsLoading(false);
-                localStorage.removeItem('token');
-            }
-        };
-        fetchData();
-    }, []);
-
-    // Wait for the user to be set to change the loading state
-    useEffect(() => {
-        if(currentUser) {
-            setIsLoading(false);
-        }
-    }, [currentUser])
-
     // Set the token in the local storage and redirect to the user page
     const validateSignIn = (userToken: any, message: string) => {
         localStorage.setItem('token', JSON.stringify(userToken));
@@ -66,16 +38,15 @@ const LoginRegister = () => {
     const validateSignUp = (message : any) => {
         navigate("/");
     }
-    
-    if (isLoading) {
-        return (
-            <Loading />
-        );
-    } 
 
+    const { user, loading } = useUser();
+    if (loading) {
+        return <Loading />;
+    }
+    
     return(
         <>
-            <Appbar />
+            <Appbar currentUser={user} />
             {error && <AlertComponent message={error} severity="error" />}
             {haveAccount ? (
                 <Login validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowError={handleShowError} />

@@ -3,14 +3,15 @@ import styles from "../../styles/components/general/toolbarDisconnected.module.s
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import { useNavigate } from "react-router-dom";
+import { Login } from "@mui/icons-material";
 
 
 export default function ToolbarDisconnected() {
 
     const navigate = useNavigate();
 
-    const handleBackHomepage = () => {
-        navigate("/");
+    const handleLogin = () => {
+        navigate("/connexion");
     }
 
     return(
@@ -21,9 +22,9 @@ export default function ToolbarDisconnected() {
                     edge="start"
                     color="inherit"
                     aria-label="menu"
-                    onClick={handleBackHomepage}
+                    onClick={handleLogin}
                 >
-                    <ArrowBack id={styles.backIcon}/>
+                    <Login id={styles.icon}/>
                 </IconButton>
                 <Typography id={styles.typoTitle} variant="h6" component="div" color="text.primary">
                     Festival des jeux
