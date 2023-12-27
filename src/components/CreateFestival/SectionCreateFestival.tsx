@@ -44,6 +44,7 @@ const SectionCreateFestival = () => {
 
     // Get dataFestival, dataPosts and dataCreneau from local storage when the page is loaded
     useEffect(() => {
+        let dataLoad = false;
         if(localStorage.getItem("dataFestival") !== null) {
             let dataFestival = JSON.parse(localStorage.getItem("dataFestival")!);
 
@@ -52,25 +53,31 @@ const SectionCreateFestival = () => {
             dataFestival.dateFin = dayjs(dataFestival.dateFin);
             
             setDataFestival(dataFestival)
+            dataLoad = true;
         }
         if(localStorage.getItem("dataPosts") !== null) {
             let dataPosts = JSON.parse(localStorage.getItem("dataPosts")!);
             setDataPosts(dataPosts)
+            dataLoad = true;
         }
         if(localStorage.getItem("dataCreneau") !== null) {
             let dataCreneau = JSON.parse(localStorage.getItem("dataCreneau")!);
             setDataCreneau(dataCreneau)
+            dataLoad = true;
+        }
+        if(dataLoad) {
+            handleShowAlertMessage("Votre dernière sauvegarde a été récupéré.", "success");
         }
     }, [])
 
 
     const columns: GridColDef[] = [
-        { field: 'name', headerName: 'Nom', width: 150 },
+        { field: 'name', headerName: 'Nom', width: 200 },
         { field: 'capacity', headerName: 'Capacité', width: 100 },
         { 
             field: 'actions', 
             headerName: 'Actions', 
-            width: 150, 
+            width: 100, 
             sortable: false,
             renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
                 <>
@@ -137,7 +144,6 @@ const SectionCreateFestival = () => {
                         },
                         }}
                         pageSizeOptions={[5, 10]}
-                        checkboxSelection
                     />
                 </Box>
                 <Box className={styles.boxButtonTable}>
