@@ -12,7 +12,7 @@ const SectionCreateFestival = () => {
 
     const [dataFestival, setDataFestival] = useState({name: "", dateDebut: dayjs(), dateFin: dayjs().add(1, 'day')})
     const [dataPosts, setDataPosts] = useState([])
-    const [dataCreneau, setDataCreneau] = useState([{id: 1, timeStart: "", timeEnd: "", idFestival: ""}])
+    const [dataCreneau, setDataCreneau] = useState([])
 
     const [isModalPostOpen, setIsModalPostOpen] = useState(false);
     const handleOpenModalPost = () => setIsModalPostOpen(true);
@@ -135,16 +135,20 @@ const SectionCreateFestival = () => {
                 <DatePicker className={styles.fieldForm} label="Date de fin" minDate={dayjs().add(1, 'day')} value={dataFestival.dateFin} onChange={(e) => setDataFestival({...dataFestival, dateFin: e || dayjs()})} />
                 <Box className={styles.boxTable}>
                     <Typography className={styles.titleTable} variant="h2" color="initial">Liste des postes</Typography>
-                    <DataGrid
-                        rows={dataPosts}
-                        columns={columns}
-                        initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
-                        },
-                        }}
-                        pageSizeOptions={[5, 10]}
-                    />
+                    {dataPosts.length === 0 ? (
+                        <Typography className={styles.textTable} variant="body1" color="initial">Aucun poste pour le moment.</Typography>
+                    ) : (
+                        <DataGrid
+                            rows={dataPosts}
+                            columns={columns}
+                            initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 5 },
+                            },
+                            }}
+                            pageSizeOptions={[5, 10]}
+                        />
+                    )}
                 </Box>
                 <Box className={styles.boxButtonTable}>
                     <Button variant="outlined" color="primary" onClick={() => handleOpenModalPost()}>Ajouter un poste</Button>
