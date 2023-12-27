@@ -34,13 +34,8 @@ export default function Login(props) {
                 props.validateSignIn(res.data.token, 'Vous êtes connecté avec succès !')
             }
         } catch(error) {
-            if(error.code === "ERR_NETWORK") {
-                props.handleShowError("Erreur: Serveur inaccessible.");
-            } else if (error.response.data.message !== undefined) {
-                props.handleShowError(`Erreur:${error.response.data.message}`);
-            } else {
-                props.handleShowError("Erreur: Une erreur est survenue.");
-            }
+            console.log(error);
+            props.handleShowError(`Erreur: ${error.response.data.message}`);
         }
     }
 

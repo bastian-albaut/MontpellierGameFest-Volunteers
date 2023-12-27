@@ -100,9 +100,7 @@ export default function Register(props: any) {
             return;
         }
 
-        // Persist the user in the database
-        const { associations, ...formDataWithoutAssociations } = formData;
-
+        // Create the user object
         const user: User = {
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -112,25 +110,19 @@ export default function Register(props: any) {
             file: formData.file,
         }
 
-        console.log(user);
+        // Register the user
         try {
-            console.log("test")
             const res = await register(user);
-            console.log(res);
-            if(res && res.data) {
-                props.validateSignIn(res.data.token, 'Vous êtes enregistré avec succès !')
+            if (res && res.data) {
+                props.validateSignUp('Vous êtes enregistré avec succès ! Veuillez vous connecter.');
             }
-        } catch(error) {
-            // if(error.code === "ERR_NETWORK") {
-                //     props.handleShowError("Erreur: Serveur inaccessible.");
-                // } else if (error.response.data.message !== undefined) {
-                    //     props.handleShowError(`Erreur:${error.response.data.message}`);
-                    // } else {
-                        console.log("error");
-                        console.log(error)
-                        // console.log(error.message);
-                props.handleShowError("Erreur: Une erreur est survenue.");
-            // }
+        } catch (error) {
+            console.log(error);
+            if ((error as any).response && (error as any).response.data && (error as any).response.data.message) {
+                props.handleShowError(`Erreur: ${(error as any).response.data.message}`);
+            } else {
+                props.handleShowError('Une erreur s\'est produite lors de l\'enregistrement.');
+            }
         }
     }
 

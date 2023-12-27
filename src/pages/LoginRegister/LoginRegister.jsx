@@ -78,12 +78,17 @@ const LoginRegister = () => {
     // Set the token in the local storage and redirect to the user page
     const validateSignIn = (userToken, message) => {
         localStorage.setItem('token', JSON.stringify(userToken));
-        
-        // Get the result if of the user and redirect to his page
+        console.log(userToken)
+
+        // Redirect to the dashboard of the user
         const decodedToken = jwtDecode(userToken);
-        navigate(`/tableaudebord/${decodedToken.id}`, { state: { message: message } });
+        navigate(`/tableaudebord/${decodedToken.userId}`, { state: { message: message, severity: "success" } });
     }
 
+    // Set the token in the local storage and redirect to the login page
+    const validateSignUp = (message) => {
+        navigate("/");
+    }
     
     if (isLoading) {
         return (
@@ -97,7 +102,7 @@ const LoginRegister = () => {
             {haveAccount ? (
                 <Login validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowError={handleShowError} />
             ) : (
-                <Register validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowError={handleShowError} />
+                <Register validateSignUp={validateSignUp} setHaveAccount={setHaveAccount} handleShowError={handleShowError} />
             )}
         </>
     );
