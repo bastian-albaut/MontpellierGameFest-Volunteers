@@ -1,7 +1,7 @@
 @import "../../abstract/variables.module.scss";
 
 .boxAlert {
-    top: 10px;
+    top: calc($minHeightAppBarSmallScreen + 10px);
     width: 100%;
     position: fixed;
     z-index: 1000;
@@ -13,15 +13,7 @@
     padding: 6px 24px;
 }
 
-/* Extra small and small devices (phones, $breakpointMD and down) */
-// minHeightAppBarSmallScreen + 10px
-@media only screen and (max-width: $breakpointMD){
-    .boxAlert {
-        top: calc($minHeightAppBarSmallScreen + 10px);
-    }
-}
-
-/* Medium and Largedevices (tablets/laptops/desktops, $breakpointMD and up) */
+/* Medium and Largedevices (tablets/laptops/desktops, $breakpointMD + 1px and up) */
 @media only screen and (min-width: $breakpointMD){
     .boxAlert {
         top: calc($minHeightAppBarWideScreen + 10px);

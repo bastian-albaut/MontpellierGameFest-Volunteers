@@ -11,16 +11,17 @@
     flex-grow: 1;
 }
 
-/* Extra small and small devices (phones, $breakpointMD and down) */
-@media only screen and (max-width: $breakpointMD){
-    .wideScreen {
-        display: none !important;
-    }
+.wideScreen {
+    display: none !important;
 }
 
 /* Medium and Largedevices (tablets/laptops/desktops, $breakpointMD and up) */
 @media only screen and (min-width: $breakpointMD){
     .smallScreen {
         display: none !important;
+    }
+
+    .wideScreen {
+        display: flex !important;
     }
 }
