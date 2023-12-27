@@ -3,7 +3,7 @@
 #toolbar {
     background-color: $primaryColor;
     padding: 0 10px;
-    min-height: $minHeightAppBarWideScreen;
+    min-height: $minHeightAppBarSmallScreen;
 }
 
 #boxPagesWideScreen {
@@ -23,5 +23,9 @@
 
     .wideScreen {
         display: flex !important;
+    }
+
+    #toolbar {
+        min-height: $minHeightAppBarWideScreen;
     }
 }
