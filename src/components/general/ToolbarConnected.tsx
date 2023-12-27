@@ -4,6 +4,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import styles from "../../styles/components/general/toolbarConnected.module.scss"
+
 
 export default function ToolbarConnected(props: any) {
 
@@ -57,25 +59,9 @@ export default function ToolbarConnected(props: any) {
 
   return (
     <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontWeight: "bold",
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Festival des jeux
-          </Typography>
+        <Toolbar disableGutters id={styles.toolbar}>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+        <Box sx={{ display: { xs: 'flex', md: 'none' } }} className={styles.smallScreen}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -112,6 +98,25 @@ export default function ToolbarConnected(props: any) {
 
             </Menu>
           </Box>
+        <Box sx={{flexGrow: 1, textAlign: "center" }} className={styles.smallScreen}>
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontWeight: "bold",
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+            className={styles.smallScreen}
+          >
+            Festival des jeux
+          </Typography>
+        </Box>
+
           <Typography
             variant="h5"
             noWrap
@@ -125,10 +130,11 @@ export default function ToolbarConnected(props: any) {
               color: 'inherit',
               textDecoration: 'none',
             }}
+            className={styles.wideScreen}
           >
             Festival des jeux
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className={styles.wideScreen}>
             {pages.map((item, index) => (
                 <Button key={index} onClick={item.function} sx={{ my: 2, color: 'white', display: 'block' }}>{item.name}</Button>
             ))}
@@ -162,7 +168,6 @@ export default function ToolbarConnected(props: any) {
             </Menu>
           </Box>
         </Toolbar>
-      </Container>
     </AppBar>
   );
 }

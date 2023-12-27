@@ -1,7 +1,7 @@
 @import "../../abstract/variables.module.scss";
 
 #toolbar {
-    background-color: $secondaryColor;
+    background-color: $primaryColor;
     display: flex;
     justify-content: space-between;
     min-height: $minHeightAppBarWideScreen;
