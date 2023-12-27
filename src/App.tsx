@@ -12,6 +12,7 @@ import HomePage from './pages/HomePage/HomePage';
 import CreateFestival from './pages/CreateFestival/CreateFestival';
 import LoginRegister from './pages/LoginRegister/LoginRegister';
 import Dashboard from './pages/Dashboard/Dashboard';
+import { UserProvider } from './contexts/UserContext';
 
 
 let theme = createTheme({
@@ -114,21 +115,23 @@ theme = responsiveFontSizes(theme);
 const App = () => {
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-        <ThemeProvider theme={theme}>
-        <StyledEngineProvider injectFirst>
-            <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<HomePage />}/>
-                <Route path="/connexion" element={<LoginRegister />} />
-                <Route path="/festival/creation" element={<CreateFestival />}/>
-                <Route path="/tableaudebord/:id" element={<Dashboard />}/>
-                <Route path="*" element={<Navigate replace to="/" />} />
-            </Routes>
-            </BrowserRouter>
-        </StyledEngineProvider>
-        </ThemeProvider>
-    </LocalizationProvider>
+    <UserProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+            <ThemeProvider theme={theme}>
+            <StyledEngineProvider injectFirst>
+                <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<HomePage />}/>
+                    <Route path="/connexion" element={<LoginRegister />} />
+                    <Route path="/festival/creation" element={<CreateFestival />}/>
+                    <Route path="/tableaudebord/:id" element={<Dashboard />}/>
+                    <Route path="*" element={<Navigate replace to="/" />} />
+                </Routes>
+                </BrowserRouter>
+            </StyledEngineProvider>
+            </ThemeProvider>
+        </LocalizationProvider>
+    </UserProvider>
   );
 }
 
