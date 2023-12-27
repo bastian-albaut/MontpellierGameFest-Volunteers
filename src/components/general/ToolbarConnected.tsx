@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styles from "../../styles/components/general/toolbarConnected.module.scss"
+import { useUser } from "../../contexts/UserContext";
 
 
 export default function ToolbarConnected(props: any) {
@@ -28,11 +29,15 @@ export default function ToolbarConnected(props: any) {
     };
 
     const navigate = useNavigate()
-
-    const handleLogout = () => {
+    const { reloadUserContext } = useUser();
+    const handleLogout = async () => {
         handleCloseUserMenu();
         localStorage.removeItem('token');
-        navigate('/', { state: { message: "Vous êtes deconnecté !" } });
+
+        // Trigger the fetchUser function from the UserContext
+        await reloadUserContext(); // Wait for fetchUser to complete
+
+        navigate("/", { state: { message: "Vous êtes deconnecté !", severity: "success" } });
     }
 
     const handleDashboard = () => {

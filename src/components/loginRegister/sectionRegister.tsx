@@ -102,6 +102,7 @@ export default function Register(props: any) {
 
         // Create the user object
         const user: User = {
+            userId: 0,
             firstName: formData.firstName,
             lastName: formData.lastName,
             address: " ",

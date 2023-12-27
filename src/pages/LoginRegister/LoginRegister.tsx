@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import styles from "../../styles/pages/loginregister.module.scss" 
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 import Login from "../../components/loginRegister/sectionLogin";
@@ -16,8 +15,12 @@ const LoginRegister = () => {
     const navigate = useNavigate();
     
     // Set the token in the local storage and redirect to the user page
-    const validateSignIn = (userToken: any, message: string) => {
+    const { reloadUserContext } = useUser();
+    const validateSignIn = async (userToken: any, message: string) => {
         localStorage.setItem('token', JSON.stringify(userToken));
+
+        // Trigger the fetchUser function from the UserContext
+        await reloadUserContext();
 
         // Redirect to the dashboard of the user
         const decodedToken = jwtDecode(userToken);
@@ -26,29 +29,50 @@ const LoginRegister = () => {
     }
 
     // Set the token in the local storage and redirect to the login page
-    const validateSignUp = (message : any) => {
+    const validateSignUp = () => {
         navigate("/");
     }
 
-    // Display alert message
-    const [alertMessage, setAlertMessage] = useState({content: "", severity: "success"});
-    const handleShowAlertMessage = (msg: string, severity: "success" | "info" | "warning" | "error") => {
-        setAlertMessage({content: msg, severity: severity});
-        setTimeout(() => {
-            setAlertMessage({content: "", severity: "success"});
-        }, 5000)
-    }
+
+    const handleShowAlertMessage = useCallback(
+        (msg: string, severity: "success" | "info" | "warning" | "error") => {
+            setAlertMessage({ content: msg, severity: severity });
+            setTimeout(() => {
+                setAlertMessage({ content: "", severity: "success" });
+            }, 5000);
+        },
+        []
+    );
+
+    // Display alert message from location state
+    const location = useLocation();
+    const [alertMessage, setAlertMessage] = useState({ content: "", severity: "success" });
+    useEffect(() => {
+        if (location?.state?.message !== undefined) {
+            handleShowAlertMessage(location.state.message, location.state.severity);
+        }
+    }, [location, handleShowAlertMessage]);
 
     const { user, loading, message, severity } = useUser();
-    if (message) {
-        handleShowAlertMessage(message, severity);
-    }
+    useEffect(() => {
+        if (message) {
+            handleShowAlertMessage(message, severity);
+        }
+    }, [message, severity, handleShowAlertMessage]);
+
+    // Redirect to the dashboard if the user is already logged in
+    useEffect(() => {
+        if (user) {
+            console.log("User is already logged in");
+            navigate(`/tableaudebord/${user.userId}`);
+        }
+    }, [user, navigate]);
 
     if (loading) {
         return <Loading />;
     }
-    
-    return(
+
+    return (
         <>
             <Appbar currentUser={user} />
             {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
@@ -60,6 +84,6 @@ const LoginRegister = () => {
             )}
         </>
     );
-}
+};
 
 export default LoginRegister;
