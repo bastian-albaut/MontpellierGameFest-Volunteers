@@ -15,15 +15,6 @@ const LoginRegister = () => {
     const [haveAccount, setHaveAccount] = useState(false);
     const navigate = useNavigate();
     
-    // Display error message
-    const [error, setError] = useState('');
-    const handleShowError = (msg: string) => {
-        setError(msg)
-        setTimeout(() => {
-            setError('')
-        }, 5000)
-    }
-    
     // Set the token in the local storage and redirect to the user page
     const validateSignIn = (userToken: any, message: string) => {
         localStorage.setItem('token', JSON.stringify(userToken));
@@ -39,7 +30,20 @@ const LoginRegister = () => {
         navigate("/");
     }
 
-    const { user, loading } = useUser();
+    // Display alert message
+    const [alertMessage, setAlertMessage] = useState({content: "", severity: "success"});
+    const handleShowAlertMessage = (msg: string, severity: "success" | "info" | "warning" | "error") => {
+        setAlertMessage({content: msg, severity: severity});
+        setTimeout(() => {
+            setAlertMessage({content: "", severity: "success"});
+        }, 5000)
+    }
+
+    const { user, loading, message, severity } = useUser();
+    if (message) {
+        handleShowAlertMessage(message, severity);
+    }
+
     if (loading) {
         return <Loading />;
     }
@@ -47,11 +51,12 @@ const LoginRegister = () => {
     return(
         <>
             <Appbar currentUser={user} />
-            {error && <AlertComponent message={error} severity="error" />}
+            {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
+            {message && <AlertComponent message={message} severity="error" />}
             {haveAccount ? (
-                <Login validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowError={handleShowError} />
+                <Login validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowAlertMessage={handleShowAlertMessage} />
             ) : (
-                <Register validateSignUp={validateSignUp} setHaveAccount={setHaveAccount} handleShowError={handleShowError} />
+                <Register validateSignUp={validateSignUp} setHaveAccount={setHaveAccount} handleShowAlertMessage={handleShowAlertMessage} />
             )}
         </>
     );

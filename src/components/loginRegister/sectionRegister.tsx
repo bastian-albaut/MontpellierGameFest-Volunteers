@@ -71,32 +71,32 @@ export default function Register(props: any) {
 
         // Check if the fields are not empty
         if(formData.firstName === '' || formData.lastName === '' || formData.email === '' || formData.password === '') {
-            props.handleShowError("Veuillez remplir tous les champs.");
+            props.handleShowAlertMessage("Veuillez remplir tous les champs.", "error");
             return;
         }
 
         // Check if the firstname is valid
         if(formData.firstName.length < 2) {
-            props.handleShowError("Le prénom doit contenir au moins 2 caractères.");
+            props.handleShowAlertMessage("Le prénom doit contenir au moins 2 caractères.", "error");
             return;
         }
 
         // Check if the lastname is valid
         if(formData.lastName.length < 2) {
-            props.handleShowError("Le nom doit contenir au moins 2 caractères.");
+            props.handleShowAlertMessage("Le nom doit contenir au moins 2 caractères.", "error");
             return;
         }
 
         // Check if the email is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(formData.email)) {
-            props.handleShowError("L'adresse mail n'est pas valide.");
+            props.handleShowAlertMessage("L'adresse mail n'est pas valide.", "error");
             return;
         }
         
         // Check if the password is valid
         if(formData.password.length < 8) {
-            props.handleShowError("Le mot de passe doit contenir au moins 8 caractères.");
+            props.handleShowAlertMessage("Le mot de passe doit contenir au moins 8 caractères.", "error");
             return;
         }
 
@@ -119,9 +119,9 @@ export default function Register(props: any) {
         } catch (error) {
             console.log(error);
             if ((error as any).response && (error as any).response.data && (error as any).response.data.message) {
-                props.handleShowError(`Erreur: ${(error as any).response.data.message}`);
+                props.handleShowAlertMessage(`Erreur: ${(error as any).response.data.message}`, "error");
             } else {
-                props.handleShowError('Une erreur s\'est produite lors de l\'enregistrement.');
+                props.handleShowAlertMessage('Une erreur s\'est produite lors de l\'enregistrement.', "error");
             }
         }
     }
