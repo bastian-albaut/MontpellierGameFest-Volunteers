@@ -10,13 +10,18 @@ const Dashboard = () => {
 
     // Display alert message from location state
     const location = useLocation();
-    const [alertMessage, setAlertMessage] = useState({content: location?.state?.message, severity: location?.state?.severity});
+    const [alertMessage, setAlertMessage] = useState({content: "", severity: "success"});
     const handleShowAlertMessage = (msg: string, severity: "success" | "info" | "warning" | "error") => {
         setAlertMessage({content: msg, severity: severity});
         setTimeout(() => {
             setAlertMessage({content: "", severity: "success"});
         }, 5000)
     }
+    useEffect(() => {
+        if (location?.state?.message !== undefined) {
+            handleShowAlertMessage(location.state.message, location.state.severity);
+        }
+    } , [location]);
 
     const { user, loading } = useUser();
     if (loading) {
@@ -26,7 +31,7 @@ const Dashboard = () => {
 	return(
         <>
             <Appbar currentUser={user} />
-            {alertMessage.content !== undefined && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
+            {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
             <Typography variant="h1" color="initial">Dashboard</Typography>
         </>
 	)
