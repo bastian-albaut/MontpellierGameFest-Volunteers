@@ -10,7 +10,7 @@ npm start
 ## Créer une page ou un composant
 
 ```sh
-./ReactUtil.sh create <component|page> <sass?> <name>
+./ReactUtil.sh
 ```
 
 ## Variables globales et couleurs
