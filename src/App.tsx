@@ -11,6 +11,7 @@ import variables from "./styles/abstract/variables.module.scss"
 import HomePage from './pages/HomePage/HomePage';
 import CreateFestival from './pages/CreateFestival/CreateFestival';
 import LoginRegister from './pages/LoginRegister/LoginRegister';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 
 let theme = createTheme({
@@ -121,6 +122,7 @@ const App = () => {
                 <Route path="/" element={<HomePage />}/>
                 <Route path="/connexion" element={<LoginRegister />} />
                 <Route path="/festival/creation" element={<CreateFestival />}/>
+                <Route path="/tableaudebord/:id" element={<Dashboard />}/>
                 <Route path="*" element={<Navigate replace to="/" />} />
             </Routes>
             </BrowserRouter>
