@@ -16,53 +16,29 @@ const LoginRegister = () => {
     
     // Display error message
     const [error, setError] = useState('');
-    const handleShowError = (msg) => {
+    const handleShowError = (msg: string) => {
         setError(msg)
         setTimeout(() => {
             setError('')
         }, 5000)
     }
     
-    // Get the token from the local storage
-    const getToken = () => {
-        // Check if the token is in the local storage
-        if (!localStorage.getItem('token')) {
-            return null;
-        }
-        const tokenString = localStorage.getItem('token');
-
-        // Check if the token is not undefined
-        if (tokenString === 'undefined') {
-            return null;
-        }
-
-        const userToken = JSON.parse(tokenString);
-        return userToken;
-    };
-    
     // Check if the user is login on mount 
     const [currentUser, setCurrentUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         const fetchData = async () => {
-            const token = getToken();
-
-            if(!token) {
+            try {
+                console.log("user")
+                const user = await getCurrentUser();
+                console.log(user)
+                if (user) {
+                    setCurrentUser(user.data);
+                }
+            } catch (error) {
                 setCurrentUser(null);
                 setIsLoading(false);
-                return;
-            }
-
-            if(token) {
-                try {
-                    const user = await getCurrentUser(token);
-                    if (user) {
-                        setCurrentUser(user.data);
-                    }
-                } catch (error) {
-                    setCurrentUser(null);
-                    localStorage.removeItem('token');
-                }
+                localStorage.removeItem('token');
             }
         };
         fetchData();
@@ -76,17 +52,17 @@ const LoginRegister = () => {
     }, [currentUser])
 
     // Set the token in the local storage and redirect to the user page
-    const validateSignIn = (userToken, message) => {
+    const validateSignIn = (userToken: any, message: string) => {
         localStorage.setItem('token', JSON.stringify(userToken));
-        console.log(userToken)
 
         // Redirect to the dashboard of the user
         const decodedToken = jwtDecode(userToken);
-        navigate(`/tableaudebord/${decodedToken.userId}`, { state: { message: message, severity: "success" } });
+        const userId = (decodedToken as { userId: string }).userId;
+        navigate(`/tableaudebord/${userId}`, { state: { message: message, severity: "success" } });
     }
 
     // Set the token in the local storage and redirect to the login page
-    const validateSignUp = (message) => {
+    const validateSignUp = (message : any) => {
         navigate("/");
     }
     

@@ -9,7 +9,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { login } from '../../api';
 import styles from "../../styles/components/loginRegister/sectionLogin.module.scss"
 
-export default function Login(props) {
+export default function Login(props: any) {
     const [data, setData] = useState({ email: '', password: '' });
 
     // Manage the login
@@ -35,7 +35,11 @@ export default function Login(props) {
             }
         } catch(error) {
             console.log(error);
-            props.handleShowError(`Erreur: ${error.response.data.message}`);
+            if ((error as any).response && (error as any).response.data && (error as any).response.data.message) {
+                props.handleShowError(`Erreur: ${(error as any).response.data.message}`);
+            } else {
+                props.handleShowError('Une erreur s\'est produite lors de la connexion.');
+            }
         }
     }
 
