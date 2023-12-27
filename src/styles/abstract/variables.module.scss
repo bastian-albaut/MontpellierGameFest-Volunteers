@@ -12,6 +12,9 @@ $breakpointMD: 900px;
 $breakpointLG: 1200px;
 $breakpointXL: 1536px;
 
+$minHeightAppBarSmallScreen: 56px;
+$minHeightAppBarWideScreen: 64px;
+
 :export {
   textColor: $textColor;
   primaryColor: $primaryColor;
@@ -25,4 +28,6 @@ $breakpointXL: 1536px;
   breakpointMD: $breakpointMD;
   breakpointLG: $breakpointLG;
   breakpointXL: $breakpointXL;
+  minHeightAppBarSmallScreen: $minHeightAppBarSmallScreen;
+  minHeightAppBarWideScreen: $minHeightAppBarWideScreen;
 }

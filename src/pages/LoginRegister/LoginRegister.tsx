@@ -9,6 +9,7 @@ import Register from "../../components/loginRegister/sectionRegister";
 import Loading from "../../components/general/Loading";
 import AlertComponent from "../../components/general/Alert";
 import { getCurrentUser } from "../../api";
+import Appbar from "../../components/general/Appbar";
 
 const LoginRegister = () => {
     const [haveAccount, setHaveAccount] = useState(false);
@@ -74,6 +75,7 @@ const LoginRegister = () => {
 
     return(
         <>
+            <Appbar />
             {error && <AlertComponent message={error} severity="error" />}
             {haveAccount ? (
                 <Login validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowError={handleShowError} />
