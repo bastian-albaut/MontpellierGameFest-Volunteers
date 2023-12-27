@@ -49,6 +49,11 @@ export default function ToolbarConnected(props: any) {
         handleCloseNavMenu();
         navigate(`/`);
     }
+
+    const handleCreateFestival = () => {
+        handleCloseNavMenu();
+        navigate(`/festival/creation`);
+    }
     
     const pages = [
         {
@@ -59,6 +64,10 @@ export default function ToolbarConnected(props: any) {
             name: 'Tableau de bord',
             function : handleDashboard
         }, 
+        {
+            name: 'Création Festival',
+            function : handleCreateFestival
+        }
     ];
 
   return (
