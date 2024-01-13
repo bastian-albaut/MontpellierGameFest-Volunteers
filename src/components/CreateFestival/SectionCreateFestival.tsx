@@ -7,6 +7,7 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, Gri
 import ModalCreateUpdatePost from "./ModalCreateUpdatePost";
 import { Delete, Edit } from "@mui/icons-material";
 import AlertComponent from "../general/Alert";
+import useAlert from "../../hooks/useAlerts";
 
 const SectionCreateFestival = () => {
 
@@ -17,6 +18,9 @@ const SectionCreateFestival = () => {
     const [isModalPostOpen, setIsModalPostOpen] = useState(false);
     const handleOpenModalPost = () => setIsModalPostOpen(true);
     const handleCloseModalPost = () => setIsModalPostOpen(false);
+
+    // Display alert message
+    const { alertMessage, handleShowAlertMessage } = useAlert();
 
     // Save dataFestival, dataPosts and dataCreneau on local storage when they change
     useEffect(() => {
@@ -113,15 +117,6 @@ const SectionCreateFestival = () => {
         } catch (error) {
             handleShowAlertMessage(`Une erreur est survenue lors de la suppression du poste "${row.name}".`, "error");
         }
-    }
-
-    // Display alert message
-    const [alertMessage, setAlertMessage] = useState({content: "", severity: "success"});
-    const handleShowAlertMessage = (msg: string, severity: "success" | "info" | "warning" | "error") => {
-        setAlertMessage({content: msg, severity: severity});
-        setTimeout(() => {
-            setAlertMessage({content: "", severity: "success"});
-        }, 5000)
     }
 
     return(

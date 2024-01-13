@@ -5,24 +5,20 @@ import Typography from '@mui/material/Typography'
 import Loading from "../../components/general/Loading";
 import { useUser } from "../../contexts/UserContext";
 import Appbar from "../../components/general/Appbar";
+import useAlert from "../../hooks/useAlerts";
 
 const Dashboard = () => {
 
     // Display alert message from location state
     const location = useLocation();
-    const [alertMessage, setAlertMessage] = useState({content: "", severity: "success"});
-    const handleShowAlertMessage = useCallback((msg: string, severity: "success" | "info" | "warning" | "error") => {
-        setAlertMessage({content: msg, severity: severity});
-        setTimeout(() => {
-            setAlertMessage({content: "", severity: "success"});
-        }, 5000)
-    }, []);
+    const { alertMessage, handleShowAlertMessage } = useAlert();
     useEffect(() => {
         if (location?.state?.message !== undefined) {
             handleShowAlertMessage(location.state.message, location.state.severity);
         }
-    } , [location, handleShowAlertMessage]);
+    }, [location, handleShowAlertMessage]);
 
+    // Display alert message from UserContext
     const { user, loading, message, severity } = useUser();
     useEffect(() => {
         if (message) {
