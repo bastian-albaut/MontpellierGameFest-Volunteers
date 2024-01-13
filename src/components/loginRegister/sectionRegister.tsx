@@ -57,33 +57,37 @@ export default function Register(props: any) {
           fileReader.readAsDataURL(file);
         });
       };
-      
-
-    const navigate = useNavigate();
-
-    const setToken = (userToken: any) => {
-        localStorage.setItem('token', JSON.stringify(userToken));
-    }
 
     // Manage the register
     const handleSignUp = async (event: any) => {
         event.preventDefault();
 
+        // Check if already loading
+        if (props.isLoadingLoginRegister) {
+            return;
+        }
+
+        // Set loading to true
+        props.setIsLoadingLoginRegister(true);
+
         // Check if the fields are not empty
         if(formData.firstName === '' || formData.lastName === '' || formData.email === '' || formData.password === '') {
             props.handleShowAlertMessage("Veuillez remplir tous les champs.", "error");
+            props.setIsLoadingLoginRegister(false);
             return;
         }
 
         // Check if the firstname is valid
         if(formData.firstName.length < 2) {
             props.handleShowAlertMessage("Le prénom doit contenir au moins 2 caractères.", "error");
+            props.setIsLoadingLoginRegister(false);
             return;
         }
 
         // Check if the lastname is valid
         if(formData.lastName.length < 2) {
             props.handleShowAlertMessage("Le nom doit contenir au moins 2 caractères.", "error");
+            props.setIsLoadingLoginRegister(false);
             return;
         }
 
@@ -91,12 +95,14 @@ export default function Register(props: any) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(formData.email)) {
             props.handleShowAlertMessage("L'adresse mail n'est pas valide.", "error");
+            props.setIsLoadingLoginRegister(false);
             return;
         }
         
         // Check if the password is valid
         if(formData.password.length < 8) {
             props.handleShowAlertMessage("Le mot de passe doit contenir au moins 8 caractères.", "error");
+            props.setIsLoadingLoginRegister(false);
             return;
         }
 
@@ -119,6 +125,7 @@ export default function Register(props: any) {
             }
         } catch (error) {
             console.log(error);
+            props.setIsLoadingLoginRegister(false);
             if ((error as any).response && (error as any).response.data && (error as any).response.data.message) {
                 props.handleShowAlertMessage(`Erreur: ${(error as any).response.data.message}`, "error");
             } else {
@@ -177,8 +184,8 @@ export default function Register(props: any) {
                 </FormControl>
 
                 <FileInput selectedFile={selectedFile} setSelectedFile={setSelectedFile} handleFileSelect={handleFileSelect} />
-                <Button id={styles.buttonRegister} variant="contained" color="primary" type="submit" onClick={(event) => handleSignUp(event)}>S'inscrire</Button>
-                <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(true)}>J'ai déjà un compte</Button>
+                <Button id={styles.buttonRegister} variant="contained" color="primary" type="submit" onClick={(event) => handleSignUp(event)} disabled={props.isLoadingLoginRegister} >S'inscrire</Button>
+                <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(true)} disabled={props.isLoadingLoginRegister} >J'ai déjà un compte</Button>
             </form>
         </Box>
 
