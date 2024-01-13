@@ -8,7 +8,9 @@ import dayjs from "dayjs";
 const ModalCreateUpdateCreneau = (props: any) => {
 
     const parseTimeString = (timeString: string) => {
-        return dayjs(timeString, { format: 'HH:mm' });
+        // set to the native format of dayjs which is YYYY-MM-DDTHH:mm:ss.SSSZ
+        const time = dayjs(`2024-01-01T${timeString}:00.000Z`);
+        return time;
     };
 
     const [currentCreneau, setCurrentCreneau] = useState({
@@ -24,12 +26,27 @@ const ModalCreateUpdateCreneau = (props: any) => {
             });
         }
     }, [props.objectToUpdate, props.isUpdate]);
+
+    // Check if there is not already a creneau that cross the new creneau
+    const isConflict = () => {
+        return props.dataCreneau.some((creneau: any) => {
+            const creneauStart = dayjs(creneau.timeStart, 'HH:mm');
+            const creneauEnd = dayjs(creneau.timeEnd, 'HH:mm');
+    
+            return (
+                ((currentCreneau.timeStart.isAfter(creneauStart) || currentCreneau.timeStart.isSame(creneauStart)) && currentCreneau.timeStart.isBefore(creneauEnd)) ||
+                (currentCreneau.timeEnd.isAfter(creneauStart) && (currentCreneau.timeEnd.isBefore(creneauEnd) || currentCreneau.timeEnd.isSame(creneauEnd)))
+            );
+        });
+    }
+    
+    // Add a creneau to the list of creneaux
     const handleAddCreneau = () => {
         setFormError("");
-
+        
         // Check if there is not already a creneau that cross the new creneau
-        if(props.dataCreneau.find((creneau: any) => (currentCreneau.timeStart >= creneau.timeStart && currentCreneau.timeStart < creneau.timeEnd) || (currentCreneau.timeEnd > creneau.timeStart && currentCreneau.timeEnd <= creneau.timeEnd))) {
-            setFormError("Le creneau ne peut pas être en conflit avec un autre creneau.");
+        if (isConflict()) {
+            setFormError("Le creneau est en conflit avec un autre.");
             return;
         }
 
@@ -51,7 +68,7 @@ const ModalCreateUpdateCreneau = (props: any) => {
         
         // Check if there is not already a creneau that cross the updated creneau
         if(props.dataCreneau.find((creneau: any) => (currentCreneau.timeStart >= creneau.timeStart && currentCreneau.timeStart < creneau.timeEnd) || (currentCreneau.timeEnd > creneau.timeStart && currentCreneau.timeEnd <= creneau.timeEnd))) {
-            setFormError("Le creneau ne peut pas être en conflit avec un autre creneau.");
+            setFormError("Le creneau est en conflit avec un autre.");
             return;
         }
 

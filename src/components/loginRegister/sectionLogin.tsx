@@ -15,9 +15,18 @@ export default function Login(props: any) {
     // Manage the login
     const handleSignIn = async () => {
 
+        // Check if already loading
+        if (props.isLoadingLoginRegister) {
+            return;
+        }
+
+        // Set loading to true
+        props.setIsLoadingLoginRegister(true);
+
         // Check if the fields are not empty
         if(data.email === '' || data.password === '') {
             props.handleShowAlertMessage("Erreur: Veuillez entrer votre adresse mail et votre mot de passe.", "error");
+            props.setIsLoadingLoginRegister(false);
             return;
         }
 
@@ -25,6 +34,7 @@ export default function Login(props: any) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(data.email)) {
             props.handleShowAlertMessage("Erreur: L'adresse mail n'est pas valide.", "error");
+            props.setIsLoadingLoginRegister(false);
             return;
         }
 
@@ -40,6 +50,7 @@ export default function Login(props: any) {
             } else {
                 props.handleShowAlertMessage('Une erreur s\'est produite lors de la connexion.', "error");
             }
+            props.setIsLoadingLoginRegister(false);
         }
     }
 
@@ -70,8 +81,8 @@ export default function Login(props: any) {
                                                                                                                                                                                                             }}
                                                                                                                                                                                                             />
                 </Box>
-                <Button id={styles.buttonLogin} variant="contained" color="primary" onClick={handleSignIn}>Connexion</Button>
-                <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(false)}>Je n'ai pas de compte</Button>
+                <Button id={styles.buttonLogin} variant="contained" color="primary" onClick={handleSignIn} disabled={props.isLoadingLoginRegister}>Connexion</Button>
+                <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(false)} disabled={props.isLoadingLoginRegister}>Je n'ai pas de compte</Button>
             </Box>
         </Box>
     );
