@@ -8,7 +8,9 @@ import dayjs from "dayjs";
 const ModalCreateUpdateCreneau = (props: any) => {
 
     const parseTimeString = (timeString: string) => {
-        return dayjs(timeString, { format: 'HH:mm' });
+        // set to the native format of dayjs which is YYYY-MM-DDTHH:mm:ss.SSSZ
+        const time = dayjs(`2024-01-01T${timeString}:00.000Z`);
+        return time;
     };
 
     const [currentCreneau, setCurrentCreneau] = useState({
