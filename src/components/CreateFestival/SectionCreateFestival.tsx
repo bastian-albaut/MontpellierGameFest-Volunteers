@@ -8,6 +8,7 @@ import ModalCreateUpdatePost from "./ModalCreateUpdatePost";
 import { Delete, Edit } from "@mui/icons-material";
 import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
+import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
 
 const SectionCreateFestival = () => {
 
@@ -15,9 +16,15 @@ const SectionCreateFestival = () => {
     const [dataPosts, setDataPosts] = useState([])
     const [dataCreneau, setDataCreneau] = useState([])
 
+    // Modal for create/update a post
     const [isModalPostOpen, setIsModalPostOpen] = useState(false);
     const handleOpenModalPost = () => setIsModalPostOpen(true);
     const handleCloseModalPost = () => setIsModalPostOpen(false);
+
+    // Modal for create/update a creneau
+    const [isModalCreneauOpen, setIsModalCreneauOpen] = useState(false);
+    const handleOpenModalCreneau = () => setIsModalCreneauOpen(true);
+    const handleCloseModalCreneau = () => setIsModalCreneauOpen(false);
 
     // Display alert message
     const { alertMessage, handleShowAlertMessage } = useAlert();
@@ -78,8 +85,8 @@ const SectionCreateFestival = () => {
         }
     }, [])
 
-
-    const columns: GridColDef[] = [
+    // Define columns for the DataGrid of posts
+    const columnsPosts: GridColDef[] = [
         { field: 'name', headerName: 'Nom', width: 200 },
         { field: 'capacity', headerName: 'Capacité', width: 100 },
         { 
@@ -100,13 +107,38 @@ const SectionCreateFestival = () => {
         },
     ];
 
-    const [isUpdate, setIsUpdate] = useState(false);
-    const [objectToUpdate, setObjectToUpdate] = useState({} as any);
+    // Define columns for the DataGrid of creneaux
+    const columnsCreneaux: GridColDef[] = [
+        { field: 'timeStart', headerName: 'Heure de début', width: 150 },
+        { field: 'timeEnd', headerName: 'Heure de fin', width: 150 },
+        { 
+            field: 'actions', 
+            headerName: 'Actions', 
+            width: 100, 
+            sortable: false,
+            renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
+                <>
+                    <IconButton aria-label="edit" onClick={() => handleEditCreneau(params.row)}>
+                        <Edit />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => handleDeleteCreneau(params.row)}>
+                        <Delete />
+                    </IconButton>
+                </>
+            )
+        },
+    ];
+
+    const [isUpdatePost, setIsUpdatePost] = useState(false);
+    const [objectToUpdatePost, setObjectToUpdatePost] = useState({} as any);
+
+    const [isUpdateCreneau, setIsUpdateCreneau] = useState(false);
+    const [objectToUpdateCreneau, setObjectToUpdateCreneau] = useState({} as any);
 
     // Edit a post
     const handleEditPost = (row: any) => {
-        setIsUpdate(true);
-        setObjectToUpdate(row);
+        setIsUpdatePost(true);
+        setObjectToUpdatePost(row);
         handleOpenModalPost();
     }
 
@@ -120,6 +152,26 @@ const SectionCreateFestival = () => {
             handleShowAlertMessage(`Le poste "${row.name}" a bien été supprimé.`, "success");
         } catch (error) {
             handleShowAlertMessage(`Une erreur est survenue lors de la suppression du poste "${row.name}".`, "error");
+        }
+    }
+
+    // Edit a creneau
+    const handleEditCreneau = (row: any) => {
+        setIsUpdateCreneau(true);
+        setObjectToUpdateCreneau(row);
+        handleOpenModalCreneau();
+    }
+
+    // Delete a creneau
+    const handleDeleteCreneau = (row: any) => {
+        try {
+            const newDataCreneau = dataCreneau.filter((creneau: any) => creneau.id !== row.id);
+            setDataCreneau(newDataCreneau);
+            // Remove the creneau from the localStorage
+            localStorage.setItem("dataCreneau", JSON.stringify(newDataCreneau));
+            handleShowAlertMessage(`Le créneau "${row.timeStart} - ${row.timeEnd}" a bien été supprimé.`, "success");
+        } catch (error) {
+            handleShowAlertMessage("Une erreur est survenue lors de la suppression du créneau", "error");
         }
     }
 
@@ -139,7 +191,7 @@ const SectionCreateFestival = () => {
                     ) : (
                         <DataGrid
                             rows={dataPosts}
-                            columns={columns}
+                            columns={columnsPosts}
                             initialState={{
                             pagination: {
                                 paginationModel: { page: 0, pageSize: 5 },
@@ -152,10 +204,31 @@ const SectionCreateFestival = () => {
                 <Box className={styles.boxButtonTable}>
                     <Button variant="outlined" color="primary" onClick={() => handleOpenModalPost()}>Ajouter un poste</Button>
                 </Box>
+                <Box className={styles.boxTable}>
+                    <Typography className={styles.titleTable} variant="h2" color="initial">Liste des créneaux</Typography>
+                    {dataCreneau.length === 0 ? (
+                        <Typography className={styles.textTable} variant="body1" color="initial">Aucun créneau pour le moment.</Typography>
+                    ) : (
+                        <DataGrid
+                            rows={dataCreneau}
+                            columns={columnsCreneaux}
+                            initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 5 },
+                            },
+                            }}
+                            pageSizeOptions={[5, 10]}
+                        />
+                    )}
+                </Box>
+                <Box className={styles.boxButtonTable}>
+                    <Button variant="outlined" color="primary" onClick={() => handleOpenModalCreneau()}>Ajouter un créneau</Button>
+                </Box>
                 <Button id={styles.button} variant="contained" color="primary" onClick={() => console.log("création")}>Créer le festival</Button>
             </Box>
         </Box>
-        <ModalCreateUpdatePost handleShowAlertMessage={handleShowAlertMessage} isUpdate={isUpdate} objectToUpdate={objectToUpdate} open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
+        <ModalCreateUpdatePost handleShowAlertMessage={handleShowAlertMessage} isUpdate={isUpdatePost} objectToUpdate={objectToUpdatePost} setIsUpdate={setIsUpdatePost} open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
+        <ModalCreateUpdateCreneau handleShowAlertMessage={handleShowAlertMessage} isUpdate={isUpdateCreneau} objectToUpdate={objectToUpdateCreneau} setIsUpdate={setIsUpdateCreneau} open={isModalCreneauOpen} handleClose={handleCloseModalCreneau} dataCreneau={dataCreneau} setDataCreneau={setDataCreneau} />
         </>
 	)
 }

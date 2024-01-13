@@ -1,5 +1,5 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
-import styles from "../../styles/components/createFestival/modalCreateUpdatePost.module.scss";
+import styles from "../../styles/components/createFestival/modalCreateUpdate.module.scss";
 import { useEffect, useState } from "react";
 
 // Modal with name and capacity into a form
@@ -67,6 +67,7 @@ const ModalCreateUpdatePost = (props: any) => {
         setCurrentPost({ name: "", capacity: 1 });
         props.handleShowAlertMessage(`Le poste "${currentPost.name}" a bien été modifié.`, "success");
         props.handleClose();
+        props.setIsUpdate(false);
     }
 
     const[formError, setFormError] = useState("");
@@ -89,7 +90,7 @@ const ModalCreateUpdatePost = (props: any) => {
                 </Typography>
                 )}
                 {formError !== "" && (
-                    <Typography variant="body1" color="error">{formError}</Typography>
+                    <Typography className={styles.typoFormError} variant="body1" color="error">{formError}</Typography>
                 )}
                 <TextField
                     className={styles.fieldForm}
