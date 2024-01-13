@@ -49,25 +49,29 @@ const SectionCreateFestival = () => {
     // Get dataFestival, dataPosts and dataCreneau from local storage when the page is loaded
     useEffect(() => {
         let dataLoad = false;
-        if(localStorage.getItem("dataFestival") !== null) {
+        if (localStorage.getItem("dataFestival") !== null) {
             let dataFestival = JSON.parse(localStorage.getItem("dataFestival")!);
 
             // Convert JavaScript Date objects to dayjs objects
             dataFestival.dateDebut = dayjs(dataFestival.dateDebut);
             dataFestival.dateFin = dayjs(dataFestival.dateFin);
-            
-            setDataFestival(dataFestival)
+
+            setDataFestival(dataFestival);
             dataLoad = true;
         }
-        if(localStorage.getItem("dataPosts") !== null) {
+        if (localStorage.getItem("dataPosts") !== null) {
             let dataPosts = JSON.parse(localStorage.getItem("dataPosts")!);
-            setDataPosts(dataPosts)
-            dataLoad = true;
+            if (dataPosts.length > 0) {
+                setDataPosts(dataPosts);
+                dataLoad = true;
+            }
         }
-        if(localStorage.getItem("dataCreneau") !== null) {
+        if (localStorage.getItem("dataCreneau") !== null) {
             let dataCreneau = JSON.parse(localStorage.getItem("dataCreneau")!);
-            setDataCreneau(dataCreneau)
-            dataLoad = true;
+            if (dataCreneau.length > 0) {
+                setDataCreneau(dataCreneau);
+                dataLoad = true;
+            }
         }
         if(dataLoad) {
             handleShowAlertMessage("Votre dernière sauvegarde a été récupéré.", "success");
