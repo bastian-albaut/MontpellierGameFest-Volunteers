@@ -9,7 +9,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { login } from '../../api';
 import styles from "../../styles/components/loginRegister/sectionLogin.module.scss"
 
-export default function Login(props) {
+export default function Login(props: any) {
     const [data, setData] = useState({ email: '', password: '' });
 
     // Manage the login
@@ -17,14 +17,14 @@ export default function Login(props) {
 
         // Check if the fields are not empty
         if(data.email === '' || data.password === '') {
-            props.handleShowError("Erreur: Veuillez entrer votre adresse mail et votre mot de passe.");
+            props.handleShowAlertMessage("Erreur: Veuillez entrer votre adresse mail et votre mot de passe.", "error");
             return;
         }
 
         // Check if the email is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(data.email)) {
-            props.handleShowError("Erreur: L'adresse mail n'est pas valide.");
+            props.handleShowAlertMessage("Erreur: L'adresse mail n'est pas valide.", "error");
             return;
         }
 
@@ -34,12 +34,11 @@ export default function Login(props) {
                 props.validateSignIn(res.data.token, 'Vous êtes connecté avec succès !')
             }
         } catch(error) {
-            if(error.code === "ERR_NETWORK") {
-                props.handleShowError("Erreur: Serveur inaccessible.");
-            } else if (error.response.data.message !== undefined) {
-                props.handleShowError(`Erreur:${error.response.data.message}`);
+            console.log(error);
+            if ((error as any).response && (error as any).response.data && (error as any).response.data.message) {
+                props.handleShowAlertMessage(`Erreur: ${(error as any).response.data.message}`, "error");
             } else {
-                props.handleShowError("Erreur: Une erreur est survenue.");
+                props.handleShowAlertMessage('Une erreur s\'est produite lors de la connexion.', "error");
             }
         }
     }

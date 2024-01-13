@@ -1,0 +1,83 @@
+@import "../../abstract/variables.module.scss";
+
+#toolbar {
+    background-color: $primaryColor;
+    display: flex;
+    justify-content: space-between;
+    min-height: $minHeightAppBarWideScreen;
+}
+
+#icon {
+    transform: scale(1.2);
+    color: $darkColor;
+}
+
+#typoTitle {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+}
+
+#buttonLogin {
+    text-transform: none;
+}
+
+/* MEDIA QUERIES */
+
+/* DEFAULT */
+/* Extra small devices (phones, 480px and down) */
+@media only screen and (max-width: 480px){
+    #buttonLogin {
+        display: none;
+    }
+
+    #typoTitle {
+        position: static;
+        transform: translateX(0);
+        text-align: right;
+        margin: 0;
+    }
+}
+
+/* Small devices (phones, between 480px and 600px) */
+@media only screen and (min-width: 480px) and (max-width: 600px) {
+    #typoTitle {
+        font-size: 17px;
+    }
+}
+
+/* Small and Extra Small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    #toolbar {
+        min-height: $minHeightAppBarSmallScreen;
+    }
+}
+
+/* Medium devices (portrait tablets and large phones, between 600px and 768px) */
+@media only screen and (min-width: 600px) and (max-width: 768px) {
+    #typoTitle {
+        font-size: 22px;
+    }
+}
+
+/* Large devices (landscape tablets, between 768px and 992px) */
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+    #typoTitle {
+        font-size: 25px;
+    }
+}
+
+/* Extra large devices (laptops/desktops, between 992px and 1200px) */
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+    #typoTitle {
+        font-size: 27px;
+    }
+}
+
+/* Extra extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    #typoTitle {
+        font-size: 30px;
+    }
+}

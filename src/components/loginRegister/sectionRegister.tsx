@@ -71,39 +71,38 @@ export default function Register(props: any) {
 
         // Check if the fields are not empty
         if(formData.firstName === '' || formData.lastName === '' || formData.email === '' || formData.password === '') {
-            props.handleShowError("Veuillez remplir tous les champs.");
+            props.handleShowAlertMessage("Veuillez remplir tous les champs.", "error");
             return;
         }
 
         // Check if the firstname is valid
         if(formData.firstName.length < 2) {
-            props.handleShowError("Le prénom doit contenir au moins 2 caractères.");
+            props.handleShowAlertMessage("Le prénom doit contenir au moins 2 caractères.", "error");
             return;
         }
 
         // Check if the lastname is valid
         if(formData.lastName.length < 2) {
-            props.handleShowError("Le nom doit contenir au moins 2 caractères.");
+            props.handleShowAlertMessage("Le nom doit contenir au moins 2 caractères.", "error");
             return;
         }
 
         // Check if the email is valid
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(formData.email)) {
-            props.handleShowError("L'adresse mail n'est pas valide.");
+            props.handleShowAlertMessage("L'adresse mail n'est pas valide.", "error");
             return;
         }
         
         // Check if the password is valid
         if(formData.password.length < 8) {
-            props.handleShowError("Le mot de passe doit contenir au moins 8 caractères.");
+            props.handleShowAlertMessage("Le mot de passe doit contenir au moins 8 caractères.", "error");
             return;
         }
 
-        // Persist the user in the database
-        const { associations, ...formDataWithoutAssociations } = formData;
-
+        // Create the user object
         const user: User = {
+            userId: 0,
             firstName: formData.firstName,
             lastName: formData.lastName,
             address: " ",
@@ -112,25 +111,19 @@ export default function Register(props: any) {
             file: formData.file,
         }
 
-        console.log(user);
+        // Register the user
         try {
-            console.log("test")
             const res = await register(user);
-            console.log(res);
-            if(res && res.data) {
-                props.validateSignIn(res.data.token, 'Vous êtes enregistré avec succès !')
+            if (res && res.data) {
+                props.validateSignUp('Vous êtes enregistré avec succès ! Veuillez vous connecter.');
             }
-        } catch(error) {
-            // if(error.code === "ERR_NETWORK") {
-                //     props.handleShowError("Erreur: Serveur inaccessible.");
-                // } else if (error.response.data.message !== undefined) {
-                    //     props.handleShowError(`Erreur:${error.response.data.message}`);
-                    // } else {
-                        console.log("error");
-                        console.log(error)
-                        // console.log(error.message);
-                props.handleShowError("Erreur: Une erreur est survenue.");
-            // }
+        } catch (error) {
+            console.log(error);
+            if ((error as any).response && (error as any).response.data && (error as any).response.data.message) {
+                props.handleShowAlertMessage(`Erreur: ${(error as any).response.data.message}`, "error");
+            } else {
+                props.handleShowAlertMessage('Une erreur s\'est produite lors de l\'enregistrement.', "error");
+            }
         }
     }
 
