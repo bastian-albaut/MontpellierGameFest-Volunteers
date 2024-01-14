@@ -221,6 +221,11 @@ const SectionCreateFestival = () => {
 
             const res = await createFestival(festivalToCreate);
             if(res && res.data) {
+                // Delete the data from the localStorage
+                localStorage.removeItem("dataFestival");
+                localStorage.removeItem("dataPosts");
+                localStorage.removeItem("dataCreneau");
+
                 // Redirect to the home page
                 navigate("/", { state: { message: "Le festival a bien été créé.", severity: "success" }});
             }
