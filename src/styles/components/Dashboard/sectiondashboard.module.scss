@@ -1,9 +1,42 @@
-.festival-list-button {
-    text-transform: none;
-    color: darkblue;
+@import '../../abstract/variables.module.scss';
 
-    .festival-list-title {
-        letter-spacing: 0.5px;
-        text-transform: lowercase;
-    }
+#boxSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#title {
+    margin: 50px 0 20px 0; 
+}
+
+#boxForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fieldForm {
+    margin: 10px 0;
+    width: 300px;
+}
+
+.titleTable {
+    margin: 10px 0;
+}
+
+.boxTable {
+    width: 100%;
+}
+
+.boxButtonTable {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+}
+
+#button {
+    margin: 50px 0 10px 0;
 }

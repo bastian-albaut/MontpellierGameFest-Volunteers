@@ -1,4 +1,5 @@
 import "../../styles/components/Dashboard/sectiondashboard.module.scss" 
+
 import React, { useState, useEffect } from 'react';
 import { Typography, List, ListItem, ListItemText, Button, Box } from '@mui/material';
 import { getFestivals } from '../../api';
@@ -151,7 +152,6 @@ const SectionDashboard: React.FC = () => {
         fetchFestivalsByIds(inscritFestivalsIds);
     }, []);
 
-    
 
 
 	const toggleFestivals = () => {
@@ -170,25 +170,30 @@ const SectionDashboard: React.FC = () => {
 	return (
         <>
 
-            <Box sx={{ margin: 3 }}>
-                <Button onClick={toggleInscritFestivals} variant="text">
-                    <Typography variant="h5" color="initial">
-                        Liste des Festivals auxquels je suis inscrit
-                    </Typography>
-                </Button>
-                {showInscritFestivals && inscritFestivalsByIds.length > 0 && (
-                    <List>
-                        {inscritFestivalsByIds.map((festival, index) => (
-                            <ListItem key={index} divider>
-                                <ListItemText 
-                                    primary={festival.nom} 
-                                    secondary={`Lieu: ${festival.lieu}, Du: ${festival.dateDebut} au: ${festival.dateFin}`}
-                                />
-                            </ListItem>
-                        ))}
-                    </List>
-                )}
-            </Box>
+        <Box sx={{ margin: 3 }}>
+            <Button onClick={toggleInscritFestivals} variant="text">
+                <Typography variant="h5" color="initial">
+                    Liste des Festivals auxquels je suis inscrit
+                </Typography>
+            </Button>
+            {showInscritFestivals && inscritFestivalsByIds.length > 0 ? (
+                <List>
+                    {inscritFestivalsByIds.map((festival, index) => (
+                        <ListItem key={index} divider>
+                            <ListItemText 
+                                primary={festival.nom} 
+                                secondary={`Lieu: ${festival.lieu}, Du: ${festival.dateDebut} au: ${festival.dateFin}`}
+                            />
+                        </ListItem>
+                    ))}
+                </List>
+            ) : (
+                <Typography variant="body1" color="initial">
+                    Vous n'êtes inscrit à aucun festival.
+                </Typography>
+            )}
+        </Box>
+
 
 
             <Box sx={{ margin: 3 }}>
