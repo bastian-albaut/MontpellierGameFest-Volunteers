@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect } from "react";
 import AlertComponent from "../../components/general/Alert"
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Typography from '@mui/material/Typography'
 import Loading from "../../components/general/Loading";
 import { useUser } from "../../contexts/UserContext";
@@ -25,6 +25,14 @@ const Dashboard = () => {
             handleShowAlertMessage(message, severity);
         }
     }, [message, severity, handleShowAlertMessage]);
+
+    // Redirect to home page if not logged in
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!user && !loading) {
+            navigate("/");
+        }
+    }, [user, loading, navigate]);
 
     if (loading) {
         return <Loading />;
