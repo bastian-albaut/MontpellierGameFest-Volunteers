@@ -10,6 +10,7 @@ import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
 import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
 import { createFestival } from "../../api";
+import { useNavigate } from "react-router-dom";
 
 const SectionCreateFestival = () => {
 
@@ -176,29 +177,40 @@ const SectionCreateFestival = () => {
         }
     }
 
+    
     // Create a festival
+    const navigate = useNavigate();
+    const [isLoadingCreateFestival, setIsLoadingCreateFestival] = useState(false);
     const handleCreateFestival = async () => {
+
+        // Prevent multiple click
+        setIsLoadingCreateFestival(true);
+
         // Check if there is a name
         if(dataFestival.name === "") {
             handleShowAlertMessage("Erreur: Veuillez entrer un nom pour le festival.", "error");
+            setIsLoadingCreateFestival(false);
             return;
         }
 
         // Check if the dateDebut is before the dateFin
         if(dataFestival.dateDebut.isAfter(dataFestival.dateFin)) {
             handleShowAlertMessage("Erreur: La date de début doit être avant la date de fin.", "error");
+            setIsLoadingCreateFestival(false);
             return;
         }
 
         // Check if there is at least one post
         if(dataPosts.length === 0) {
             handleShowAlertMessage("Erreur: Veuillez créer au moins un poste.", "error");
+            setIsLoadingCreateFestival(false);
             return;
         }
 
         // Check if there is at least one creneau
         if(dataCreneau.length === 0) {
             handleShowAlertMessage("Erreur: Veuillez créer au moins un créneau.", "error");
+            setIsLoadingCreateFestival(false);
             return;
         }
 
@@ -209,11 +221,14 @@ const SectionCreateFestival = () => {
 
             const res = await createFestival(festivalToCreate);
             if(res && res.data) {
-                handleShowAlertMessage("Le festival a bien été créé.", "success");
+                // Redirect to the home page
+                navigate("/", { state: { message: "Le festival a bien été créé.", severity: "success" }});
             }
         } catch (error) {
             console.log(error);
             handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
+        } finally {
+            setIsLoadingCreateFestival(false);
         }
     }
 
@@ -244,7 +259,7 @@ const SectionCreateFestival = () => {
                     )}
                 </Box>
                 <Box className={styles.boxButtonTable}>
-                    <Button variant="outlined" color="primary" onClick={() => handleOpenModalPost()}>Ajouter un poste</Button>
+                    <Button variant="outlined" color="primary" onClick={() => handleOpenModalPost()} disabled={isLoadingCreateFestival}>Ajouter un poste</Button>
                 </Box>
                 <Box className={styles.boxTable}>
                     <Typography className={styles.titleTable} variant="h2" color="initial">Liste des créneaux</Typography>
@@ -264,9 +279,9 @@ const SectionCreateFestival = () => {
                     )}
                 </Box>
                 <Box className={styles.boxButtonTable}>
-                    <Button variant="outlined" color="primary" onClick={() => handleOpenModalCreneau()}>Ajouter un créneau</Button>
+                    <Button variant="outlined" color="primary" onClick={() => handleOpenModalCreneau()} disabled={isLoadingCreateFestival}>Ajouter un créneau</Button>
                 </Box>
-                <Button id={styles.button} variant="contained" color="primary" onClick={() => handleCreateFestival()}>Créer le festival</Button>
+                <Button id={styles.button} variant="contained" color="primary" onClick={() => handleCreateFestival()} disabled={isLoadingCreateFestival}>Créer le festival</Button>
             </Box>
         </Box>
         <ModalCreateUpdatePost handleShowAlertMessage={handleShowAlertMessage} isUpdate={isUpdatePost} objectToUpdate={objectToUpdatePost} setIsUpdate={setIsUpdatePost} open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
