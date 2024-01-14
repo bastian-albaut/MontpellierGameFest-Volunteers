@@ -9,6 +9,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
 import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
+import { createFestival } from "../../api";
 
 const SectionCreateFestival = () => {
 
@@ -175,6 +176,47 @@ const SectionCreateFestival = () => {
         }
     }
 
+    // Create a festival
+    const handleCreateFestival = async () => {
+        // Check if there is a name
+        if(dataFestival.name === "") {
+            handleShowAlertMessage("Erreur: Veuillez entrer un nom pour le festival.", "error");
+            return;
+        }
+
+        // Check if the dateDebut is before the dateFin
+        if(dataFestival.dateDebut.isAfter(dataFestival.dateFin)) {
+            handleShowAlertMessage("Erreur: La date de début doit être avant la date de fin.", "error");
+            return;
+        }
+
+        // Check if there is at least one post
+        if(dataPosts.length === 0) {
+            handleShowAlertMessage("Erreur: Veuillez créer au moins un poste.", "error");
+            return;
+        }
+
+        // Check if there is at least one creneau
+        if(dataCreneau.length === 0) {
+            handleShowAlertMessage("Erreur: Veuillez créer au moins un créneau.", "error");
+            return;
+        }
+
+        try {
+            // Create the festival
+            const festivalToCreate = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate(), address: "Lorem Ipsum" };
+            console.log(festivalToCreate);
+
+            const res = await createFestival(festivalToCreate);
+            if(res && res.data) {
+                handleShowAlertMessage("Le festival a bien été créé.", "success");
+            }
+        } catch (error) {
+            console.log(error);
+            handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
+        }
+    }
+
     return(
         <>
         {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
@@ -224,7 +266,7 @@ const SectionCreateFestival = () => {
                 <Box className={styles.boxButtonTable}>
                     <Button variant="outlined" color="primary" onClick={() => handleOpenModalCreneau()}>Ajouter un créneau</Button>
                 </Box>
-                <Button id={styles.button} variant="contained" color="primary" onClick={() => console.log("création")}>Créer le festival</Button>
+                <Button id={styles.button} variant="contained" color="primary" onClick={() => handleCreateFestival()}>Créer le festival</Button>
             </Box>
         </Box>
         <ModalCreateUpdatePost handleShowAlertMessage={handleShowAlertMessage} isUpdate={isUpdatePost} objectToUpdate={objectToUpdatePost} setIsUpdate={setIsUpdatePost} open={isModalPostOpen} handleClose={handleCloseModalPost} dataPosts={dataPosts} setDataPosts={setDataPosts} />
