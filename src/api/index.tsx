@@ -15,4 +15,8 @@ API.interceptors.request.use((req) => {
 export const login = (data: any) => API.post('/login', data);
 export const register = (data: User) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/currentUser');
+
+// a tester
+export const getIdFestival = (id: string) => API.get(`/festivals/${id}`);
 export const getFestivals = () => API.get('/festivals');
+export const getSoirees = () => API.get('/soirees');
