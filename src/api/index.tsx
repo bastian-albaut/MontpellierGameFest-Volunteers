@@ -20,3 +20,19 @@ export const getCurrentUser = () => API.get('/currentUser');
 export const getIdFestival = (id: string) => API.get(`/festivals/${id}`);
 export const getFestivals = () => API.get('/festivals');
 export const getSoirees = () => API.get('/soirees');
+
+// a rajouter
+export const getVolunteerFestivals = (idUser: string) => API.get(`/volunteers/${idUser}/festivals`);
+
+//faire implementer a vincent
+/*
+app.get('/api/volunteers/:idUser/festivals', async (req, res) => {
+    const idUser = req.params.idUser;
+    // Logique pour récupérer les festivals de l'utilisateur
+    // ...
+    res.json(userFestivals);
+});
+*/
+
+
+

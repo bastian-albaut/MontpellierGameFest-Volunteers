@@ -1,14 +1,16 @@
 import "../../styles/components/Dashboard/sectiondashboard.module.scss" 
-
 import React, { useState, useEffect } from 'react';
 import { Typography, List, ListItem, ListItemText, Button, Box } from '@mui/material';
 import { getFestivals } from '../../api';
 import { getSoirees } from '../../api';
 import { getIdFestival } from '../../api';
 
+import { useUser } from "../../contexts/UserContext";
+import { getVolunteerFestivals } from '../../api';
+
 interface Festival {
 	id: string;
-    nom: string;
+    name: string;
 	lieu: string;
     dateDebut: string;
 	dateFin: string;
@@ -23,30 +25,32 @@ interface Soiree {
 
 const SectionDashboard: React.FC = () => {
 
-	// Exemple de données de festivals pour le test
-    const exampleFestivals: Festival[] = [
+
+    // Exemple de données de festivals pour le test
+    const exampleUserFestivals: Festival[] = [
         {
             id: '1',
-            nom: 'Festival du Printemps',
-            lieu: 'Montpellier',
-            dateDebut: '2023-04-10',
-            dateFin: '2024-04-15'
+            name: 'Festival de Jazz',
+            lieu: 'Paris',
+            dateDebut: '2024-06-10',
+            dateFin: '2024-06-15'
         },
         {
             id: '2',
-            nom: 'Festival de Musique Électronique',
-            lieu: 'Paris',
-            dateDebut: '2023-07-20',
+            name: 'Festival Rock',
+            lieu: 'Nantes',
+            dateDebut: '2024-07-20',
             dateFin: '2024-07-22'
         },
         {
             id: '3',
-            nom: 'Festival de Jazz',
+            name: 'Festival Électronique',
             lieu: 'Lyon',
-            dateDebut: '2023-08-05',
-            dateFin: '2024-08-10'
+            dateDebut: '2024-08-05',
+            dateFin: '2024-08-07'
         }
     ];
+
 
     // Exemple de données de soirées pour le test
     const exampleSoirees: Soiree[] = [
@@ -69,27 +73,46 @@ const SectionDashboard: React.FC = () => {
             date: '2023-07-11'
         }
     ];
+
+    const { user } = useUser(); // Récupération des données de l'utilisateur connecté
+    const [userFestivals, setUserFestivals] = useState<Festival[]>(exampleUserFestivals); // Liste des festivals de l'utilisateur connecté
+    const [showUserFestivals, setShowUserFestivals] = useState<boolean>(false); // Affichage de la liste des festivals de l'utilisateur connecté
+
+    // à rajouter avec le back
+    //const [userFestivals, setUserFestivals] = useState<Festival[]>([]);
+
+    
+    const fetchUserFestivals = async (userId: string) => {
+        try {
+            const res = await getVolunteerFestivals(userId);
+            if (res.data) {
+                setUserFestivals(res.data);
+            }
+        } catch (error) {
+            console.error('Error fetching user festivals data', error);
+        }
+    };
+    
+    
+    useEffect(() => {
+        if (user && user.userId) {
+            fetchUserFestivals(user.userId.toString());
+        }
+    }, [user]);
+    
     
 
-	const [festivals, setFestivals] = useState<Festival[]>(exampleFestivals);
-	const [showFestivals, setShowFestivals] = useState<boolean>(false);
+    const [festivals, setFestivals] = useState<Festival[]>([]); // Liste des festivals
+	const [showFestivals, setShowFestivals] = useState<boolean>(false); // Affichage de la liste des festivals
 
-    // A tester avec la base de donnée
-    //const [festivals, setFestivals] = useState<Festival[]>([]);
-
-    const [soirees, setSoirees] = useState<Soiree[]>(exampleSoirees);
-    const [showSoirees, setShowSoirees] = useState<boolean>(false);
 
     // A tester avec la base de donnée
     //const [soirees, setSoirees] = useState<Soiree[]>([]);
-
-    const [inscritFestivalsByIds, setInscritFestivalsByIds] = useState<Festival[]>([]);
-    const [showInscritFestivals, setShowInscritFestivals] = useState<boolean>(false);
-
-    // A tester avec la base de donnée
-    //const [inscritFestivals, setInscritFestivals] = useState<Festival[]>([]);
+    const [soirees, setSoirees] = useState<Soiree[]>(exampleSoirees);
+    const [showSoirees, setShowSoirees] = useState<boolean>(false);
 
 
+    // Récupération des festivals depuis la base de donnée
 	const fetchFestivals = async () => {
 		try {
 			const res = await getFestivals();
@@ -103,10 +126,11 @@ const SectionDashboard: React.FC = () => {
 	}
 
 	useEffect(() => {
-		// A tester avec la base de donnée
-		//fetchFestivals();
+		fetchFestivals();
 	}, []);
 
+
+    // Récupération des soirées depuis la base de donnée
     const fetchSoirees = async () => {
         try {
             const res = await getSoirees();
@@ -120,40 +144,11 @@ const SectionDashboard: React.FC = () => {
     }
 
     useEffect(() => {
-        // A tester avec la base de donnée
-        //fetchSoirees();
+        fetchSoirees();
     }, []);
 
     
-    const fetchFestivalsByIds = async (festivalIds: string[]) => {
-        try {
-            const festivalsData = [];
-    
-            for (const id of festivalIds) {
-                const res = await getIdFestival(id);
-                if (res.data) {
-                    festivalsData.push(res.data);
-                }
-            }
-    
-            const currentDate = new Date().toISOString().split('T')[0];
-            const filteredFestivals = festivalsData.filter(festival =>
-                festival.dateFin >= currentDate
-            );
-    
-            setFestivals(filteredFestivals);
-        } catch (error) {
-            console.error('Error fetching festival data by IDs', error);
-        }
-    };
-    
-    useEffect(() => {
-        const inscritFestivalsIds = ['1', '2']; // Exemple, à remplacer par la logique réelle
-        fetchFestivalsByIds(inscritFestivalsIds);
-    }, []);
-
-
-
+   
 	const toggleFestivals = () => {
         setShowFestivals(!showFestivals);
     };
@@ -162,37 +157,33 @@ const SectionDashboard: React.FC = () => {
         setShowSoirees(!showSoirees);
     };
 
-    const toggleInscritFestivals = () => {
-        setShowInscritFestivals(!showInscritFestivals);
+    const toggleUserFestivals = () => {
+        setShowUserFestivals(!showUserFestivals);
     };
-
+   
 
 	return (
         <>
 
-        <Box sx={{ margin: 3 }}>
-            <Button onClick={toggleInscritFestivals} variant="text">
-                <Typography variant="h5" color="initial">
-                    Liste des Festivals auxquels je suis inscrit
-                </Typography>
-            </Button>
-            {showInscritFestivals && inscritFestivalsByIds.length > 0 ? (
-                <List>
-                    {inscritFestivalsByIds.map((festival, index) => (
-                        <ListItem key={index} divider>
-                            <ListItemText 
-                                primary={festival.nom} 
-                                secondary={`Lieu: ${festival.lieu}, Du: ${festival.dateDebut} au: ${festival.dateFin}`}
-                            />
-                        </ListItem>
-                    ))}
-                </List>
-            ) : (
-                <Typography variant="body1" color="initial">
-                    Vous n'êtes inscrit à aucun festival.
-                </Typography>
-            )}
-        </Box>
+            <Box sx={{ margin: 3 }}>
+                <Button onClick={toggleUserFestivals} variant="text">
+                    <Typography variant="h5" color="initial">
+                        Liste des Festivals auxquels vous êtes inscrit
+                    </Typography>
+                </Button>
+                {showUserFestivals && (
+                    <List>
+                        {userFestivals.map((festival, index) => (
+                            <ListItem key={index} divider>
+                                <ListItemText primary={festival.name} secondary={`Du ${festival.dateDebut} au ${festival.dateFin}`} />
+                                <Typography variant="body2">
+                                    {festival.lieu}
+                                </Typography>
+                            </ListItem>
+                        ))}
+                    </List>
+                )}
+            </Box>
 
 
 
@@ -206,7 +197,7 @@ const SectionDashboard: React.FC = () => {
                     <List>
                         {festivals.map((festival, index) => (
                             <ListItem key={index} divider>
-                                <ListItemText primary={festival.nom} />
+                                <ListItemText primary={festival.name} />
                                 <Button variant="contained" color="primary">
                                     S'inscrire
                                 </Button>
