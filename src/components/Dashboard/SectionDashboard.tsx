@@ -162,9 +162,11 @@ const SectionDashboard: React.FC = () => {
     };
    
 
+    // tester si ca marche si il n'y aucun festival ouverts à l'inscription
 	return (
         <>
 
+        
             <Box sx={{ margin: 3 }}>
                 <Button onClick={toggleUserFestivals} variant="text">
                     <Typography variant="h5" color="initial">
@@ -173,14 +175,20 @@ const SectionDashboard: React.FC = () => {
                 </Button>
                 {showUserFestivals && (
                     <List>
-                        {userFestivals.map((festival, index) => (
-                            <ListItem key={index} divider>
-                                <ListItemText primary={festival.name} secondary={`Du ${festival.dateDebut} au ${festival.dateFin}`} />
-                                <Typography variant="body2">
-                                    {festival.lieu}
-                                </Typography>
-                            </ListItem>
-                        ))}
+                        {userFestivals.length > 0 ? (
+                            userFestivals.map((festival, index) => (
+                                <ListItem key={index} divider>
+                                    <ListItemText primary={festival.name} secondary={`Du ${festival.dateDebut} au ${festival.dateFin}`} />
+                                    <Typography variant="body2">
+                                        {festival.lieu}
+                                    </Typography>
+                                </ListItem>
+                            ))
+                        ) : (
+                            <Typography variant="body1" sx={{ textAlign: 'center', my: 2 }}>
+                                Il n'y a aucun festival auquel vous êtes inscrit pour le moment.
+                            </Typography>
+                        )}
                     </List>
                 )}
             </Box>
@@ -195,17 +203,24 @@ const SectionDashboard: React.FC = () => {
                 </Button>
                 {showFestivals && (
                     <List>
-                        {festivals.map((festival, index) => (
-                            <ListItem key={index} divider>
-                                <ListItemText primary={festival.name} />
-                                <Button variant="contained" color="primary">
-                                    S'inscrire
-                                </Button>
-                            </ListItem>
-                        ))}
+                        {festivals.length > 0 ? (
+                            festivals.map((festival, index) => (
+                                <ListItem key={index} divider>
+                                    <ListItemText primary={festival.name} />
+                                    <Button variant="contained" color="primary">
+                                        S'inscrire
+                                    </Button>
+                                </ListItem>
+                            ))
+                        ) : (
+                            <Typography variant="body1" sx={{ textAlign: 'center', my: 2 }}>
+                                Il n'y a aucun festival ouvert à l'inscription pour le moment.
+                            </Typography>
+                        )}
                     </List>
                 )}
             </Box>
+
 
             <Box sx={{ margin: 3 }}>
                 <Button onClick={toggleSoirees} variant="text">
@@ -215,17 +230,24 @@ const SectionDashboard: React.FC = () => {
                 </Button>
                 {showSoirees && (
                     <List>
-                        {soirees.map((soiree, index) => (
-                            <ListItem key={index} divider>
-                                <ListItemText primary={soiree.nom} secondary={`${soiree.date}`} />
-                                <Typography variant="body2">
-                                    {soiree.lieu}
-                                </Typography>
-                            </ListItem>
-                        ))}
+                        {soirees.length > 0 ? (
+                            soirees.map((soiree, index) => (
+                                <ListItem key={index} divider>
+                                    <ListItemText primary={soiree.nom} secondary={`${soiree.date}`} />
+                                    <Typography variant="body2">
+                                        {soiree.lieu}
+                                    </Typography>
+                                </ListItem>
+                            ))
+                        ) : (
+                            <Typography variant="body1" sx={{ textAlign: 'center', my: 2 }}>
+                                Il n'y a aucune soirée disponible pour le moment.
+                            </Typography>
+                        )}
                     </List>
                 )}
             </Box>
+
 
         </>
     
