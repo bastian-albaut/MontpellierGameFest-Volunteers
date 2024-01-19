@@ -28,3 +28,25 @@
     width: 300px;
     margin-bottom: 25px;
 }
+
+#boxGrid {
+    max-width: 100vw;
+    width: 600px
+}
+
+#boxTextInsideCircularProgress {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+#boxCircularProgress {
+    position: relative;
+    display: inline-flex;
+    margin: 0 10px;
+}
