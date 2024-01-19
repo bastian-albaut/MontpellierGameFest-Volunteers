@@ -35,7 +35,6 @@ const Dashboard = () => {
         <>
             <Appbar currentUser={user} />
             {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
-            <Typography variant="h1" color="initial">Dashboard</Typography>
             <SectionDashboard />
         </>
     )

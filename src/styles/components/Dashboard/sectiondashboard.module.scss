@@ -23,6 +23,7 @@
 }
 
 .titleTable {
+    text-transform: none;
     margin: 10px 0;
 }
 
@@ -33,7 +34,7 @@
 .boxButtonTable {
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     padding-top: 10px;
 }
 

@@ -8,6 +8,8 @@ import { getIdFestival } from '../../api';
 import { useUser } from "../../contexts/UserContext";
 import { getVolunteerFestivals } from '../../api';
 
+import styles from "../../styles/components/Dashboard/sectiondashboard.module.scss";
+
 interface Festival {
 	id: string;
     name: string;
@@ -54,25 +56,10 @@ const SectionDashboard: React.FC = () => {
 
     // Exemple de données de soirées pour le test
     const exampleSoirees: Soiree[] = [
-        {
-            id: '1',
-            nom: 'Soirée Disco',
-            lieu: 'Marseille',
-            date: '2023-05-15'
-        },
-        {
-            id: '2',
-            nom: 'Soirée Électro',
-            lieu: 'Lille',
-            date: '2023-06-25'
-        },
-        {
-            id: '3',
-            nom: 'Bal Masqué',
-            lieu: 'Bordeaux',
-            date: '2023-07-11'
-        }
+    
     ];
+
+
 
     const { user } = useUser(); // Récupération des données de l'utilisateur connecté
     const [userFestivals, setUserFestivals] = useState<Festival[]>(exampleUserFestivals); // Liste des festivals de l'utilisateur connecté
@@ -81,7 +68,18 @@ const SectionDashboard: React.FC = () => {
     // à rajouter avec le back
     //const [userFestivals, setUserFestivals] = useState<Festival[]>([]);
 
+    const [festivals, setFestivals] = useState<Festival[]>([]); // Liste des festivals
+	const [showFestivals, setShowFestivals] = useState<boolean>(false); // Affichage de la liste des festivals
+
+
+    // A tester avec la base de donnée
+    //const [soirees, setSoirees] = useState<Soiree[]>([]);
+    const [soirees, setSoirees] = useState<Soiree[]>(exampleSoirees);
+    const [showSoirees, setShowSoirees] = useState<boolean>(false);
+
+
     
+    // Logique de récupération des festivals de l'utilisateur connecté
     const fetchUserFestivals = async (userId: string) => {
         try {
             const res = await getVolunteerFestivals(userId);
@@ -100,16 +98,6 @@ const SectionDashboard: React.FC = () => {
         }
     }, [user]);
     
-    
-
-    const [festivals, setFestivals] = useState<Festival[]>([]); // Liste des festivals
-	const [showFestivals, setShowFestivals] = useState<boolean>(false); // Affichage de la liste des festivals
-
-
-    // A tester avec la base de donnée
-    //const [soirees, setSoirees] = useState<Soiree[]>([]);
-    const [soirees, setSoirees] = useState<Soiree[]>(exampleSoirees);
-    const [showSoirees, setShowSoirees] = useState<boolean>(false);
 
 
     // Récupération des festivals depuis la base de donnée
@@ -147,8 +135,8 @@ const SectionDashboard: React.FC = () => {
         fetchSoirees();
     }, []);
 
-    
-   
+
+
 	const toggleFestivals = () => {
         setShowFestivals(!showFestivals);
     };
@@ -166,13 +154,19 @@ const SectionDashboard: React.FC = () => {
 	return (
         <>
 
+
+        <Box id={styles.boxSection}>
+
+            <Typography id={styles.title} variant="h1" color="black">Tableau de bord</Typography>
         
-            <Box sx={{ margin: 3 }}>
+            <Box className={styles.boxTable}>
+                <Box className={styles.boxButtonTable}>
                 <Button onClick={toggleUserFestivals} variant="text">
-                    <Typography variant="h5" color="initial">
+                    <Typography className={styles.titleTable} variant="h2" color="initial">
                         Liste des Festivals auxquels vous êtes inscrit
                     </Typography>
                 </Button>
+                </Box>
                 {showUserFestivals && (
                     <List>
                         {userFestivals.length > 0 ? (
@@ -185,7 +179,7 @@ const SectionDashboard: React.FC = () => {
                                 </ListItem>
                             ))
                         ) : (
-                            <Typography variant="body1" sx={{ textAlign: 'center', my: 2 }}>
+                            <Typography className={styles.textTable} variant="body1" color="initial">
                                 Il n'y a aucun festival auquel vous êtes inscrit pour le moment.
                             </Typography>
                         )}
@@ -195,12 +189,14 @@ const SectionDashboard: React.FC = () => {
 
 
 
-            <Box sx={{ margin: 3 }}>
+            <Box className={styles.boxTable}>
+                <Box className={styles.boxButtonTable}>
                 <Button onClick={toggleFestivals} variant="text">
-                    <Typography variant="h5" color="initial">
+                    <Typography className={styles.titleTable} variant="h2" color="initial">
                         Liste des Festivals ouverts à l'inscription
                     </Typography>
                 </Button>
+                </Box>
                 {showFestivals && (
                     <List>
                         {festivals.length > 0 ? (
@@ -213,7 +209,7 @@ const SectionDashboard: React.FC = () => {
                                 </ListItem>
                             ))
                         ) : (
-                            <Typography variant="body1" sx={{ textAlign: 'center', my: 2 }}>
+                            <Typography className={styles.textTable} variant="body1" color="initial">
                                 Il n'y a aucun festival ouvert à l'inscription pour le moment.
                             </Typography>
                         )}
@@ -222,12 +218,14 @@ const SectionDashboard: React.FC = () => {
             </Box>
 
 
-            <Box sx={{ margin: 3 }}>
+            <Box className={styles.boxTable}>
+                <Box className={styles.boxButtonTable}>
                 <Button onClick={toggleSoirees} variant="text">
-                    <Typography variant="h5" color="initial">
+                    <Typography className={styles.titleTable} variant="h2" color="initial">
                         Liste des Soirées découvertes
                     </Typography>
                 </Button>
+                </Box>
                 {showSoirees && (
                     <List>
                         {soirees.length > 0 ? (
@@ -240,13 +238,15 @@ const SectionDashboard: React.FC = () => {
                                 </ListItem>
                             ))
                         ) : (
-                            <Typography variant="body1" sx={{ textAlign: 'center', my: 2 }}>
+                            <Typography className={styles.textTable} variant="body1" color="initial">
                                 Il n'y a aucune soirée disponible pour le moment.
                             </Typography>
                         )}
                     </List>
                 )}
             </Box>
+
+        </Box>
 
 
         </>
