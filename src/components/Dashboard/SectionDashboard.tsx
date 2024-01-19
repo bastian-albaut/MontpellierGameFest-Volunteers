@@ -1,6 +1,8 @@
 import "../../styles/components/Dashboard/sectiondashboard.module.scss" 
 import React, { useState, useEffect } from 'react';
 import { Typography, List, ListItem, ListItemText, Button, Box } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 import { getFestivals } from '../../api';
 import { getSoirees } from '../../api';
 import { getIdFestival } from '../../api';
@@ -161,7 +163,7 @@ const SectionDashboard: React.FC = () => {
         
             <Box className={styles.boxTable}>
                 <Box className={styles.boxButtonTable}>
-                <Button onClick={toggleUserFestivals} variant="text">
+                <Button onClick={toggleUserFestivals} variant="text" endIcon={<ExpandMoreIcon style={{ fontSize: '50px', color: 'black' }} />}>
                     <Typography className={styles.titleTable} variant="h2" color="initial">
                         Liste des Festivals auxquels vous êtes inscrit
                     </Typography>
@@ -191,7 +193,7 @@ const SectionDashboard: React.FC = () => {
 
             <Box className={styles.boxTable}>
                 <Box className={styles.boxButtonTable}>
-                <Button onClick={toggleFestivals} variant="text">
+                <Button onClick={toggleFestivals} variant="text" endIcon={<ExpandMoreIcon style={{ fontSize: '50px', color: 'black' }} />}>
                     <Typography className={styles.titleTable} variant="h2" color="initial">
                         Liste des Festivals ouverts à l'inscription
                     </Typography>
@@ -220,7 +222,7 @@ const SectionDashboard: React.FC = () => {
 
             <Box className={styles.boxTable}>
                 <Box className={styles.boxButtonTable}>
-                <Button onClick={toggleSoirees} variant="text">
+                <Button onClick={toggleSoirees} variant="text" endIcon={<ExpandMoreIcon style={{ fontSize: '50px', color: 'black' }} />}>
                     <Typography className={styles.titleTable} variant="h2" color="initial">
                         Liste des Soirées découvertes
                     </Typography>
