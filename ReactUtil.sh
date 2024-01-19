@@ -25,7 +25,7 @@ create_folder_file () {
 create_with_sass () {
 	create_folder_file
 	(
-	echo "import \"../../styles/${arg}s/$directoryName/$(tr [A-Z] [a-z] <<< "$name").module.scss\" "
+	echo "import styles from \"../../styles/${arg}s/$directoryName/$(tr [A-Z] [a-z] <<< "$name").module.scss\" "
 	echo ""
 	echo "const $name = () => {"
 	echo -e "\treturn("
