@@ -17,7 +17,7 @@ const UserProfilePage = () => {
 
 
 
-	// Initialisez l'état avec des valeurs par défaut
+	// Initialise l'état avec des valeurs par défaut
     const [userInfo, setUserInfo] = useState({
         firstName: '',
         lastName: '',
@@ -25,7 +25,7 @@ const UserProfilePage = () => {
         address: '',
     });
 
-    // Mettez à jour l'état avec les informations de l'utilisateur après le rendu initial
+    // Met à jour l'état avec les informations de l'utilisateur après le rendu initial
     useEffect(() => {
         if (user) {
             setUserInfo({
@@ -66,10 +66,10 @@ const UserProfilePage = () => {
             // Appel à la fonction modifyUser avec les informations à mettre à jour
             const response = await modifyUser(userDataToUpdate); // Cela retourne AxiosResponse
     
-            // Accédez aux données renvoyées via response.data
+            // Accéde aux données renvoyées via response.data
             const updatedUser = response.data; // Supposons que cela contienne l'utilisateur mis à jour
     
-            // Utilisez updatedUser pour accéder à vos propriétés
+            // Utilise updatedUser pour accéder à vos propriétés
             setUserInfo({
                 firstName: updatedUser.firstName,
                 lastName: updatedUser.lastName,
@@ -77,7 +77,7 @@ const UserProfilePage = () => {
                 address: updatedUser.address,
             });
 
-            // Affichez un message de succès
+            // Affiche un message de succès
             handleShowAlertMessage("Les modifications ont été enregistrées avec succès.", "success");
     
             console.log('Informations mises à jour avec succès.');

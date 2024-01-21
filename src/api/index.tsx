@@ -26,8 +26,7 @@ interface UserUpdateData {
     lastName?: string;
     email?: string;
     address?: string;
-    //file: string;
-    // Ajoutez d'autres champs selon votre modèle d'utilisateur
+    //picture: string;
 }
 
 export const modifyUser = async ({ id, ...data }: UserUpdateData) => {
