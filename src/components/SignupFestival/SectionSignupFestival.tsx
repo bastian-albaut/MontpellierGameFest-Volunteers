@@ -34,25 +34,13 @@ const SectionSignupFestival = () => {
         // Get the creneau/post selected
         const creneauPostItem = creneauPost.find(item => item.id_poste === params.row.id && item.id_creneau === idCreneau);
 
-        // Check if there was already a selection for this creneau
-        const creneauPostAlreadySelected = creneauPost.find(item => item.id_creneau === idCreneau && item.selected === true);
-        if(creneauPostAlreadySelected) {
-            // Decrease currentCapacity
-            creneauPostAlreadySelected.currentCapacity -= 1;
-
-            // Update the current creneau/post selected as not selected
-            creneauPostAlreadySelected.selected = false;
-
-            // Enable all postes for this creneau
-            setCreneauPost(creneauPost.map(item => {
-                if(item.id_creneau === idCreneau) {
-                    item.disabled = false;
-                }
-                return item;
-            }
-            ));
+        // Handle if the creneau/post selected was already selected
+        if(handleCreneauPostAlreadySelected(creneauPostItem, idCreneau)) {
+            return;
         }
 
+        // Handle if there was already a selection for this creneau
+        handleCreneauAlreadySelected(idCreneau);
 
         // Increase currentCapacity
         if(creneauPostItem) {
@@ -76,7 +64,49 @@ const SectionSignupFestival = () => {
             return item;
         }
         ));
+    }
 
+    // Handle if the creneau/post selected was already selected
+    const handleCreneauPostAlreadySelected = (creneauPostItem: any, idCreneau: number) => {
+        if(creneauPostItem && creneauPostItem.selected) {
+            // Decrease currentCapacity
+            creneauPostItem.currentCapacity -= 1;
+
+            // Update the current creneau/post selected as not selected
+            creneauPostItem.selected = false;
+
+            // Enable all postes for this creneau
+            setCreneauPost(creneauPost.map(item => {
+                if(item.id_creneau === idCreneau) {
+                    item.disabled = false;
+                }
+                return item;
+            }
+            ));
+            return true;
+        }
+        return false;
+    }
+
+    // Handle if there was already a selection for this creneau
+    const handleCreneauAlreadySelected = (idCreneau: number) => {
+        const creneauPostAlreadySelected = creneauPost.find(item => item.id_creneau === idCreneau && item.selected === true);
+        if(creneauPostAlreadySelected) {
+            // Decrease currentCapacity
+            creneauPostAlreadySelected.currentCapacity -= 1;
+
+            // Update the current creneau/post selected as not selected
+            creneauPostAlreadySelected.selected = false;
+
+            // Enable all postes for this creneau
+            setCreneauPost(creneauPost.map(item => {
+                if(item.id_creneau === idCreneau) {
+                    item.disabled = false;
+                }
+                return item;
+            }
+            ));
+        }
     }
 
     const [dataCrenaux, setDataCrenaux] = useState([{id: 1, timeStart: "10:00", timeEnd: "12:00"}, {id: 2, timeStart: "14:00", timeEnd: "16:00"}, {id: 3, timeStart: "18:00", timeEnd: "20:00"}, {id: 4, timeStart: "21:00", timeEnd: "22:00"}, {id: 5, timeStart: "22:30", timeEnd: "23:30"}]);
@@ -123,7 +153,7 @@ const SectionSignupFestival = () => {
               if(creneauPostItem) {
                 return (
                     <>
-                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={creneauPostItem.selected || (creneauPostItem.currentCapacity >= capacityMaxPost)}>
+                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={creneauPostItem.currentCapacity >= capacityMaxPost}>
                         <Box id={styles.boxCircularProgress}>
                         <CircularProgress 
                             size={65} 
