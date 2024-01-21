@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { Box, Typography, TextField, Button, InputLabel, FormControl, Input, MenuItem, ListItemText, Select } from '@mui/material';
 import styles from "../../styles/pages/Profile/userprofile.module.scss";
+import useAlert from "../../hooks/useAlerts";
+import AlertComponent from '../../components/general/Alert';
+
 
 import { modifyUser } from '../../api';
 
@@ -10,6 +13,8 @@ import { modifyUser } from '../../api';
 const UserProfilePage = () => {
     const { user } = useUser();
 	const navigate = useNavigate();
+    const { alertMessage, handleShowAlertMessage } = useAlert();
+
 
 
 	// Initialisez l'état avec des valeurs par défaut
@@ -71,6 +76,9 @@ const UserProfilePage = () => {
                 email: updatedUser.email,
                 address: updatedUser.address,
             });
+
+            // Affichez un message de succès
+            handleShowAlertMessage("Les modifications ont été enregistrées avec succès.", "success");
     
             console.log('Informations mises à jour avec succès.');
         } catch (error) {
@@ -118,6 +126,10 @@ const UserProfilePage = () => {
                 onChange={handleChange}
                 className={styles.userInfo}
             />
+
+
+            {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
+
 
 			<Button
                 variant="contained" 
