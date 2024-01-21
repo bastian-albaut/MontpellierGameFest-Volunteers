@@ -3,6 +3,7 @@ import styles from "../../styles/components/SignupFestival/sectionsignupfestival
 import { useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid";
 import { Edit } from "@mui/icons-material";
+import useAlert from "../../hooks/useAlerts";
 
 const SectionSignupFestival = () => {
 
@@ -23,27 +24,78 @@ const SectionSignupFestival = () => {
         },
     };
 
-    const handleSelectCreneau = (row: any) => {
-        console.log(row);
+    // Display alert message
+    const { alertMessage, handleShowAlertMessage } = useAlert();
+
+    const handleSelectCreneau = (params: any) => {
+        // Get the current creneau id
+        const idCreneau = parseInt(params.field.split("_")[1]);
+
+        // Get the creneau/post selected
+        const creneauPostItem = creneauPost.find(item => item.id_poste === params.row.id && item.id_creneau === idCreneau);
+
+        // Check if there was already a selection for this creneau
+        const creneauPostAlreadySelected = creneauPost.find(item => item.id_creneau === idCreneau && item.selected === true);
+        if(creneauPostAlreadySelected) {
+            // Decrease currentCapacity
+            creneauPostAlreadySelected.currentCapacity -= 1;
+
+            // Update the current creneau/post selected as not selected
+            creneauPostAlreadySelected.selected = false;
+
+            // Enable all postes for this creneau
+            setCreneauPost(creneauPost.map(item => {
+                if(item.id_creneau === idCreneau) {
+                    item.disabled = false;
+                }
+                return item;
+            }
+            ));
+        }
+
+
+        // Increase currentCapacity
+        if(creneauPostItem) {
+            creneauPostItem.currentCapacity += 1;
+        }
+
+        // Disable all postes for this creneau except the current poste
+        setCreneauPost(creneauPost.map(item => {
+            if(item.id_creneau === idCreneau && item.id_poste !== params.row.id) {
+                item.disabled = true;
+            }
+            return item;
+        }
+        ));
+
+        // Update the current creneau/post selected as selected
+        setCreneauPost(creneauPost.map(item => {
+            if(item.id_creneau === idCreneau && item.id_poste === params.row.id) {
+                item.selected = true;
+            }
+            return item;
+        }
+        ));
+
     }
 
     const [dataCrenaux, setDataCrenaux] = useState([{id: 1, timeStart: "10:00", timeEnd: "12:00"}, {id: 2, timeStart: "14:00", timeEnd: "16:00"}, {id: 3, timeStart: "18:00", timeEnd: "20:00"}, {id: 4, timeStart: "21:00", timeEnd: "22:00"}, {id: 5, timeStart: "22:30", timeEnd: "23:30"}]);
     const [dataPosts, setDataPosts] = useState([{id: 1, name: "Poste 1", capacityMaxPost: 20}, {id: 2, name: "Poste 2", capacityMaxPost: 20}, {id: 3, name: "Poste 3", capacityMaxPost: 20}]);
-    const [creneauPost, setCreneauPost] = useState([{id: 1, id_poste: 1, id_creneau: 1, currentCapacity: 5 },
-                                                    {id: 2, id_poste: 1, id_creneau: 2, currentCapacity: 5 },
-                                                    {id: 3, id_poste: 1, id_creneau: 3, currentCapacity: 3 },
-                                                    {id: 4, id_poste: 1, id_creneau: 4, currentCapacity: 3 },
-                                                    {id: 4, id_poste: 1, id_creneau: 5, currentCapacity: 3 },
-                                                    {id: 5, id_poste: 2, id_creneau: 1, currentCapacity: 1 },
-                                                    {id: 6, id_poste: 2, id_creneau: 2, currentCapacity: 4 },
-                                                    {id: 7, id_poste: 2, id_creneau: 3, currentCapacity: 3 },
-                                                    {id: 8, id_poste: 2, id_creneau: 4, currentCapacity: 3 },
-                                                    {id: 9, id_poste: 2, id_creneau: 5, currentCapacity: 2 },
-                                                    {id: 10, id_poste: 3, id_creneau: 1, currentCapacity: 1 },
-                                                    {id: 11, id_poste: 3, id_creneau: 2, currentCapacity: 2 },
-                                                    {id: 12, id_poste: 3, id_creneau: 3, currentCapacity: 4 },
-                                                    {id: 13, id_poste: 3, id_creneau: 4, currentCapacity: 2 },
-                                                    {id: 14, id_poste: 3, id_creneau: 5, currentCapacity: 3 }]);
+    const [creneauPost, setCreneauPost] = useState([{id: 1, id_poste: 1, id_creneau: 1, currentCapacity: 20, disabled: false, selected: false },
+                                                    {id: 2, id_poste: 1, id_creneau: 2, currentCapacity: 19, disabled: false, selected: false },
+                                                    {id: 3, id_poste: 1, id_creneau: 3, currentCapacity: 21, disabled: false, selected: false },
+                                                    {id: 4, id_poste: 1, id_creneau: 4, currentCapacity: 3, disabled: false, selected: false },
+                                                    {id: 5, id_poste: 1, id_creneau: 5, currentCapacity: 20, disabled: false, selected: false },
+                                                    {id: 6, id_poste: 2, id_creneau: 1, currentCapacity: 14, disabled: false, selected: false },
+                                                    {id: 7, id_poste: 2, id_creneau: 2, currentCapacity: 4, disabled: false, selected: false },
+                                                    {id: 8, id_poste: 2, id_creneau: 3, currentCapacity: 10, disabled: false, selected: false },
+                                                    {id: 9, id_poste: 2, id_creneau: 4, currentCapacity: 3, disabled: false, selected: false },
+                                                    {id: 10, id_poste: 2, id_creneau: 5, currentCapacity: 20, disabled: false, selected: false },
+                                                    {id: 11, id_poste: 3, id_creneau: 1, currentCapacity: 20, disabled: false, selected: false },
+                                                    {id: 12, id_poste: 3, id_creneau: 2, currentCapacity: 4, disabled: false, selected: false },
+                                                    {id: 13, id_poste: 3, id_creneau: 3, currentCapacity: 10, disabled: false, selected: false },
+                                                    {id: 14, id_poste: 3, id_creneau: 4, currentCapacity: 8, disabled: false, selected: false },
+                                                    {id: 15, id_poste: 3, id_creneau: 5, currentCapacity: 5, disabled: false, selected: false }]);
 
     // Define columns for the DataGrid that correspond to each creneau
     const columnsGrid: GridColDef[] = [
@@ -71,15 +123,16 @@ const SectionSignupFestival = () => {
               if(creneauPostItem) {
                 return (
                     <>
-                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params.row)}>
+                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={creneauPostItem.selected || (creneauPostItem.currentCapacity >= capacityMaxPost)}>
                         <Box id={styles.boxCircularProgress}>
                         <CircularProgress 
                             size={65} 
                             variant="determinate" 
                             value={creneauPostItem ? (creneauPostItem.currentCapacity / capacityMaxPost) * 100 : 0}
                             style={{
+                                opacity: creneauPostItem.disabled ? 0.1 : 1,
                                 color:
-                                    creneauPostItem.currentCapacity === capacityMaxPost
+                                    creneauPostItem.currentCapacity >= capacityMaxPost
                                         ? "green"
                                         : creneauPostItem.currentCapacity >= capacityMaxPost / 2
                                         ? "orange"
