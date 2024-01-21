@@ -49,39 +49,37 @@ const UserProfilePage = () => {
 
     
 	const handleSubmit = async () => {
-        // Assurez-vous d'avoir l'ID de l'utilisateur comme un nombre
-        // Vérifiez que userId n'est pas undefined avant de continuer
-        if (typeof user.userId === 'number') {
-            const userId = user.userId;
+        try {
+            const userDataToUpdate = {
+                id: user.id,
+                firstName: userInfo.firstName,
+                lastName: userInfo.lastName,
+                address: userInfo.address,
+                email: userInfo.email,
+            };
     
-            try {
-                // Préparez les données, en excluant les champs non nécessaires ou sensibles comme le mot de passe
-                const userDataToUpdate = {
-                    id: userId,
-                    firstName: userInfo.firstName,
-                    lastName: userInfo.lastName,
-                    address: userInfo.address,
-                    email: userInfo.email,
-                    // file: userInfo.file, 
-                };
+            // Appel à la fonction modifyUser avec les informations à mettre à jour
+            const response = await modifyUser(userDataToUpdate); // Cela retourne AxiosResponse
     
-                // Appel à la fonction modifyUser avec l'ID de l'utilisateur et les informations à mettre à jour
-                const response = await modifyUser(userDataToUpdate);
+            // Accédez aux données renvoyées via response.data
+            const updatedUser = response.data; // Supposons que cela contienne l'utilisateur mis à jour
     
-                // Gérez la réponse de succès ici
-                console.log('Informations mises à jour avec succès.');
-                navigate('/');
-            } catch (error) {
-                // Gérez les erreurs ici
-                console.error('Erreur lors de la mise à jour des informations :', error);
-            }
-        } else {
-            console.error('L\'ID de l\'utilisateur est indéfini.');
+            // Utilisez updatedUser pour accéder à vos propriétés
+            setUserInfo({
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                email: updatedUser.email,
+                address: updatedUser.address,
+            });
+    
+            console.log('Informations mises à jour avec succès.');
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour des informations :', error);
         }
     };
     
     
-
+    
     return (
 
 		<Box className={styles.userProfile}>
@@ -134,6 +132,10 @@ const UserProfilePage = () => {
 		
 
     );
+
+
 };
+    
+    
 
 export default UserProfilePage;

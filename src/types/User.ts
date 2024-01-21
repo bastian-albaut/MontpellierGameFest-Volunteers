@@ -1,5 +1,5 @@
 export type User = {
-    userId?: number;
+    id: string;
     firstName: string;
     lastName: string;
     address: string;
@@ -7,3 +7,13 @@ export type User = {
     password: string;
     file: string;
   };
+
+
+export type registerUser = {
+    firstName: string;
+    lastName: string;
+    address: string;
+    email: string;
+    password: string;
+    file: string;
+}
