@@ -1,8 +1,11 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, InputLabel, FormControl, Input, MenuItem, ListItemText, Select } from '@mui/material';
 import styles from "../../styles/pages/Profile/userprofile.module.scss";
+
+import { modifyUser } from '../../api';
+
 
 const UserProfilePage = () => {
     const { user } = useUser();
@@ -29,19 +32,6 @@ const UserProfilePage = () => {
         }
     }, [user]);
 
-	// Gère la mise à jour des champs de saisie
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-    };
-
-	// Gère la soumission du formulaire
-	const handleSubmit = async () => {
-        // Implémentez la logique de mise à jour des informations de l'utilisateur ici
-        console.log('Mise à jour des informations :', userInfo);
-
-        // Redirigez l'utilisateur vers la page d'accueil après la mise à jour
-        navigate('/');
-    };
 
 	if (!user) {
         return (
@@ -50,6 +40,47 @@ const UserProfilePage = () => {
             </Box>
         );
     }
+
+
+	// Gère la mise à jour des champs de saisie
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+    };
+
+    
+	const handleSubmit = async () => {
+        // Assurez-vous d'avoir l'ID de l'utilisateur comme un nombre
+        // Vérifiez que userId n'est pas undefined avant de continuer
+        if (typeof user.userId === 'number') {
+            const userId = user.userId;
+    
+            try {
+                // Préparez les données, en excluant les champs non nécessaires ou sensibles comme le mot de passe
+                const userDataToUpdate = {
+                    id: userId,
+                    firstName: userInfo.firstName,
+                    lastName: userInfo.lastName,
+                    address: userInfo.address,
+                    email: userInfo.email,
+                    // file: userInfo.file, 
+                };
+    
+                // Appel à la fonction modifyUser avec l'ID de l'utilisateur et les informations à mettre à jour
+                const response = await modifyUser(userDataToUpdate);
+    
+                // Gérez la réponse de succès ici
+                console.log('Informations mises à jour avec succès.');
+                navigate('/');
+            } catch (error) {
+                // Gérez les erreurs ici
+                console.error('Erreur lors de la mise à jour des informations :', error);
+            }
+        } else {
+            console.error('L\'ID de l\'utilisateur est indéfini.');
+        }
+    };
+    
+    
 
     return (
 
@@ -89,7 +120,6 @@ const UserProfilePage = () => {
                 onChange={handleChange}
                 className={styles.userInfo}
             />
-
 
 			<Button
                 variant="contained" 

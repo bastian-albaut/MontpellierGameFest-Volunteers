@@ -17,3 +17,19 @@ export const login = (data: any) => API.post('/login', data);
 export const register = (data: User) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/currentUser');
 export const createFestival = (data: Festival) => API.post('/festival', data);
+
+
+
+interface UserUpdateData {
+    id: number; 
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    address?: string;
+    //file: string;
+    // Ajoutez d'autres champs selon votre modèle d'utilisateur
+}
+
+export const modifyUser = async ({ id, ...data }: UserUpdateData) => {
+    return API.put(`/users/${id}`, data);
+};
