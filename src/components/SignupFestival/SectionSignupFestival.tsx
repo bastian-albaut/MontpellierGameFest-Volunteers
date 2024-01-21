@@ -1,8 +1,7 @@
-import { Box, CircularProgress, FormControlLabel, FormLabel, IconButton, Input, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { Box, CircularProgress, FormControlLabel, FormLabel, IconButton, Input, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Typography, Button, Checkbox } from "@mui/material";
 import styles from "../../styles/components/SignupFestival/sectionsignupfestival.module.scss" 
 import { useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid";
-import { Edit } from "@mui/icons-material";
 import useAlert from "../../hooks/useAlerts";
 
 const SectionSignupFestival = () => {
@@ -33,12 +32,12 @@ const SectionSignupFestival = () => {
 
         // Get the creneau/post selected
         const creneauPostItem = creneauPost.find(item => item.id_poste === params.row.id && item.id_creneau === idCreneau);
-
+        
         // Handle if the creneau/post selected was already selected
         if(handleCreneauPostAlreadySelected(creneauPostItem, idCreneau)) {
             return;
         }
-
+        
         // Handle if there was already a selection for this creneau
         handleCreneauAlreadySelected(idCreneau);
 
@@ -109,11 +108,58 @@ const SectionSignupFestival = () => {
         }
     }
 
-    const [dataCrenaux, setDataCrenaux] = useState([{id: 1, timeStart: "10:00", timeEnd: "12:00"}, {id: 2, timeStart: "14:00", timeEnd: "16:00"}, {id: 3, timeStart: "18:00", timeEnd: "20:00"}, {id: 4, timeStart: "21:00", timeEnd: "22:00"}, {id: 5, timeStart: "22:30", timeEnd: "23:30"}]);
-    const [dataPosts, setDataPosts] = useState([{id: 1, name: "Poste 1", capacityMaxPost: 20}, {id: 2, name: "Poste 2", capacityMaxPost: 20}, {id: 3, name: "Poste 3", capacityMaxPost: 20}]);
+    const handleIsFlexible = (idCreneau: number) => {
+        // If the creneau is flexible, update all creneau/post for this creneau as not disabled
+        if(dataCrenaux.find(item => item.id === idCreneau && item.isFlexible === true)) {
+            setCreneauPost(creneauPost.map(item => {
+                if(item.id_creneau === idCreneau) {
+                    item.disabled = false;
+                }
+                return item;
+            }
+            ));
+            // Update the current creneau as not flexible
+            setDataCrenaux(dataCrenaux.map(item => {
+                if(item.id === idCreneau) {
+                    item.isFlexible = false;
+                }
+                return item;
+            }
+            ));
+            return;
+        }
+
+        // Update the current creneau as flexible
+        setDataCrenaux(dataCrenaux.map(item => {
+            if(item.id === idCreneau) {
+                item.isFlexible = true;
+            }
+            return item;
+        }
+        ));
+
+        // Decrease the currentCapacity of the creneau/post selected
+        const creneauPostItem = creneauPost.find(item => item.id_creneau === idCreneau && item.selected === true);
+        if(creneauPostItem) {
+            creneauPostItem.currentCapacity -= 1;
+            creneauPostItem.selected = false;
+        }
+
+        // Update all creneau/post for this creneau as disabled
+        setCreneauPost(creneauPost.map(item => {
+            if(item.id_creneau === idCreneau) {
+                item.disabled = true;
+            }
+            return item;
+        }
+        ));
+    }
+
+    const [dataCrenaux, setDataCrenaux] = useState([{id: 1, timeStart: "10:00", timeEnd: "12:00", isFlexible: false}, {id: 2, timeStart: "14:00", timeEnd: "16:00", isFlexible: false}, {id: 3, timeStart: "18:00", timeEnd: "20:00", isFlexible: false}, {id: 4, timeStart: "21:00", timeEnd: "22:00", isFlexible: false}, {id: 5, timeStart: "22:30", timeEnd: "23:30", isFlexible: false}]);
+    const [dataPosts, setDataPosts] = useState([{id: 1, name: "Poste 1", capacityMaxPost: 20}, {id: 2, name: "Poste 2", capacityMaxPost: 20}, {id: 3, name: "Poste 3", capacityMaxPost: 20}, { id: 4, name: "Flexible", capacityMaxPost: 0 }]);
     const [creneauPost, setCreneauPost] = useState([{id: 1, id_poste: 1, id_creneau: 1, currentCapacity: 20, disabled: false, selected: false },
                                                     {id: 2, id_poste: 1, id_creneau: 2, currentCapacity: 19, disabled: false, selected: false },
-                                                    {id: 3, id_poste: 1, id_creneau: 3, currentCapacity: 21, disabled: false, selected: false },
+                                                    {id: 3, id_poste: 1, id_creneau: 3, currentCapacity: 20, disabled: false, selected: false },
                                                     {id: 4, id_poste: 1, id_creneau: 4, currentCapacity: 3, disabled: false, selected: false },
                                                     {id: 5, id_poste: 1, id_creneau: 5, currentCapacity: 20, disabled: false, selected: false },
                                                     {id: 6, id_poste: 2, id_creneau: 1, currentCapacity: 14, disabled: false, selected: false },
@@ -121,12 +167,12 @@ const SectionSignupFestival = () => {
                                                     {id: 8, id_poste: 2, id_creneau: 3, currentCapacity: 10, disabled: false, selected: false },
                                                     {id: 9, id_poste: 2, id_creneau: 4, currentCapacity: 3, disabled: false, selected: false },
                                                     {id: 10, id_poste: 2, id_creneau: 5, currentCapacity: 20, disabled: false, selected: false },
-                                                    {id: 11, id_poste: 3, id_creneau: 1, currentCapacity: 20, disabled: false, selected: false },
-                                                    {id: 12, id_poste: 3, id_creneau: 2, currentCapacity: 4, disabled: false, selected: false },
+                                                    {id: 11, id_poste: 3, id_creneau: 1, currentCapacity: 8, disabled: false, selected: false },
+                                                    {id: 12, id_poste: 3, id_creneau: 2, currentCapacity: 7, disabled: false, selected: false },
                                                     {id: 13, id_poste: 3, id_creneau: 3, currentCapacity: 10, disabled: false, selected: false },
                                                     {id: 14, id_poste: 3, id_creneau: 4, currentCapacity: 8, disabled: false, selected: false },
                                                     {id: 15, id_poste: 3, id_creneau: 5, currentCapacity: 5, disabled: false, selected: false }]);
-
+    
     // Define columns for the DataGrid that correspond to each creneau
     const columnsGrid: GridColDef[] = [
         {
@@ -147,13 +193,22 @@ const SectionSignupFestival = () => {
             width: 150,
             sortable: false,
             renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => {
+                // Check if the cell corresponding to the row flexible
+                if(params.row.name === "Flexible") {
+                    return (
+                        <>
+                        <Checkbox className={styles.checkbox} checked={creneau.isFlexible} onChange={() => handleIsFlexible(creneau.id)} />
+                        </>
+                    );
+                }
+
               const creneauPostItem = creneauPost.find(item => item.id_poste === params.row.id && item.id_creneau === creneau.id);
               const capacityMaxPost = params.row.capacityMaxPost;
               // Check error
               if(creneauPostItem) {
                 return (
                     <>
-                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={creneauPostItem.currentCapacity >= capacityMaxPost}>
+                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={(creneauPostItem.currentCapacity >= capacityMaxPost) || creneau.isFlexible}>
                         <Box id={styles.boxCircularProgress}>
                         <CircularProgress 
                             size={65} 
@@ -230,6 +285,8 @@ const SectionSignupFestival = () => {
                         pageSizeOptions={[5, 10]}
                     />
                 </Box>
+                <Typography id={styles.typoFlexible} variant="body1" color="initial">Le poste vous est égal ? Choisissez flexible pour le créneau correspondant.</Typography>
+                <Button id={styles.buttonSignup} variant="contained" color="primary">Je m'inscris au festival</Button>
             </Box>
         </Box>
         </>
