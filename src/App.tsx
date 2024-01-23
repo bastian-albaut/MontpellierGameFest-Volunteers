@@ -13,7 +13,8 @@ import CreateFestival from './pages/CreateFestival/CreateFestival';
 import LoginRegister from './pages/LoginRegister/LoginRegister';
 import Dashboard from './pages/Dashboard/Dashboard';
 import { UserProvider } from './contexts/UserContext';
-import UserProfile from './pages/Profile/UserProfile';
+import ModifyUserProfile from './pages/Profile/ModifyUserProfile';
+import ViewUserProfile from './pages/Profile/ViewUserProfile';
 
 
 let theme = createTheme({
@@ -126,7 +127,8 @@ const App = () => {
                     <Route path="/connexion" element={<LoginRegister />} />
                     <Route path="/festival/creation" element={<CreateFestival />}/>
                     <Route path="/tableaudebord/:id" element={<Dashboard />}/>
-                    <Route path="/profil" element={<UserProfile />}/>
+                    <Route path="/modifyprofil" element={<ModifyUserProfile />}/>
+                    <Route path="/viewprofil" element={<ViewUserProfile />}/>
                     <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>
                 </BrowserRouter>

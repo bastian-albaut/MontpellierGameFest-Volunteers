@@ -72,7 +72,7 @@ export default function ToolbarConnected(props: any) {
 
   const handleGoToProfile = () => {
       handleCloseUserMenu();
-      navigate("/profil"); 
+      navigate("/viewprofil"); 
   };
 
   return (
