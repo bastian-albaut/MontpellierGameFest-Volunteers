@@ -14,6 +14,7 @@ const UserProfileComponent = () => {
     const { user } = useUser();
     const { alertMessage, handleShowAlertMessage } = useAlert();
     const navigate = useNavigate();
+    const { reloadUserContext } = useUser();
 
 
 
@@ -68,6 +69,11 @@ const UserProfileComponent = () => {
     
             // Accéde aux données renvoyées via response.data
             const updatedUser = response.data; // Supposons que cela contienne l'utilisateur mis à jour
+
+            if (response.status === 200) { // Vérifiez que la réponse est OK
+                await reloadUserContext(); // Rafraîchit les informations de l'utilisateur dans le contexte
+                handleShowAlertMessage("Les modifications ont été enregistrées avec succès.", "success");
+            }
     
             // Utilise updatedUser pour accéder à vos propriétés
             setUserInfo({
