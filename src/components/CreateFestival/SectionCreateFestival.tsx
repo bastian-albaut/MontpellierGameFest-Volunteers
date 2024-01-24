@@ -9,7 +9,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
 import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
-import { createFestival } from "../../api";
+import { addCreneau, addMultiplePostes, createFestival } from "../../api";
 import { useNavigate } from "react-router-dom";
 
 const SectionCreateFestival = () => {
@@ -90,7 +90,7 @@ const SectionCreateFestival = () => {
     // Define columns for the DataGrid of posts
     const columnsPosts: GridColDef[] = [
         { field: 'name', headerName: 'Nom', width: 200 },
-        { field: 'capacity', headerName: 'Capacité', width: 100 },
+        { field: 'capacityPoste', headerName: 'Capacité', width: 100 },
         { 
             field: 'actions', 
             headerName: 'Actions', 
@@ -221,19 +221,68 @@ const SectionCreateFestival = () => {
 
             const res = await createFestival(festivalToCreate);
             if(res && res.data) {
-                // Delete the data from the localStorage
-                localStorage.removeItem("dataFestival");
-                localStorage.removeItem("dataPosts");
-                localStorage.removeItem("dataCreneau");
+                // Handle the creation of the postes and creneaux for the festival
+                const idFestival = res.data.idFestival;
+                const isPostesCreated = await handlePostesCreation(idFestival);
+                const isCreneauxCreated = await handleCreneauxCreation(idFestival);
 
-                // Redirect to the home page
-                navigate("/", { state: { message: "Le festival a bien été créé.", severity: "success" }});
+                if(isPostesCreated && isCreneauxCreated) {
+                    // Delete the data from the localStorage
+                    localStorage.removeItem("dataFestival");
+                    localStorage.removeItem("dataPosts");
+                    localStorage.removeItem("dataCreneau");
+
+                    // Redirect to the home page
+                    navigate("/", { state: { message: "Le festival a bien été créé.", severity: "success" }});
+                } else {
+                    handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
+                }
             }
         } catch (error) {
             console.log(error);
             handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
         } finally {
             setIsLoadingCreateFestival(false);
+        }
+    }
+
+    // Create all the postes for the festival
+    const handlePostesCreation = async (idFestival: number) => {
+        try {
+            const postesToCreate = dataPosts.map((post: any) => {
+                const { id, ...postWithoutId } = post;
+                return { ...postWithoutId, idFestival };
+            });
+            const res = await addMultiplePostes(postesToCreate);
+
+            if(res && res.data) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    // Create all the creneaux for the festival
+    const handleCreneauxCreation = async (idFestival: number) => {
+        try {
+            const creneauxToCreate = dataCreneau.map((creneau: any) => {
+                const { id, ...creneauWithoutId } = creneau;
+                return { ...creneauWithoutId, idFestival };
+            })
+            for (const creneau of creneauxToCreate) {
+                const res = await addCreneau(creneau);
+                if(!res || !res.data) {
+                    return false;
+                }
+            }
+            return true
+        } catch (error) {
+            console.log(error);
+            return false;
         }
     }
 

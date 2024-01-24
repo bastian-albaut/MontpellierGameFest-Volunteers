@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 
 // Modal with name and capacity into a form
 const ModalCreateUpdatePost = (props: any) => {
-    const [currentPost, setCurrentPost] = useState({ name: props.isUpdate ? props.objectToUpdate.name : "", capacity: props.isUpdate ? props.objectToUpdate.capacity : 1 });
+    const [currentPost, setCurrentPost] = useState({ name: props.isUpdate ? props.objectToUpdate.name : "", capacityPoste: props.isUpdate ? props.objectToUpdate.capacityPoste : 1 });
 
     // Update currentPost when props.objectToUpdate changes
     useEffect(() => {
         if(props.isUpdate) {
-            setCurrentPost({ name: props.objectToUpdate.name, capacity: props.objectToUpdate.capacity });
+            setCurrentPost({ name: props.objectToUpdate.name, capacityPoste: props.objectToUpdate.capacityPoste });
         }
     }, [props.objectToUpdate, props.isUpdate])
 
@@ -29,14 +29,14 @@ const ModalCreateUpdatePost = (props: any) => {
         }
 
         // Check if capacity is not negative or 0
-        if(currentPost.capacity <= 0) {
+        if(currentPost.capacityPoste <= 0) {
             setFormError("La capacité ne peut pas être négative ou nulle.");
             return;
         }
 
-        const newPost = { id: props.dataPosts.length + 1, name: currentPost.name, capacity: currentPost.capacity};
+        const newPost = { id: props.dataPosts.length + 1, name: currentPost.name, capacityPoste: currentPost.capacityPoste};
         props.setDataPosts([...props.dataPosts, newPost]);
-        setCurrentPost({ name: "", capacity: 1 });
+        setCurrentPost({ name: "", capacityPoste: 1 });
         props.handleClose();
         props.handleShowAlertMessage(`Le poste "${currentPost.name}" a bien été créé.`, "success");
     };
@@ -57,14 +57,14 @@ const ModalCreateUpdatePost = (props: any) => {
         }
 
         // Check if capacity is not negative or 0
-        if(currentPost.capacity <= 0) {
+        if(currentPost.capacityPoste <= 0) {
             setFormError("La capacité ne peut pas être négative ou nulle.");
             return;
         }
 
-        const updatedPost = { id: props.objectToUpdate.id, name: currentPost.name, capacity: currentPost.capacity};
+        const updatedPost = { id: props.objectToUpdate.id, name: currentPost.name, capacityPoste: currentPost.capacityPoste};
         props.setDataPosts(props.dataPosts.map((post: any) => post.id === updatedPost.id ? updatedPost : post));
-        setCurrentPost({ name: "", capacity: 1 });
+        setCurrentPost({ name: "", capacityPoste: 1 });
         props.handleShowAlertMessage(`Le poste "${currentPost.name}" a bien été modifié.`, "success");
         props.handleClose();
         props.setIsUpdate(false);
@@ -112,9 +112,9 @@ const ModalCreateUpdatePost = (props: any) => {
                     variant="standard"
                     margin="dense"
                     onChange={(e) =>
-                        setCurrentPost({ ...currentPost, capacity: parseInt(e.target.value) })
+                        setCurrentPost({ ...currentPost, capacityPoste: parseInt(e.target.value) })
                     }
-                    value={currentPost.capacity}
+                    value={currentPost.capacityPoste}
                     required
                 />
                 {props.isUpdate ? (
