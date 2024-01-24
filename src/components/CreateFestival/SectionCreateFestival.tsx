@@ -292,11 +292,14 @@ const SectionCreateFestival = () => {
         <Box id={styles.boxSection}>
             <Typography id={styles.title} variant="h1" color="black">Créer un festival</Typography>
             <Box id={styles.boxForm}>
-                <TextField className={styles.fieldForm} label="Nom du festival" variant="standard" margin="dense" value={dataFestival.name} onChange={(e) => setDataFestival({...dataFestival, name: e.target.value})} required/>
-                <DatePicker className={styles.fieldForm} label="Date de début" minDate={dayjs()} value={dataFestival.dateDebut || dayjs()} onChange={(e) => setDataFestival({...dataFestival, dateDebut: e || dayjs()})} />
-                <DatePicker className={styles.fieldForm} label="Date de fin" minDate={dataFestival.dateDebut.add(1, 'day')} value={dataFestival.dateFin} onChange={(e) => setDataFestival({...dataFestival, dateFin: e || dayjs()})} />
+                <Box id={styles.generalInformations}>
+                    <Typography className={styles.titleTable} variant="h3" color="initial">Informations générales</Typography>
+                    <TextField className={styles.fieldForm} label="Nom du festival" variant="standard" margin="dense" value={dataFestival.name} onChange={(e) => setDataFestival({...dataFestival, name: e.target.value})} required/>
+                    <DatePicker className={styles.fieldForm} label="Date de début"  minDate={dayjs()} value={dataFestival.dateDebut || dayjs()} onChange={(e) => setDataFestival({...dataFestival, dateDebut: e || dayjs()})} />
+                    <DatePicker className={styles.fieldForm} label="Date de fin" minDate={dataFestival.dateDebut.add(1, 'day')} value={dataFestival.dateFin} onChange={(e) => setDataFestival({...dataFestival, dateFin: e || dayjs()})} />
+                </Box>
                 <Box className={styles.boxTable}>
-                    <Typography className={styles.titleTable} variant="h2" color="initial">Liste des postes</Typography>
+                    <Typography className={styles.titleTable} variant="h3" color="initial">Liste des postes</Typography>
                     {dataPosts.length === 0 ? (
                         <Typography className={styles.textTable} variant="body1" color="initial">Aucun poste pour le moment.</Typography>
                     ) : (
@@ -316,7 +319,7 @@ const SectionCreateFestival = () => {
                     <Button variant="outlined" color="primary" onClick={() => handleOpenModalPost()} disabled={isLoadingCreateFestival}>Ajouter un poste</Button>
                 </Box>
                 <Box className={styles.boxTable}>
-                    <Typography className={styles.titleTable} variant="h2" color="initial">Liste des créneaux</Typography>
+                    <Typography className={styles.titleTable} variant="h3" color="initial">Liste des créneaux</Typography>
                     {dataCreneau.length === 0 ? (
                         <Typography className={styles.textTable} variant="body1" color="initial">Aucun créneau pour le moment.</Typography>
                     ) : (

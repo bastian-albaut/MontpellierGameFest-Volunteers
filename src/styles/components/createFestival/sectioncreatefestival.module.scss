@@ -9,6 +9,7 @@
 
 #title {
     margin: 50px 0 20px 0; 
+    text-align: center;
 }
 
 #boxForm {
@@ -17,17 +18,24 @@
     align-items: center;
 }
 
+#generalInformations {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 .fieldForm {
     margin: 10px 0;
     width: 300px;
 }
 
 .titleTable {
-    margin: 10px 0;
+    margin: 40px 0 10px 0;
 }
 
 .boxTable {
     width: 100%;
+    max-width: 95vw;
 }
 
 .boxButtonTable {
@@ -39,4 +47,15 @@
 
 #button {
     margin: 50px 0 10px 0;
+}
+
+/* Extra small devices (phones, $breakpointXS and down) */
+@media only screen and (max-width: $breakpointXS){
+    #generalInformations {
+        align-items: center;
+    }
+
+    .boxSection {
+        margin: 0 10px 0 10px !important;
+    }
 }
