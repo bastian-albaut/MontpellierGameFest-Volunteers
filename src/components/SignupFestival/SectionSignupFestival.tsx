@@ -4,20 +4,27 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid";
 import useAlert from "../../hooks/useAlerts";
 import { useNavigate, useParams } from "react-router-dom";
-import { getFestival, getPostesByFestival } from "../../api";
+import { addVolunteer, getFestival, getPostesByFestival } from "../../api";
 import Loading from "../general/Loading";
 import { Poste } from "../../types/Poste";
+import { useUser } from "../../contexts/UserContext";
+import { isVolunteer } from "../../types/IsVolunteer";
 
 const SectionSignupFestival = () => {
 
-    const [tshirt, setTshirt] = useState<string>("XS");
-
-    const handleChangeTshirt = (event: SelectChangeEvent) => {
-        setTshirt(event.target.value as string);
+    const [sizeTeeShirt, setSizeTeeShirt] = useState<string>("XS");
+    const [isVege, setIsVege] = useState(true);
+    const handleChangeSizeTeeShirt = (event: SelectChangeEvent) => {
+        setSizeTeeShirt(event.target.value);
     };
 
-    // Display loading during the apis calls
-    const [loading, setLoading] = useState<boolean>(true);
+  const handleVegetarianChange = (event: SelectChangeEvent) => {
+    console.log(event.target.value);
+    setIsVege(event.target.value === "true" ? true : false);
+  };
+
+    // Display loadingGetData during the apis calls
+    const [loadingGetData, setloadingGetData] = useState<boolean>(true);
 
     // Get festival id from url
     const { id } = useParams<{ id: string }>();
@@ -65,9 +72,9 @@ const SectionSignupFestival = () => {
                 navigate("/", { state: { message: "Erreur pendant la récupération des informations du festival.", severity: "error" } });
             }
     
-            // Set loading to false only if both fetch operations were successful
+            // Set loadingGetData to false only if both fetch operations were successful
             if (isFetchFestival && isFetchPostes) {
-                setLoading(false);
+                setloadingGetData(false);
             }
         };
     
@@ -314,9 +321,43 @@ const SectionSignupFestival = () => {
             },
           };
         }),
-      ];
-    
-    if(loading) {
+    ];
+
+    // Disable the signup button during the signup process
+    const [signupInprogress, setSignupInprogress] = useState<boolean>(false);
+    const { user, loading} = useUser();
+
+    const handleSignup = async () => {
+        // Disable the signup button during the signup process
+        setSignupInprogress(true);
+
+        // Check if the user selected at least one creneau/post
+        const creneauPostSelected = creneauPost.find(item => item.selected === true);
+        if(!creneauPostSelected) {
+            handleShowAlertMessage("Vous devez sélectionner au moins un créneau.", "error");
+            return;
+        }
+
+        try {
+            console.log(user)
+            const data : isVolunteer = {sizeTeeShirt: sizeTeeShirt, isVege: isVege, idUser: user?.id?.toString()!, idFestival: parseInt(id!)};
+            console.log(data);
+            const res = await addVolunteer(data);
+            console.log(res);
+            if(res && res.data) {
+                handleShowAlertMessage("Inscription au festival réussie.", "success");
+            } else {
+                handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
+            }
+        } catch (error) {
+            console.log(error);
+            handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
+        } finally {
+            setSignupInprogress(false);
+        }
+    }
+
+    if(loadingGetData|| loading) {
         return <Loading />
     }
 
@@ -332,7 +373,7 @@ const SectionSignupFestival = () => {
             <Box id={styles.boxForm}>
                 <Typography className={styles.titleSectionForm} variant="h3" color="initial">Informations personnelles</Typography>
                 <InputLabel id="t-shirt">Taille de t-shirt</InputLabel>
-                <Select className={styles.fieldForm} labelId="t-shirt" value={tshirt} label="Taille de t-shirt" onChange={handleChangeTshirt} input={<Input />} MenuProps={MenuProps} margin="dense">
+                <Select className={styles.fieldForm} labelId="t-shirt" value={sizeTeeShirt} label="Taille de t-shirt" onChange={handleChangeSizeTeeShirt} input={<Input />} MenuProps={MenuProps} margin="dense">
                     <MenuItem value={"XS"}>XS</MenuItem>
                     <MenuItem value={"S"}>S</MenuItem>
                     <MenuItem value={"M"}>M</MenuItem>
@@ -340,7 +381,7 @@ const SectionSignupFestival = () => {
                     <MenuItem value={"XL"}>XL</MenuItem>
                 </Select>
                 <FormLabel id="radio-button">Vegetarien</FormLabel>
-                <RadioGroup aria-labelledby="radio-button" defaultValue="true" name="radio-buttons-group">
+                <RadioGroup aria-labelledby="radio-button" name="radio-buttons-group" value={isVege} onChange={handleVegetarianChange}>
                     <FormControlLabel value="true" control={<Radio />} label="Oui" />
                     <FormControlLabel value="false" control={<Radio />} label="Non" />
                 </RadioGroup>
@@ -359,7 +400,7 @@ const SectionSignupFestival = () => {
                     />
                 </Box>
                 <Typography id={styles.typoFlexible} variant="body1" color="initial">Le poste vous est égal ? Choisissez flexible pour le créneau correspondant.</Typography>
-                <Button id={styles.buttonSignup} variant="contained" color="primary">Je m'inscris au festival</Button>
+                <Button id={styles.buttonSignup} variant="contained" color="primary" onClick={() => handleSignup()} disabled={signupInprogress}>Je m'inscris au festival</Button>
             </Box>
         </Box>
         </>
