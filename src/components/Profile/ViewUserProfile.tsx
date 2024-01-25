@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { Box, Typography, TextField, Button, InputLabel, FormControl, Input, MenuItem, ListItemText, Select } from '@mui/material';
-import styles from "../../styles/pages/Profile/userprofile.module.scss";
+import styles from "../../styles/components/Profile/userprofile.module.scss";
 import useAlert from "../../hooks/useAlerts";
 import AlertComponent from '../general/Alert';
 
@@ -21,6 +21,7 @@ const ViewUserProfileComponent = () => {
         lastName: '',
         email: '',
         address: '',
+        picture: '',
     });
 
     // Met à jour l'état avec les informations de l'utilisateur après le rendu initial
@@ -32,6 +33,7 @@ const ViewUserProfileComponent = () => {
                 lastName: user.lastName,
                 email: user.email,
                 address: user.address,
+                picture: user.picture,
             });
         }
     }, [user]);
@@ -56,6 +58,16 @@ const ViewUserProfileComponent = () => {
             <Typography className={styles.userProfileTitle} variant="h4" gutterBottom>
                 Mon profil
             </Typography>
+
+            {/* Affiche la photo de l'utilisateur */}
+            {userInfo.picture && (
+                <img
+                    src={userInfo.picture}
+                    alt="User"
+                    style={{ width: '150px', height: '150px' }} 
+                />
+            )}
+
             <TextField
                 label="Prénom"
                 variant="outlined"

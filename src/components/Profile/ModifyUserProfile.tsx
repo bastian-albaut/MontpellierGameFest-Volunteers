@@ -24,6 +24,7 @@ const UserProfileComponent = () => {
         lastName: '',
         email: '',
         address: '',
+        picture: '',
     });
 
     // Met à jour l'état avec les informations de l'utilisateur après le rendu initial
@@ -34,6 +35,7 @@ const UserProfileComponent = () => {
                 lastName: user.lastName,
                 email: user.email,
                 address: user.address,
+                picture: user.picture,
             });
         }
     }, [user]);
@@ -53,6 +55,16 @@ const UserProfileComponent = () => {
         setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
     };
 
+    // Gère la sélection de la nouvelle photo
+    const handlePictureChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Vous pouvez traiter le fichier ici si nécessaire
+            // Assurez-vous de mettre à jour l'état avec le nouveau chemin de l'image
+            setUserInfo({ ...userInfo, picture: URL.createObjectURL(file) });
+        }
+    };
+
     
 	const handleSubmit = async () => {
         try {
@@ -62,6 +74,7 @@ const UserProfileComponent = () => {
                 lastName: userInfo.lastName,
                 address: userInfo.address,
                 email: userInfo.email,
+                picture: userInfo.picture,
             };
     
             // Appel à la fonction modifyUser avec les informations à mettre à jour
@@ -81,6 +94,7 @@ const UserProfileComponent = () => {
                 lastName: updatedUser.lastName,
                 email: updatedUser.email,
                 address: updatedUser.address,
+                picture: updatedUser.picture,
             });
 
             // Affiche un message de succès
@@ -104,6 +118,28 @@ const UserProfileComponent = () => {
             <Typography className={styles.userProfileTitle} variant="h4" gutterBottom>
                 Modifie ton profil
             </Typography>
+
+             {/* Affiche la photo de l'utilisateur */}
+             {userInfo.picture && (
+                <img
+                    src={userInfo.picture}
+                    alt="User"
+                    style={{ width: '150px', height: '150px' }} 
+                />
+            )}
+
+            {/* Ajoutez un champ pour la sélection de la nouvelle photo */}
+            <InputLabel htmlFor="profile-picture" className={styles.fileInputLabel}>
+                Choisir une nouvelle photo de profil
+            </InputLabel>
+            <Input
+                type="file"
+                id="profile-picture"
+                inputProps={{ accept: "image/*,.heic,.heif" }} 
+                onChange={handlePictureChange}
+                className={styles.fileInput}
+            />
+
             <TextField
                 label="Prénom"
                 variant="outlined"

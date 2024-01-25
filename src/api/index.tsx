@@ -19,14 +19,13 @@ export const getCurrentUser = () => API.get('/users/current');
 export const createFestival = (data: Festival) => API.post('/festivals', data);
 
 
-
 interface UserUpdateData {
     id: string; 
     firstName?: string;
     lastName?: string;
     email?: string;
     address?: string;
-    //picture: string;
+    picture: string;
 }
 
 export const modifyUser = async ({ id, ...data }: UserUpdateData) => {
