@@ -9,8 +9,9 @@ import { Delete, Edit } from "@mui/icons-material";
 import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
 import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
-import { addCreneau, addMultiplePostes, createFestival } from "../../api";
+import { addMultipleCreneau, addMultiplePostes, createFestival } from "../../api";
 import { useNavigate } from "react-router-dom";
+import { Creneau } from "../../types/Creneau";
 
 const SectionCreateFestival = () => {
 
@@ -276,22 +277,34 @@ const SectionCreateFestival = () => {
     // Create all the creneaux for the festival
     const handleCreneauxCreation = async (idFestival: number) => {
         try {
-            const creneauxToCreate = dataCreneau.map((creneau: any) => {
-                const { id, ...creneauWithoutId } = creneau;
-                return { ...creneauWithoutId, idFestival };
-            })
-            for (const creneau of creneauxToCreate) {
-                const res = await addCreneau(creneau);
-                if(!res || !res.data) {
-                    return false;
-                }
+            const creneauxToCreate : Creneau[] = dataCreneau.map((creneau: any) => {
+                const { id, timeStart, timeEnd, ...newCreneau } = creneau;
+
+                // Convert time strings to Date objects
+                const formattedTimeStart = parseTimeStringToDate(timeStart);
+                const formattedTimeEnd = parseTimeStringToDate(timeEnd);
+
+                return { ...newCreneau, idFestival, timeStart: formattedTimeStart, timeEnd: formattedTimeEnd };
+            });
+            const res = await addMultipleCreneau(creneauxToCreate);
+            if(res && res.data) {
+                return true;
+            } else {
+                return false;
             }
-            return true
         } catch (error) {
             console.log(error);
             return false;
         }
     }
+    
+    const parseTimeStringToDate = (timeString: string) => {
+        const [hours, minutes] = timeString.split(':');
+        const currentDate = new Date();
+        currentDate.setHours(parseInt(hours, 10));
+        currentDate.setMinutes(parseInt(minutes, 10));
+        return currentDate;
+    };
 
     return(
         <>

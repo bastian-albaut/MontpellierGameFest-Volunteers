@@ -21,7 +21,7 @@ export const register = (data: User) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/users/current');
 export const createFestival = (data: Festival) => API.post('/festivals', data);
 export const addMultiplePostes = (postes: Poste[]) => API.post('/postes/multiple', postes);
-export const addCreneau = (data: Creneau) => API.post('/creneaux', data);
+export const addMultipleCreneau = (creneaux: Creneau[]) => API.post('/creneaux/multiple', creneaux);
 export const getFestival = (id: string) => API.get('/festivals/' + id);
 export const getPostesByFestival = (id: string) => API.get('/festivals/' + id + '/postes');
 export const addVolunteer = (data: isVolunteer) => API.post('/festivals/' + data.idFestival + '/volunteers', data);
