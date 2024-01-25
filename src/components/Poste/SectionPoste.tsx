@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getPosteById } from "../../api";
 import styles from "../../styles/components/Poste/sectionposte.module.scss" 
 import { Poste } from "../../types/Poste";
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const SectionPoste = (props: any) => {
@@ -27,11 +27,23 @@ const SectionPoste = (props: any) => {
         fetchPoste();     
     }, [props.idPoste, navigate]);
 
-	return(
-        <Box>
-            <Typography variant="h3" color="initial">{poste?.name}</Typography>
+	return (
+    <Box className={styles.posteContainer}>
+        <Typography variant="h4" className={styles.posteTitle}>Titre du Poste</Typography>
+        <Typography variant="body1" className={styles.posteDescription}>Description du poste</Typography>
+        <Typography variant="h6" className={styles.referentsTitle}>Référents:</Typography>
+        <Box className={styles.referentsList}>
+            <Box className={styles.referent}>
+                <Avatar alt="Alexandre Lagorce" src="/path/to/avatar1.jpg" />
+                <Typography variant="subtitle1">Alexandre Lagorce</Typography>
+            </Box>
+            <Box className={styles.referent}>
+                <Avatar alt="Vincent Dubuc" src="/path/to/avatar2.jpg" />
+                <Typography variant="subtitle1">Vincent Dubuc</Typography>
+            </Box>
         </Box>
-	)
+    </Box>
+  );
 }
 
 export default SectionPoste
