@@ -193,6 +193,13 @@ const SectionCreateFestival = () => {
             return;
         }
 
+        // Check if the dateDebut is after today
+        if(dataFestival.dateDebut.isBefore(dayjs().subtract(1, 'day'))) {
+            handleShowAlertMessage("Erreur: La date de début ne peut pas être avant aujourd'hui.", "error");
+            setIsLoadingCreateFestival(false);
+            return;
+        }
+
         // Check if the dateDebut is before the dateFin
         if(dataFestival.dateDebut.isAfter(dataFestival.dateFin)) {
             handleShowAlertMessage("Erreur: La date de début doit être avant la date de fin.", "error");
