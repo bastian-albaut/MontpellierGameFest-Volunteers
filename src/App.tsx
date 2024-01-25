@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import { UserProvider } from './contexts/UserContext';
 import SignupFestival from './pages/SignupFestival/SignupFestival';
 import PostePage from './pages/Poste/PostePage';
+import ContactPage from './pages/Contact/PostePage';
 
 
 let theme = createTheme({
@@ -129,6 +130,7 @@ const App = () => {
                     <Route path="/tableaudebord/:id" element={<Dashboard />}/>
                     <Route path="/festival/inscription/:id" element={<SignupFestival />}/>
                     <Route path="/poste/:id" element={<PostePage />}/>
+                    <Route path="/contact" element={<ContactPage />}/>
                     <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>
                 </BrowserRouter>

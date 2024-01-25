@@ -1,0 +1,55 @@
+@import "../../abstract/variables.module.scss";
+
+.contactContainer {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+#boxLocalisation {
+    flex: 1;
+}
+
+#boxContact {
+    flex: 1;
+    min-width: 300px;
+}
+
+.mapContainer {
+    padding: 20px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mapTitle {
+    margin-bottom: 10px;
+}
+
+.contactInfoContainer {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contactTitle {
+    margin-bottom: 10px;
+}
+
+.contactDetails {
+    color: $greyColor;
+}
+
+.contactForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.submitButton {
+    margin: auto
+}
