@@ -224,7 +224,7 @@ const SectionCreateFestival = () => {
 
         try {
             // Create the festival
-            const festivalToCreate = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate(), address: "Lorem Ipsum" };
+            const festivalToCreate = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate(), address: "Lorem Ipsum", city: "Montpellier", postalCode: "34000", country: "France", isActive: true};
             console.log(festivalToCreate);
 
             const res = await createFestival(festivalToCreate);
@@ -245,6 +245,8 @@ const SectionCreateFestival = () => {
                 } else {
                     handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
                 }
+            } else {
+                handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
             }
         } catch (error) {
             console.log(error);
