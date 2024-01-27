@@ -71,10 +71,12 @@ const SectionSignupFestival = () => {
                 }
 
                 if(creneauPost && creneauxResponse.data) {
-                    // Rename idCreneau attribute to id
+                    // Rename idCreneau attribute to id and format time
                     creneauxResponse.data.forEach((creneau: any) => {
                         creneau.id = creneau.idCreneau;
                         delete creneau.idCreneau;
+                        creneau.timeStart = formatTimeToHHMM(new Date(creneau.timeStart));
+                        creneau.timeEnd = formatTimeToHHMM(new Date(creneau.timeEnd));
                     });
                     setDataCreneaux(creneauxResponse.data);
                     isFetchCreneaux = true;
