@@ -18,6 +18,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState<string | null>(null);
     const [severity, setSeverity] = useState<"success" | "info" | "warning" | "error">("success");
+    const [messageDisplayed, setMessageDisplayed] = useState(false);
 
     const fetchUser = async () => {
         const token = localStorage.getItem('token');
@@ -44,10 +45,24 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 
                 localStorage.removeItem('token');
                 setUser(null);
+
+                // Display the message only if it hasn't been displayed before
+                if (!messageDisplayed) {
+                    setMessageDisplayed(true);
+                } else {
+                    setMessage(null);
+                }
             } else {
                 // Handle other types of errors (network issues, server errors) as needed
                 setMessage('Erreur: Connexion au serveur impossible.');
                 setSeverity("error");
+
+                // Display the message only if it hasn't been displayed before
+                if (!messageDisplayed) {
+                    setMessageDisplayed(true);
+                } else {
+                    setMessage(null);
+                }
             } 
         }
         setLoading(false);
@@ -62,7 +77,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('Reloading user context')
         await fetchUser(); // Wait for fetchUser to complete
     };
-
 
     return (
         <UserContext.Provider value={{ user, loading, message, severity, reloadUserContext }}>
