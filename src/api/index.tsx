@@ -24,4 +24,5 @@ export const addMultiplePostes = (postes: Poste[]) => API.post('/postes/multiple
 export const addMultipleCreneau = (creneaux: Creneau[]) => API.post('/creneaux/multiple', creneaux);
 export const getFestival = (id: string) => API.get('/festivals/' + id);
 export const getPostesByFestival = (id: string) => API.get('/festivals/' + id + '/postes');
+export const getCreneauxByFestival = (id: string) => API.get('/festivals/' + id + '/creneaux');
 export const addVolunteer = (data: isVolunteer) => API.post('/festivals/' + data.idFestival + '/volunteers', data);
