@@ -17,4 +17,4 @@ export const login = (data: any) => API.post('/login', data);
 export const register = (data: User) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/users/current');
 export const createFestival = (data: Festival) => API.post('/festival', data);
-export const getPosteById = (idPoste: string) => API.get(`/poste/${idPoste}`);
+export const getPosteById = (idPoste: string) => API.get(`/postes/${idPoste}`);

@@ -29,7 +29,7 @@ const SectionPoste = (props: any) => {
 
 	return (
     <Box className={styles.posteContainer}>
-        <Typography variant="h4" className={styles.posteTitle}>Titre du Poste</Typography>
+        <Typography variant="h4" className={styles.posteTitle}>{poste?.name}</Typography>
         <Typography variant="body1" className={styles.posteDescription}>Description du poste</Typography>
         <Typography variant="h6" className={styles.referentsTitle}>Référents:</Typography>
         <Box className={styles.referentsList}>
