@@ -54,6 +54,11 @@ export default function ToolbarConnected(props: any) {
         handleCloseNavMenu();
         navigate(`/tableaudebord/admin/${props.currentUser.id}`);
     }
+
+    const handleContact = () => {
+        handleCloseNavMenu();
+        navigate(`/contact`);
+    }
     
     const pages = [
         {
@@ -67,6 +72,10 @@ export default function ToolbarConnected(props: any) {
         {
             name: 'Tableau de bord admin',
             function : handleDashboardAdmin
+        },
+        {
+            name: 'Contact',
+            function : handleContact
         }
     ];
 
