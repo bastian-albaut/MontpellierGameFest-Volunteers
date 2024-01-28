@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import { UserProvider } from './contexts/UserContext';
 import SignupFestival from './pages/SignupFestival/SignupFestival';
 import Festival from './pages/Festival/Festival';
+import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
 
 
 let theme = createTheme({
@@ -127,6 +128,7 @@ const App = () => {
                     <Route path="/connexion" element={<LoginRegister />} />
                     <Route path="/festival/creation" element={<CreateFestival />}/>
                     <Route path="/tableaudebord/:id" element={<Dashboard />}/>
+                    <Route path="/tableaudebord/admin/:id" element={<DashboardAdmin />}/>
                     <Route path="/festival/inscription/:id" element={<SignupFestival />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
                     <Route path="*" element={<Navigate replace to="/" />} />
