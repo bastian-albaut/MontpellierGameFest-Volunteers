@@ -11,7 +11,7 @@ const ContactSection = () => {
     <Box className={styles.contactContainer}>
         <Box id={styles.boxLocalisation}>
           <Paper className={styles.mapContainer}>
-            <Typography variant="h5" className={styles.mapTitle}>Notre emplacement</Typography>
+            <Typography variant="h4" className={styles.mapTitle}>Notre emplacement</Typography>
             <iframe title="Map" id={styles.iframe} src="https://www.openstreetmap.org/export/embed.html?bbox=3.877261877059937%2C43.609948485926935%2C3.8864672183990483%2C43.617040467569076&amp;layer=mapnik&amp;marker=43.61349458129111%2C3.881864547729492"></iframe><br/><small><a href="https://www.openstreetmap.org/?mlat=43.61349&amp;mlon=3.88186#map=17/43.61349/3.88186">Voir la carte</a></small>
           </Paper>
         </Box>
