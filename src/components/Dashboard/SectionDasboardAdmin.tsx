@@ -62,11 +62,11 @@ const SectionDasboardAdmin = () => {
             width: 250,
             renderCell: (params) => (
                 <Box className={styles.actionCell}>
-                    <Button  variant="contained" color="primary" size="small" onClick={() => handleEditClick(params.row.id)}>
+                    <Button  variant="outlined" color="primary" size="small" onClick={() => handleEditClick(params.row.id)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
                         Modifier
                     </Button>
-                    <Button  variant="contained" color="error" size="small" onClick={() => handleDeleteClick(params.row.id)}>
+                    <Button  variant="outlined" color="error" size="small" onClick={() => handleDeleteClick(params.row.id)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
                         Supprimer
                     </Button>
@@ -92,19 +92,23 @@ const SectionDasboardAdmin = () => {
     return (
         <Box id={styles.festivalContainer}>
             <Typography id={styles.title} variant="h1" color="black">Tableau de bord</Typography>
-            <Typography variant="h4" id={styles.listFestivalTitle}>Liste des Festivals</Typography>
-            <Box id={styles.boxGrid}>
-                <DataGrid
-                    rows={festivals}
-                    columns={columns}
-                    checkboxSelection
-                    initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
-                        },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                />
+            <Box id={styles.boxListFestival}>
+                <Box id={styles.boxUpperGrid}>
+                    <Typography variant="h3" id={styles.listFestivalTitle}>Liste des Festivals</Typography>
+                    <Button id={styles.buttonAddFestival} variant="contained" color="primary" onClick={() => navigate("/festival/creation")}>Ajouter un festival</Button>
+                </Box>
+                <Box id={styles.boxGrid}>
+                    <DataGrid
+                        rows={festivals}
+                        columns={columns}
+                        initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 5 },
+                            },
+                        }}
+                        pageSizeOptions={[5, 10]}
+                    />
+                </Box>
             </Box>
         </Box>
     );
