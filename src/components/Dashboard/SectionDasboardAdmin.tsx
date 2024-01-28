@@ -19,13 +19,11 @@ const SectionDasboardAdmin = () => {
             try {
                 const res = await getFestivals();
                 if (res && res.data) {
-                    console.log(res.data)
                     // Replace the idFestival attribute by id
                     res.data.forEach((festival: any) => {
                         festival.id = festival.idFestival;
                         delete festival.idFestival;
                     });
-                    console.log(res.data)
                     setFestivals(res.data);
                 } else {
                     console.error("Error fetching festivals");
@@ -62,11 +60,11 @@ const SectionDasboardAdmin = () => {
             width: 250,
             renderCell: (params) => (
                 <Box className={styles.actionCell}>
-                    <Button  variant="outlined" color="primary" size="small" onClick={() => handleEditClick(params.row.id)}>
+                    <Button  variant="outlined" color="primary" size="small" onClick={(event) => handleEditClick(params.row.id, event)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
                         Modifier
                     </Button>
-                    <Button  variant="outlined" color="error" size="small" onClick={() => handleDeleteClick(params.row.id)}>
+                    <Button  variant="outlined" color="error" size="small" onClick={(event) => handleDeleteClick(params.row.id, event)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
                         Supprimer
                     </Button>
@@ -75,13 +73,13 @@ const SectionDasboardAdmin = () => {
         },
     ];
 
-    const handleEditClick = (festivalId: string) => {
-        // Redirect to the edit page with the festivalId
-        navigate(`/edit-festival/${festivalId}`);
+    const handleEditClick = (festivalId: string, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
+        console.log(`Editing festival with ID ${festivalId}`);
     };
 
-    const handleDeleteClick = (festivalId: string) => {
-        // Implement your delete logic here
+    const handleDeleteClick = (festivalId: string, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         console.log(`Deleting festival with ID ${festivalId}`);
     };
 

@@ -60,7 +60,6 @@ const SectionFestival = (props: any) => {
 
     // Format time
     const formattedTime = (originalDate: Date) => {
-        console.log(originalDate);
         const hours = originalDate.getUTCHours().toString().padStart(2, '0');
         const minutes = originalDate.getUTCMinutes().toString().padStart(2, '0');
         const formattedTime = `${hours}:${minutes}`;
