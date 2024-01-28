@@ -30,53 +30,23 @@ interface Soiree {
 const SectionDashboard: React.FC = () => {
 
 
-    // Exemple de données de festivals pour le test
-    const exampleUserFestivals: Festival[] = [
-        {
-            id: '1',
-            name: 'Festival de Jazz',
-            lieu: 'Paris',
-            dateDebut: '2024-06-10',
-            dateFin: '2024-06-15'
-        },
-        {
-            id: '2',
-            name: 'Festival Rock',
-            lieu: 'Nantes',
-            dateDebut: '2024-07-20',
-            dateFin: '2024-07-22'
-        },
-        {
-            id: '3',
-            name: 'Festival Électronique',
-            lieu: 'Lyon',
-            dateDebut: '2024-08-05',
-            dateFin: '2024-08-07'
-        }
-    ];
-
-
     // Exemple de données de soirées pour le test
     const exampleSoirees: Soiree[] = [
     
     ];
 
 
-
     const { user } = useUser(); // Récupération des données de l'utilisateur connecté
-    const [userFestivals, setUserFestivals] = useState<Festival[]>(exampleUserFestivals); // Liste des festivals de l'utilisateur connecté
+    const [userFestivals, setUserFestivals] = useState<Festival[]>([]); // Liste des festivals de l'utilisateur connecté
     const [showUserFestivals, setShowUserFestivals] = useState<boolean>(false); // Affichage de la liste des festivals de l'utilisateur connecté
 
-    // à rajouter avec le back
-    //const [userFestivals, setUserFestivals] = useState<Festival[]>([]);
 
     const [festivals, setFestivals] = useState<Festival[]>([]); // Liste des festivals
 	const [showFestivals, setShowFestivals] = useState<boolean>(false); // Affichage de la liste des festivals
 
 
-    // A tester avec la base de donnée
-    //const [soirees, setSoirees] = useState<Soiree[]>([]);
-    const [soirees, setSoirees] = useState<Soiree[]>(exampleSoirees);
+    const [soirees, setSoirees] = useState<Soiree[]>([]);
+    //const [soirees, setSoirees] = useState<Soiree[]>(exampleSoirees);
     const [showSoirees, setShowSoirees] = useState<boolean>(false);
 
 
@@ -139,6 +109,10 @@ const SectionDashboard: React.FC = () => {
 
 
 
+    const toggleUserFestivals = () => {
+        setShowUserFestivals(!showUserFestivals);
+    };
+
 	const toggleFestivals = () => {
         setShowFestivals(!showFestivals);
     };
@@ -146,13 +120,8 @@ const SectionDashboard: React.FC = () => {
      const toggleSoirees = () => {
         setShowSoirees(!showSoirees);
     };
-
-    const toggleUserFestivals = () => {
-        setShowUserFestivals(!showUserFestivals);
-    };
    
 
-    // tester si ca marche si il n'y aucun festival ouverts à l'inscription
 	return (
         <>
 
