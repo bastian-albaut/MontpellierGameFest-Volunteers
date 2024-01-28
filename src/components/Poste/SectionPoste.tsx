@@ -4,28 +4,39 @@ import styles from "../../styles/components/Poste/sectionposte.module.scss"
 import { Poste } from "../../types/Poste";
 import { Avatar, Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Loading from "../general/Loading";
 
 const SectionPoste = (props: any) => {
 
     const [poste, setPoste] = useState<Poste | null>(null);
+    const [isLoadingFetch, setIsLoadingFetch] = useState<boolean>(false);
     const navigate = useNavigate();
 
     // Fetch the poste data from the api
     useEffect(() => {
         const fetchPoste = async () => {
+            setIsLoadingFetch(true);
             try {
                 const res = await getPosteById(props.idPoste);
                 if(res && res.data) {
                     setPoste(res.data);
+                    setIsLoadingFetch(false);
                 } else {
                     navigate("/", { state: { message: "Ce poste n'existe pas.", severity: "error" } });
                 }
             } catch (error) {
                 console.log(error);
+                navigate("/", { state: { message: "Ce poste n'existe pas.", severity: "error" } });
             }
         }
         fetchPoste();     
     }, [props.idPoste, navigate]);
+
+    if(isLoadingFetch) {
+        return (
+            <Loading />
+        )
+    }
 
 	return (
     <Box className={styles.posteContainer}>
