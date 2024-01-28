@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getCreneauxByFestival, getFestivalById, getPostesByFestival, getVolunteersByFestival } from "../../api"; // Assurez-vous d'avoir une fonction getFestivalById dans votre fichier api
 import styles from "../../styles/components/festival/sectionfestival.module.scss";
 import { Festival } from "../../types/Festival";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Loading from "../general/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -106,7 +106,7 @@ const SectionFestival = (props: any) => {
                     {postes.map((poste, index) => {
                         return (
                             <Box key={index}>
-                                <Typography variant="subtitle1">{poste.name}</Typography>
+                                <Button variant="text" color="primary" onClick={() => navigate(`/poste/${poste.idPoste}`)}>{poste.name}</Button>
                             </Box>
                         )
                     })}
