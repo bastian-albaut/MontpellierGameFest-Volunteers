@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
-import { Box, Typography, TextField, Button, InputLabel, FormControl, Input, MenuItem, ListItemText, Select } from '@mui/material';
+import { Box, Typography, TextField, Button, InputLabel, FormControl, Input, MenuItem, ListItemText, Select, Paper, Avatar } from '@mui/material';
 import styles from "../../styles/components/Profile/userprofile.module.scss";
 import useAlert from "../../hooks/useAlerts";
 import AlertComponent from '../general/Alert';
@@ -12,7 +12,6 @@ const ViewUserProfileComponent = () => {
     const { user } = useUser();
     const { alertMessage, handleShowAlertMessage } = useAlert();
     const navigate = useNavigate();
-
 
 
 	// Initialise l'état avec des valeurs par défaut
@@ -67,6 +66,7 @@ const ViewUserProfileComponent = () => {
                     style={{ width: '150px', height: '150px' }} 
                 />
             )}
+
 
             <TextField
                 label="Prénom"
