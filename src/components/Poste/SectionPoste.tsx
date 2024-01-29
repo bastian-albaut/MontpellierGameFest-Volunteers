@@ -41,7 +41,7 @@ const SectionPoste = (props: any) => {
 	return (
     <Box className={styles.posteContainer}>
         <Typography variant="h4" className={styles.posteTitle}>{poste?.name}</Typography>
-        <Typography variant="body1" className={styles.posteDescription}>Description du poste</Typography>
+        <Typography variant="body1" className={styles.posteDescription}>{poste?.description}</Typography>
         <Typography variant="h6" className={styles.referentsTitle}>Référents:</Typography>
         <Box className={styles.referentsList}>
             <Box className={styles.referent}>

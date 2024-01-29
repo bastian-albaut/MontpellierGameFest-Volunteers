@@ -15,7 +15,6 @@
 #boxForm {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 #generalInformations {
@@ -33,8 +32,11 @@
     margin: 40px 0 10px 0;
 }
 
-.boxTable {
-    width: 100%;
+.boxTablePoste {
+    max-width: 95vw;
+}
+
+.boxTableCreneau {
     max-width: 95vw;
 }
 
@@ -46,7 +48,7 @@
 }
 
 #button {
-    margin: 50px 0 10px 0;
+    margin: 50px auto 10px auto;
 }
 
 /* Extra small devices (phones, $breakpointXS and down) */

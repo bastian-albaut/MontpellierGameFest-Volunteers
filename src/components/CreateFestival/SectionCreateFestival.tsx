@@ -91,6 +91,7 @@ const SectionCreateFestival = () => {
     // Define columns for the DataGrid of posts
     const columnsPosts: GridColDef[] = [
         { field: 'name', headerName: 'Nom', width: 200 },
+        { field: 'description', headerName: 'Description', width: 300, },
         { field: 'capacityPoste', headerName: 'Capacité', width: 100 },
         { 
             field: 'actions', 
@@ -224,7 +225,7 @@ const SectionCreateFestival = () => {
 
         try {
             // Create the festival
-            const festivalToCreate = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate(), address: "Lorem Ipsum", city: "Montpellier", postalCode: "34000", country: "France", isActive: true};
+            const festivalToCreate = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate(), address: "Corum", city: "Montpellier", postalCode: "34000", country: "France", isActive: true};
             console.log(festivalToCreate);
 
             const res = await createFestival(festivalToCreate);
@@ -320,7 +321,7 @@ const SectionCreateFestival = () => {
                     <DatePicker className={styles.fieldForm} label="Date de début"  minDate={dayjs()} value={dataFestival.dateDebut || dayjs()} onChange={(e) => setDataFestival({...dataFestival, dateDebut: e || dayjs()})} />
                     <DatePicker className={styles.fieldForm} label="Date de fin" minDate={dataFestival.dateDebut.add(1, 'day')} value={dataFestival.dateFin} onChange={(e) => setDataFestival({...dataFestival, dateFin: e || dayjs()})} />
                 </Box>
-                <Box className={styles.boxTable}>
+                <Box className={styles.boxTablePoste}>
                     <Typography className={styles.titleTable} variant="h3" color="initial">Liste des postes</Typography>
                     {dataPosts.length === 0 ? (
                         <Typography className={styles.textTable} variant="body1" color="initial">Aucun poste pour le moment.</Typography>
@@ -340,7 +341,7 @@ const SectionCreateFestival = () => {
                 <Box className={styles.boxButtonTable}>
                     <Button variant="outlined" color="primary" onClick={() => handleOpenModalPost()} disabled={isLoadingCreateFestival}>Ajouter un poste</Button>
                 </Box>
-                <Box className={styles.boxTable}>
+                <Box className={styles.boxTableCreneau}>
                     <Typography className={styles.titleTable} variant="h3" color="initial">Liste des créneaux</Typography>
                     {dataCreneau.length === 0 ? (
                         <Typography className={styles.textTable} variant="body1" color="initial">Aucun créneau pour le moment.</Typography>

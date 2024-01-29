@@ -4,21 +4,21 @@ import { useEffect, useState } from "react";
 
 // Modal with name and capacity into a form
 const ModalCreateUpdatePost = (props: any) => {
-    const [currentPost, setCurrentPost] = useState({ name: props.isUpdate ? props.objectToUpdate.name : "", capacityPoste: props.isUpdate ? props.objectToUpdate.capacityPoste : 1 });
+    const [currentPost, setCurrentPost] = useState({ name: props.isUpdate ? props.objectToUpdate.name : "", capacityPoste: props.isUpdate ? props.objectToUpdate.capacityPoste : 1, description: props.isUpdate ? props.objectToUpdate.description : "" });
 
     // Update currentPost when props.objectToUpdate changes
     useEffect(() => {
         if(props.isUpdate) {
-            setCurrentPost({ name: props.objectToUpdate.name, capacityPoste: props.objectToUpdate.capacityPoste });
+            setCurrentPost({ name: props.objectToUpdate.name, capacityPoste: props.objectToUpdate.capacityPoste, description: props.objectToUpdate.description });
         }
     }, [props.objectToUpdate, props.isUpdate])
 
     const handleAddPost = () => {
         setFormError("");
 
-        // Check if name is not empty
-        if(currentPost.name === "") {
-            setFormError("Le nom du poste ne peut pas être vide.");
+        // Check if name or description is not empty
+        if(currentPost.name === "" || currentPost.description === "") {
+            setFormError("Les champs ne peuvent pas être vides.");
             return;
         }
 
@@ -34,9 +34,9 @@ const ModalCreateUpdatePost = (props: any) => {
             return;
         }
 
-        const newPost = { id: props.dataPosts.length + 1, name: currentPost.name, capacityPoste: currentPost.capacityPoste};
+        const newPost = { id: props.dataPosts.length + 1, name: currentPost.name, capacityPoste: currentPost.capacityPoste, description: currentPost.description };
         props.setDataPosts([...props.dataPosts, newPost]);
-        setCurrentPost({ name: "", capacityPoste: 1 });
+        setCurrentPost({ name: "", capacityPoste: 1, description: "" });
         props.handleClose();
         props.handleShowAlertMessage(`Le poste "${currentPost.name}" a bien été créé.`, "success");
     };
@@ -44,9 +44,9 @@ const ModalCreateUpdatePost = (props: any) => {
     const handleUpdatePost = () => {
         setFormError("");
 
-        // Check if name is not empty
-        if(currentPost.name === "") {
-            setFormError("Le nom du poste ne peut pas être vide.");
+        // Check if name or description is not empty
+        if(currentPost.name === "" || currentPost.description === "") {
+            setFormError("Les champs ne peuvent pas être vides.");
             return;
         }
 
@@ -62,9 +62,9 @@ const ModalCreateUpdatePost = (props: any) => {
             return;
         }
 
-        const updatedPost = { id: props.objectToUpdate.id, name: currentPost.name, capacityPoste: currentPost.capacityPoste};
+        const updatedPost = { id: props.objectToUpdate.id, name: currentPost.name, capacityPoste: currentPost.capacityPoste, description: currentPost.description };
         props.setDataPosts(props.dataPosts.map((post: any) => post.id === updatedPost.id ? updatedPost : post));
-        setCurrentPost({ name: "", capacityPoste: 1 });
+        setCurrentPost({ name: "", capacityPoste: 1, description: "" });
         props.handleShowAlertMessage(`Le poste "${currentPost.name}" a bien été modifié.`, "success");
         props.handleClose();
         props.setIsUpdate(false);
@@ -101,6 +101,19 @@ const ModalCreateUpdatePost = (props: any) => {
                         setCurrentPost({ ...currentPost, name: e.target.value })
                     }
                     value={currentPost.name}
+                    required
+                />
+                <TextField
+                    className={styles.fieldForm}
+                    label="Description du poste"
+                    variant="standard"
+                    margin="dense"
+                    onChange={(e) =>
+                        setCurrentPost({ ...currentPost, description: e.target.value })
+                    }
+                    value={currentPost.description}
+                    multiline={true}
+                    rows={4}
                     required
                 />
                 <TextField
