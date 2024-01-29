@@ -304,8 +304,8 @@ const SectionCreateFestival = () => {
     const parseTimeStringToDate = (timeString: string) => {
         const [hours, minutes] = timeString.split(':');
         const currentDate = new Date();
-        currentDate.setHours(parseInt(hours, 10));
-        currentDate.setMinutes(parseInt(minutes, 10));
+        currentDate.setUTCHours(parseInt(hours, 10));
+        currentDate.setUTCMinutes(parseInt(minutes, 10));
         return currentDate;
     };
 
