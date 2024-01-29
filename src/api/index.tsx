@@ -19,10 +19,14 @@ API.interceptors.request.use((req) => {
 export const login = (data: any) => API.post('/login', data);
 export const register = (data: User) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/users/current');
-export const createFestival = (data: Festival) => API.post('/festivals', data);
 export const addMultiplePostes = (postes: Poste[]) => API.post('/postes/multiple', postes);
 export const addMultipleCreneau = (creneaux: Creneau[]) => API.post('/creneaux/multiple', creneaux);
 export const getFestival = (id: string) => API.get('/festivals/' + id);
-export const getPostesByFestival = (id: string) => API.get('/festivals/' + id + '/postes');
-export const getCreneauxByFestival = (id: string) => API.get('/festivals/' + id + '/creneaux');
 export const addVolunteer = (data: isVolunteer) => API.post('/festivals/' + data.idFestival + '/volunteers', data);
+export const createFestival = (data: any) => API.post('/festivals', data);
+export const getPosteById = (idPoste: string) => API.get(`/postes/${idPoste}`);
+export const getFestivalById = (id: string) => API.get(`/festivals/${id}`);
+export const getPostesByFestival = (id: string) => API.get(`/festivals/${id}/postes`);
+export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/creneaux`);
+export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`);
+export const getFestivals = () => API.get('/festivals');
