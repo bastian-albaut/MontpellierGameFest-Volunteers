@@ -241,8 +241,8 @@ const SectionCreateFestival = () => {
                     localStorage.removeItem("dataPosts");
                     localStorage.removeItem("dataCreneau");
 
-                    // Redirect to the home page
-                    navigate("/", { state: { message: "Le festival a bien été créé.", severity: "success" }});
+                    // Redirect to the page of the festival
+                    navigate(`/festival/${idFestival}`, { state: { message: "Le festival a bien été créé.", severity: "success" }});
                 } else {
                     handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
                 }
