@@ -40,6 +40,15 @@
     max-width: 95vw;
 }
 
+.actionCell {
+    display: flex;
+    gap: 5px
+}
+
+.iconActionCell {
+    margin-right: 5px;
+}
+
 .boxButtonTable {
     width: 100%;
     display: flex;

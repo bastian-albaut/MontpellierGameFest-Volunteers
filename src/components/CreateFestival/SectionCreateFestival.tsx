@@ -12,6 +12,8 @@ import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
 import { addMultipleCreneau, addMultiplePostes, createFestival } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { Creneau } from "../../types/Creneau";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const SectionCreateFestival = () => {
 
@@ -90,24 +92,24 @@ const SectionCreateFestival = () => {
 
     // Define columns for the DataGrid of posts
     const columnsPosts: GridColDef[] = [
-        { field: 'name', headerName: 'Nom', width: 200 },
-        { field: 'description', headerName: 'Description', width: 300, },
+        { field: 'name', headerName: 'Nom', width: 150 },
+        { field: 'description', headerName: 'Description', width: 200, },
         { field: 'capacityPoste', headerName: 'Capacité', width: 100 },
-        { 
-            field: 'actions', 
-            headerName: 'Actions', 
-            width: 100, 
-            sortable: false,
-            renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
-                <>
-                    <IconButton aria-label="edit" onClick={() => handleEditPost(params.row)}>
-                        <Edit />
-                    </IconButton>
-                    <IconButton aria-label="delete" onClick={() => handleDeletePost(params.row)}>
-                        <Delete />
-                    </IconButton>
-                </>
-            )
+        { field: 'actions', 
+          headerName: 'Actions', 
+          width: 250,
+          renderCell: (params) => (
+                <Box className={styles.actionCell}>
+                    <Button  variant="outlined" color="primary" size="small" onClick={(event) => handleEditPost(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
+                        Modifier
+                    </Button>
+                    <Button  variant="outlined" color="error" size="small" onClick={(event) => handleDeletePost(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
+                        Supprimer
+                    </Button>
+                </Box>
+           ),
         },
     ];
 
@@ -115,21 +117,21 @@ const SectionCreateFestival = () => {
     const columnsCreneaux: GridColDef[] = [
         { field: 'timeStart', headerName: 'Heure de début', width: 150 },
         { field: 'timeEnd', headerName: 'Heure de fin', width: 150 },
-        { 
-            field: 'actions', 
-            headerName: 'Actions', 
-            width: 100, 
-            sortable: false,
-            renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
-                <>
-                    <IconButton aria-label="edit" onClick={() => handleEditCreneau(params.row)}>
-                        <Edit />
-                    </IconButton>
-                    <IconButton aria-label="delete" onClick={() => handleDeleteCreneau(params.row)}>
-                        <Delete />
-                    </IconButton>
-                </>
-            )
+        { field: 'actions', 
+          headerName: 'Actions', 
+          width: 250,
+          renderCell: (params) => (
+                <Box className={styles.actionCell}>
+                    <Button  variant="outlined" color="primary" size="small" onClick={(event) => handleEditCreneau(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
+                        Modifier
+                    </Button>
+                    <Button  variant="outlined" color="error" size="small" onClick={(event) => handleDeleteCreneau(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
+                        Supprimer
+                    </Button>
+                </Box>
+           ),
         },
     ];
 
@@ -140,14 +142,16 @@ const SectionCreateFestival = () => {
     const [objectToUpdateCreneau, setObjectToUpdateCreneau] = useState({} as any);
 
     // Edit a post
-    const handleEditPost = (row: any) => {
+    const handleEditPost = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         setIsUpdatePost(true);
         setObjectToUpdatePost(row);
         handleOpenModalPost();
     }
 
     // Delete a post
-    const handleDeletePost = (row: any) => {
+    const handleDeletePost = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         try {
             const newDataPosts = dataPosts.filter((post: any) => post.id !== row.id);
             setDataPosts(newDataPosts);
@@ -160,14 +164,16 @@ const SectionCreateFestival = () => {
     }
 
     // Edit a creneau
-    const handleEditCreneau = (row: any) => {
+    const handleEditCreneau = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         setIsUpdateCreneau(true);
         setObjectToUpdateCreneau(row);
         handleOpenModalCreneau();
     }
 
     // Delete a creneau
-    const handleDeleteCreneau = (row: any) => {
+    const handleDeleteCreneau = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         try {
             const newDataCreneau = dataCreneau.filter((creneau: any) => creneau.id !== row.id);
             setDataCreneau(newDataCreneau);
