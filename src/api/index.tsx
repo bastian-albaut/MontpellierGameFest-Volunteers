@@ -30,3 +30,5 @@ export const getPostesByFestival = (id: string) => API.get(`/festivals/${id}/pos
 export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/creneaux`);
 export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`);
 export const getFestivals = () => API.get('/festivals');
+export const addEspace = (data: any) => API.post('/espaces', data);
+export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);

@@ -1,15 +1,14 @@
-import { Box, Button, Icon, IconButton, TextField, Typography } from "@mui/material"
+import { Box, Button, TextField, Typography } from "@mui/material"
 import styles from "../../styles/components/createFestival/sectioncreatefestival.module.scss" 
 import { useEffect, useState } from "react"
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs"
-import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import ModalCreateUpdatePost from "./ModalCreateUpdatePost";
-import { Delete, Edit } from "@mui/icons-material";
 import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
 import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
-import { addMultipleCreneau, addMultiplePostes, createFestival } from "../../api";
+import { addEspace, addMultipleCreneau, addMultiplePostes, addPosteEspace, createFestival, getPostesByFestival } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { Creneau } from "../../types/Creneau";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -240,8 +239,9 @@ const SectionCreateFestival = () => {
                 const idFestival = res.data.idFestival;
                 const isPostesCreated = await handlePostesCreation(idFestival);
                 const isCreneauxCreated = await handleCreneauxCreation(idFestival);
+                const isEspaceCreated = await handleEspaceCreation(idFestival);
 
-                if(isPostesCreated && isCreneauxCreated) {
+                if(isPostesCreated && isCreneauxCreated && isEspaceCreated) {
                     // Delete the data from the localStorage
                     localStorage.removeItem("dataFestival");
                     localStorage.removeItem("dataPosts");
@@ -314,6 +314,53 @@ const SectionCreateFestival = () => {
         currentDate.setUTCMinutes(parseInt(minutes, 10));
         return currentDate;
     };
+
+    // Create the espace default for each poste of the festival
+    const handleEspaceCreation = async (idFestival : number) => {
+        try {
+            // Get all the postes created
+            const listPostesCreated = await getListPostesCreated(idFestival);
+
+            if(listPostesCreated.length === 0) return false;
+
+            // Create an espace for each poste
+            let errorDuringCreation = false;
+            listPostesCreated.forEach(async (poste: any) => {
+                const resEspace = await addEspace({name: poste.name});
+                if(resEspace && resEspace.data) {
+                    const idEspace = resEspace.data.idEspace;
+                    // Create a PosteEspace for each poste
+                    const dataPosteEspace = { idEspace, idPoste: poste.idPoste };
+                    const resPosteEspace = await addPosteEspace(dataPosteEspace)
+                    if(!resPosteEspace || !resPosteEspace.data) {
+                        errorDuringCreation = true;
+                    }
+                } else {
+                    errorDuringCreation = true;
+                }
+            });
+            return !errorDuringCreation;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    // Get the list of postes created
+    const getListPostesCreated = async (idFestival: number) => {
+        try {
+            const res = await getPostesByFestival(idFestival.toString());
+            if(res && res.data) {
+                return res.data;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    }
+
 
     return(
         <>
