@@ -24,7 +24,7 @@ const HomePage = () => {
 
 
     // Styles pour le Paper avec une fonction pour injecter l'image de fond
-    const paperStyle = (bgImage: string, height: string = '66vh') => ({
+    const paperStyle = (bgImage: string, height: string = '68vh') => ({
         height: height,
         display: 'flex',
         justifyContent: 'space-between', // Pour espacer verticalement
@@ -36,6 +36,7 @@ const HomePage = () => {
         backgroundRepeat: 'no-repeat',
         boxSizing: 'border-box',
         width: '100%', // Assurer la largeur complète du conteneur de grille
+        minWidth: '250px'
     });
 
 
@@ -77,31 +78,36 @@ const HomePage = () => {
                     paddingBottom: '64px',
                 }}
             >
-                <Grid container spacing={2} justifyContent="center" style={{ maxWidth: 1200 }}>
-                    {/* Dashboard */}
-                    <Grid item xs={12} md={6}>
-                        <Paper sx={paperStyle(dashboard)}>
-                            <Box sx={{ mt: 'auto', width: '100%', textAlign: 'center' }}>
-                                <Button variant="contained" color="primary" sx={{ m: 1, width: 150, height: 50 }}>Connexion</Button>
-                                <Button variant="outlined" color="primary" sx={{ m: 1, width: 150, height: 50 }}>Inscription</Button>
-                            </Box>
-                        </Paper>
-                    </Grid>
 
-                    {/* FAQ et Contact Us, ajustés pour correspondre à la hauteur de Dashboard */}
-                    <Grid item xs={12} md={6} container spacing={2} direction="column">
-                        <Grid item xs={6}>
-                            <Paper sx={paperStyle(faq, '30vh')}>
-                                <Typography variant="h5">FAQ</Typography>
+                <Box sx={{ width: '100%', maxWidth: 1200, maxHeight: '100vh', overflow: 'auto' }}>
+                    <Grid container spacing={2} justifyContent="center" sx={{ maxWidth: 1200 }}>
+                        {/* Dashboard */}
+                        <Grid item xs={12} md={6}>
+                            <Paper sx={paperStyle(dashboard)}>
+                                <Box sx={{ mt: 'auto', width: '100%', textAlign: 'center' }}>
+                                    <Button variant="contained" color="primary" sx={{ m: 1, width: 150, height: 50 }}>Connexion</Button>
+                                    <Button variant="outlined" color="primary" sx={{ m: 1, width: 150, height: 50 }}>Inscription</Button>
+                                </Box>
                             </Paper>
                         </Grid>
-                        <Grid item xs={6}>
-                            <Paper sx={paperStyle(contactus, '30vh')}>
-                                <Typography variant="h5">Contact Us</Typography>
-                            </Paper>
+
+                        {/* Conteneur pour FAQ et Contact Us à droite de Dashboard */}
+                        <Grid item xs={12} md={6}>
+                            <Grid container direction="column" spacing={2}>
+                                {/* FAQ */}
+                                <Grid item xs={12}>
+                                    <Paper sx={paperStyle(faq, '33vh')}></Paper>
+                                </Grid>
+
+                                {/* Contact Us */}
+                                <Grid item xs={12}>
+                                    <Paper sx={paperStyle(contactus, '33vh')}></Paper>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </Box>
+
                 
             </Box>
 
