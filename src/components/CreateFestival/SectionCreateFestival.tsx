@@ -8,7 +8,7 @@ import ModalCreateUpdatePost from "./ModalCreateUpdatePost";
 import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
 import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
-import { addEspace, addMultipleCreneau, addMultiplePostes, addPosteEspace, createFestival, getPostesByFestival } from "../../api";
+import { addCreneauEspace, addEspace, addMultipleCreneau, addMultiplePostes, addPosteEspace, createFestival, getCreneauxByFestival, getPostesByFestival } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { Creneau } from "../../types/Creneau";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -184,7 +184,6 @@ const SectionCreateFestival = () => {
         }
     }
 
-    
     // Create a festival
     const navigate = useNavigate();
     const [isLoadingCreateFestival, setIsLoadingCreateFestival] = useState(false);
@@ -235,13 +234,17 @@ const SectionCreateFestival = () => {
 
             const res = await createFestival(festivalToCreate);
             if(res && res.data) {
+                // Create a dictionnary of espaceId
+                const listIdEspaceCreated = [] as Array<number>;
+
                 // Handle the creation of the postes and creneaux for the festival
                 const idFestival = res.data.idFestival;
                 const isPostesCreated = await handlePostesCreation(idFestival);
                 const isCreneauxCreated = await handleCreneauxCreation(idFestival);
-                const isEspaceCreated = await handleEspaceCreation(idFestival);
+                const isEspaceCreated = await handleEspaceCreation(idFestival, listIdEspaceCreated);
+                const isCreneauxEspaceCreated = await handleCreneauxEspaceCreation(idFestival, listIdEspaceCreated);
 
-                if(isPostesCreated && isCreneauxCreated && isEspaceCreated) {
+                if(isPostesCreated && isCreneauxCreated && isEspaceCreated && isCreneauxEspaceCreated) {
                     // Delete the data from the localStorage
                     localStorage.removeItem("dataFestival");
                     localStorage.removeItem("dataPosts");
@@ -316,29 +319,38 @@ const SectionCreateFestival = () => {
     };
 
     // Create the espace default for each poste of the festival
-    const handleEspaceCreation = async (idFestival : number) => {
+    const handleEspaceCreation = async (idFestival : number, listIdEspaceCreated: Array<number>) => {
         try {
             // Get all the postes created
             const listPostesCreated = await getListPostesCreated(idFestival);
-
-            if(listPostesCreated.length === 0) return false;
-
+    
+            if (listPostesCreated.length === 0) return false;
+    
             // Create an espace for each poste
             let errorDuringCreation = false;
-            listPostesCreated.forEach(async (poste: any) => {
-                const resEspace = await addEspace({name: poste.name});
-                if(resEspace && resEspace.data) {
-                    const idEspace = resEspace.data.idEspace;
-                    // Create a PosteEspace for each poste
-                    const dataPosteEspace = { idEspace, idPoste: poste.idPoste };
-                    const resPosteEspace = await addPosteEspace(dataPosteEspace)
-                    if(!resPosteEspace || !resPosteEspace.data) {
+            await Promise.all(listPostesCreated.map(async (poste: any) => {
+                try {
+                    const resEspace = await addEspace({ name: poste.name });
+                    if (resEspace && resEspace.data) {
+                        const idEspace = resEspace.data.idEspace;
+
+                        // Store the created idEspace
+                        listIdEspaceCreated.push(idEspace); 
+    
+                        // Create a PosteEspace for each poste
+                        const dataPosteEspace = { idEspace, idPoste: poste.idPoste };
+                        const resPosteEspace = await addPosteEspace(dataPosteEspace);
+                        if (!resPosteEspace || !resPosteEspace.data) {
+                            errorDuringCreation = true;
+                        }
+                    } else {
                         errorDuringCreation = true;
                     }
-                } else {
+                } catch (error) {
+                    console.log(error);
                     errorDuringCreation = true;
                 }
-            });
+            }));
             return !errorDuringCreation;
         } catch (error) {
             console.log(error);
@@ -361,6 +373,48 @@ const SectionCreateFestival = () => {
         }
     }
 
+    // Create an espace/creneau insertion in CreneauEspace for each creneau/espace
+    const handleCreneauxEspaceCreation = async (idFestival: number, listIdEspaceCreated: Array<number>) => {
+        try {
+            // Get all the creneaux created
+            const listCreneauxCreated = await getListCreneauxCreated(idFestival);
+
+            if(listCreneauxCreated.length === 0) return false;
+
+            if(listIdEspaceCreated.length === 0) return false;
+            
+            // Create an espace/creneau insertion in CreneauEspace for each creneau/espace
+            let errorDuringCreation = false;
+            listCreneauxCreated.forEach(async (creneau: any) => {
+                listIdEspaceCreated.forEach(async (idEspace: number) => {
+                    const dataCreneauEspace = { idCreneau: creneau.idCreneau, idEspace };
+                    const resCreneauEspace = await addCreneauEspace(dataCreneauEspace);
+                    if(!resCreneauEspace || !resCreneauEspace.data) {
+                        errorDuringCreation = true;
+                    }
+                });
+            });
+            return !errorDuringCreation;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    // Get the list of creneaux created
+    const getListCreneauxCreated = async (idFestival: number) => {
+        try {
+            const res = await getCreneauxByFestival(idFestival.toString());
+            if(res && res.data) {
+                return res.data;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    }
 
     return(
         <>
