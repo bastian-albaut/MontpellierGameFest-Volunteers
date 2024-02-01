@@ -7,6 +7,7 @@ import { useUser } from "../../contexts/UserContext";
 import Appbar from "../../components/general/Appbar";
 import useAlert from "../../hooks/useAlerts";
 
+
 const Dashboard = () => {
 
     // Display alert message from location state
