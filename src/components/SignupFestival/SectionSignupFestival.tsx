@@ -1,16 +1,119 @@
 import { Box, CircularProgress, FormControlLabel, FormLabel, IconButton, Input, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Typography, Button, Checkbox } from "@mui/material";
 import styles from "../../styles/components/SignupFestival/sectionsignupfestival.module.scss" 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid";
 import useAlert from "../../hooks/useAlerts";
+import { useNavigate, useParams } from "react-router-dom";
+import { addVolunteer, getCreneauxByFestival, getFestival, getPostesByFestival } from "../../api";
+import Loading from "../general/Loading";
+import { Poste } from "../../types/Poste";
+import { useUser } from "../../contexts/UserContext";
+import { isVolunteer } from "../../types/IsVolunteer";
 
 const SectionSignupFestival = () => {
 
-    const [tshirt, setTshirt] = useState<string>("XS");
-
-    const handleChangeTshirt = (event: SelectChangeEvent) => {
-        setTshirt(event.target.value as string);
+    const [sizeTeeShirt, setSizeTeeShirt] = useState<string>("XS");
+    const [isVege, setIsVege] = useState(true);
+    const handleChangeSizeTeeShirt = (event: SelectChangeEvent) => {
+        setSizeTeeShirt(event.target.value);
     };
+
+  const handleVegetarianChange = (event: SelectChangeEvent) => {
+    console.log(event.target.value);
+    setIsVege(event.target.value === "true" ? true : false);
+  };
+
+    // Display loadingGetData during the apis calls
+    const [loadingGetData, setloadingGetData] = useState<boolean>(true);
+
+    // Get festival id from url
+    const { id } = useParams<{ id: string }>();
+
+    // Get festival data from api
+    const navigate = useNavigate();
+    const [dataFestival, setDataFestival] = useState<any>();
+    const [dataPosts, setDataPosts] = useState<any>();
+    const [dataCreneaux, setDataCreneaux] = useState<any>([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            let isFetchFestival = false;
+            let isFetchPostes = false;
+            let isFetchCreneaux = false;
+    
+            try {
+                const [festivalResponse, postesResponse, creneauxResponse] = await Promise.all([
+                    getFestival(id!),
+                    getPostesByFestival(id!),
+                    getCreneauxByFestival(id!)
+                ]);
+    
+                if (festivalResponse && festivalResponse.data) {
+                    // Format date
+                    festivalResponse.data.dateDebut = formattedDate(festivalResponse.data.dateDebut);
+                    festivalResponse.data.dateFin = formattedDate(festivalResponse.data.dateFin);
+                    setDataFestival(festivalResponse.data);
+                    isFetchFestival = true;
+                } else {
+                    navigate("/", { state: { message: "Erreur pendant la récupération des informations du festival.", severity: "error" } });
+                }
+    
+                if (postesResponse && postesResponse.data) {
+                    // Rename idPoste attribute to id
+                    postesResponse.data.forEach((poste: any) => {
+                        poste.id = poste.idPoste;
+                        delete poste.idPoste;
+                    });
+                    setDataPosts(postesResponse.data);
+                    isFetchPostes = true;
+                    console.log(postesResponse.data);
+                } else {
+                    navigate("/", { state: { message: "Erreur pendant la récupération des postes du festival.", severity: "error" } });
+                }
+
+                if(creneauPost && creneauxResponse.data) {
+                    // Rename idCreneau attribute to id and format time
+                    creneauxResponse.data.forEach((creneau: any) => {
+                        creneau.id = creneau.idCreneau;
+                        delete creneau.idCreneau;
+                        creneau.timeStart = formatTimeToHHMM(new Date(creneau.timeStart));
+                        creneau.timeEnd = formatTimeToHHMM(new Date(creneau.timeEnd));
+                    });
+                    setDataCreneaux(creneauxResponse.data);
+                    isFetchCreneaux = true;
+                    console.log(creneauxResponse.data);
+                } else {
+                    navigate("/", { state: { message: "Erreur pendant la récupération des créneaux du festival.", severity: "error" } });
+                }
+            } catch (error) {
+                console.log(error);
+                navigate("/", { state: { message: "Erreur pendant la récupération des informations du festival.", severity: "error" } });
+            }
+    
+            // Set loadingGetData to false only if both fetch operations were successful
+            if (isFetchFestival && isFetchPostes && isFetchCreneaux) {
+                setloadingGetData(false);
+            }
+        };
+    
+        fetchData();
+    }, [id, navigate]);
+
+    // Format date
+    const formattedDate = (date: string) => {
+        const originalDate = new Date(date);
+        const day = originalDate.getUTCDate().toString().padStart(2, '0');
+        const month = (originalDate.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        const year = originalDate.getUTCFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
+        return formattedDate;
+    }
+
+    // Format time
+    function formatTimeToHHMM(date: Date) {
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -110,7 +213,7 @@ const SectionSignupFestival = () => {
 
     const handleIsFlexible = (idCreneau: number) => {
         // If the creneau is flexible, update all creneau/post for this creneau as not disabled
-        if(dataCrenaux.find(item => item.id === idCreneau && item.isFlexible === true)) {
+        if(dataCreneaux.find((item : any) => item.id === idCreneau && item.isFlexible === true)) {
             setCreneauPost(creneauPost.map(item => {
                 if(item.id_creneau === idCreneau) {
                     item.disabled = false;
@@ -119,7 +222,7 @@ const SectionSignupFestival = () => {
             }
             ));
             // Update the current creneau as not flexible
-            setDataCrenaux(dataCrenaux.map(item => {
+            setDataCreneaux(dataCreneaux.map((item : any) => {
                 if(item.id === idCreneau) {
                     item.isFlexible = false;
                 }
@@ -130,7 +233,7 @@ const SectionSignupFestival = () => {
         }
 
         // Update the current creneau as flexible
-        setDataCrenaux(dataCrenaux.map(item => {
+        setDataCreneaux(dataCreneaux.map((item : any) => {
             if(item.id === idCreneau) {
                 item.isFlexible = true;
             }
@@ -155,8 +258,7 @@ const SectionSignupFestival = () => {
         ));
     }
 
-    const [dataCrenaux, setDataCrenaux] = useState([{id: 1, timeStart: "10:00", timeEnd: "12:00", isFlexible: false}, {id: 2, timeStart: "14:00", timeEnd: "16:00", isFlexible: false}, {id: 3, timeStart: "18:00", timeEnd: "20:00", isFlexible: false}, {id: 4, timeStart: "21:00", timeEnd: "22:00", isFlexible: false}, {id: 5, timeStart: "22:30", timeEnd: "23:30", isFlexible: false}]);
-    const [dataPosts, setDataPosts] = useState([{id: 1, name: "Poste 1", capacityMaxPost: 20}, {id: 2, name: "Poste 2", capacityMaxPost: 20}, {id: 3, name: "Poste 3", capacityMaxPost: 20}, { id: 4, name: "Flexible", capacityMaxPost: 0 }]);
+    // const [dataCreneaux, setDataCreneaux] = useState([{id: 1, timeStart: "10:00", timeEnd: "12:00", isFlexible: false}, {id: 2, timeStart: "14:00", timeEnd: "16:00", isFlexible: false}, {id: 3, timeStart: "18:00", timeEnd: "20:00", isFlexible: false}, {id: 4, timeStart: "21:00", timeEnd: "22:00", isFlexible: false}, {id: 5, timeStart: "22:30", timeEnd: "23:30", isFlexible: false}]);
     const [creneauPost, setCreneauPost] = useState([{id: 1, id_poste: 1, id_creneau: 1, currentCapacity: 20, disabled: false, selected: false },
                                                     {id: 2, id_poste: 1, id_creneau: 2, currentCapacity: 19, disabled: false, selected: false },
                                                     {id: 3, id_poste: 1, id_creneau: 3, currentCapacity: 20, disabled: false, selected: false },
@@ -186,7 +288,7 @@ const SectionSignupFestival = () => {
             </>
           ),
         },
-        ...dataCrenaux.map((creneau) => {
+        ...dataCreneaux.map((creneau : any) => {
           return {
             field: `creneau_${creneau.id}`,
             headerName: `${creneau.timeStart} - ${creneau.timeEnd}`,
@@ -203,25 +305,25 @@ const SectionSignupFestival = () => {
                 }
 
               const creneauPostItem = creneauPost.find(item => item.id_poste === params.row.id && item.id_creneau === creneau.id);
-              const capacityMaxPost = params.row.capacityMaxPost;
+              const capacityPoste = params.row.capacityPoste;
               // Check error
               if(creneauPostItem) {
                 return (
                     <>
-                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={(creneauPostItem.currentCapacity >= capacityMaxPost) || creneau.isFlexible}>
+                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={(creneauPostItem.currentCapacity >= capacityPoste) || creneau.isFlexible}>
                         <Box id={styles.boxCircularProgress}>
                         <CircularProgress 
                             size={65} 
                             variant="determinate" 
-                            value={creneauPostItem ? (creneauPostItem.currentCapacity / capacityMaxPost) * 100 : 0}
+                            value={creneauPostItem ? (creneauPostItem.currentCapacity / capacityPoste) * 100 : 0}
                             style={{
                                 opacity: creneauPostItem.disabled ? 0.1 : 1,
                                 color:
-                                    creneauPostItem.currentCapacity >= capacityMaxPost
+                                    creneauPostItem.currentCapacity >= capacityPoste
                                         ? "green"
-                                        : creneauPostItem.currentCapacity >= capacityMaxPost / 2
+                                        : creneauPostItem.currentCapacity >= capacityPoste / 2
                                         ? "orange"
-                                        : creneauPostItem.currentCapacity >= capacityMaxPost / 3
+                                        : creneauPostItem.currentCapacity >= capacityPoste / 3
                                         ? "#ffd500"
                                         : "red"
                             }}
@@ -229,7 +331,7 @@ const SectionSignupFestival = () => {
                         />
                         <Box id={styles.boxTextInsideCircularProgress}>
                             <Typography variant="body2" component="div" color="initial">
-                            {creneauPostItem ? `${creneauPostItem.currentCapacity}/${capacityMaxPost}` : '0/X'}
+                            {creneauPostItem ? `${creneauPostItem.currentCapacity}/${capacityPoste}` : '0/X'}
                             </Typography>
                         </Box>
                         </Box>
@@ -243,9 +345,45 @@ const SectionSignupFestival = () => {
             },
           };
         }),
-      ];
-    
-    
+    ];
+
+    // Disable the signup button during the signup process
+    const [signupInprogress, setSignupInprogress] = useState<boolean>(false);
+    const { user, loading} = useUser();
+
+    const handleSignup = async () => {
+        // Disable the signup button during the signup process
+        setSignupInprogress(true);
+
+        // Check if the user selected at least one creneau/post
+        const creneauPostSelected = creneauPost.find(item => item.selected === true);
+        if(!creneauPostSelected) {
+            handleShowAlertMessage("Vous devez sélectionner au moins un créneau.", "error");
+            return;
+        }
+
+        try {
+            console.log(user)
+            const data : isVolunteer = {sizeTeeShirt: sizeTeeShirt, isVege: isVege, idUser: user?.id?.toString()!, idFestival: parseInt(id!)};
+            console.log(data);
+            const res = await addVolunteer(data);
+            console.log(res);
+            if(res && res.data) {
+                handleShowAlertMessage("Inscription au festival réussie.", "success");
+            } else {
+                handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
+            }
+        } catch (error) {
+            console.log(error);
+            handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
+        } finally {
+            setSignupInprogress(false);
+        }
+    }
+
+    if(loadingGetData|| loading) {
+        return <Loading />
+    }
 
 	return(
         <>
@@ -253,13 +391,13 @@ const SectionSignupFestival = () => {
         <Box id={styles.boxSection}>
             <Typography id={styles.title} variant="h1" color="black">Inscription festival</Typography>
             <Box id={styles.infoFestival}>
-                <Typography variant="h5" color="initial">Festival 10</Typography>
-                <Typography variant="body1" color="initial">Du 10/02/2024 au 14/02/2024</Typography>
+                <Typography variant="h5" color="initial">{dataFestival.name}</Typography>
+                <Typography variant="body1" color="initial">Du {dataFestival.dateDebut} au {dataFestival.dateFin}</Typography>
             </Box>
             <Box id={styles.boxForm}>
                 <Typography className={styles.titleSectionForm} variant="h3" color="initial">Informations personnelles</Typography>
                 <InputLabel id="t-shirt">Taille de t-shirt</InputLabel>
-                <Select className={styles.fieldForm} labelId="t-shirt" value={tshirt} label="Taille de t-shirt" onChange={handleChangeTshirt} input={<Input />} MenuProps={MenuProps} margin="dense">
+                <Select className={styles.fieldForm} labelId="t-shirt" value={sizeTeeShirt} label="Taille de t-shirt" onChange={handleChangeSizeTeeShirt} input={<Input />} MenuProps={MenuProps} margin="dense">
                     <MenuItem value={"XS"}>XS</MenuItem>
                     <MenuItem value={"S"}>S</MenuItem>
                     <MenuItem value={"M"}>M</MenuItem>
@@ -267,7 +405,7 @@ const SectionSignupFestival = () => {
                     <MenuItem value={"XL"}>XL</MenuItem>
                 </Select>
                 <FormLabel id="radio-button">Vegetarien</FormLabel>
-                <RadioGroup aria-labelledby="radio-button" defaultValue="true" name="radio-buttons-group">
+                <RadioGroup aria-labelledby="radio-button" name="radio-buttons-group" value={isVege} onChange={handleVegetarianChange}>
                     <FormControlLabel value="true" control={<Radio />} label="Oui" />
                     <FormControlLabel value="false" control={<Radio />} label="Non" />
                 </RadioGroup>
@@ -286,7 +424,7 @@ const SectionSignupFestival = () => {
                     />
                 </Box>
                 <Typography id={styles.typoFlexible} variant="body1" color="initial">Le poste vous est égal ? Choisissez flexible pour le créneau correspondant.</Typography>
-                <Button id={styles.buttonSignup} variant="contained" color="primary">Je m'inscris au festival</Button>
+                <Button id={styles.buttonSignup} variant="contained" color="primary" onClick={() => handleSignup()} disabled={signupInprogress}>Je m'inscris au festival</Button>
             </Box>
         </Box>
         </>

@@ -49,6 +49,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 // Display the message only if it hasn't been displayed before
                 if (!messageDisplayed) {
                     setMessageDisplayed(true);
+                    setTimeout(() => {
+                        setMessage(null);
+                    }, 3000); // Delay of 3 seconds
                 } else {
                     setMessage(null);
                 }
@@ -60,6 +63,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 // Display the message only if it hasn't been displayed before
                 if (!messageDisplayed) {
                     setMessageDisplayed(true);
+                    setTimeout(() => {
+                        setMessage(null);
+                    }, 3000); // Delay of 3 seconds
                 } else {
                     setMessage(null);
                 }

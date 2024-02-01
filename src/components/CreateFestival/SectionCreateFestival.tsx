@@ -1,16 +1,18 @@
-import { Box, Button, Icon, IconButton, TextField, Typography } from "@mui/material"
+import { Box, Button, TextField, Typography } from "@mui/material"
 import styles from "../../styles/components/createFestival/sectioncreatefestival.module.scss" 
 import { useEffect, useState } from "react"
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs"
-import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import ModalCreateUpdatePost from "./ModalCreateUpdatePost";
-import { Delete, Edit } from "@mui/icons-material";
 import AlertComponent from "../general/Alert";
 import useAlert from "../../hooks/useAlerts";
 import ModalCreateUpdateCreneau from "./ModalCreateUpdateCreneau";
-import { createFestival } from "../../api";
+import { addCreneauEspace, addEspace, addMultipleCreneau, addMultiplePostes, addPosteEspace, createFestival, getCreneauxByFestival, getPostesByFestival } from "../../api";
 import { useNavigate } from "react-router-dom";
+import { Creneau } from "../../types/Creneau";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const SectionCreateFestival = () => {
 
@@ -89,23 +91,24 @@ const SectionCreateFestival = () => {
 
     // Define columns for the DataGrid of posts
     const columnsPosts: GridColDef[] = [
-        { field: 'name', headerName: 'Nom', width: 200 },
-        { field: 'capacity', headerName: 'Capacité', width: 100 },
-        { 
-            field: 'actions', 
-            headerName: 'Actions', 
-            width: 100, 
-            sortable: false,
-            renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
-                <>
-                    <IconButton aria-label="edit" onClick={() => handleEditPost(params.row)}>
-                        <Edit />
-                    </IconButton>
-                    <IconButton aria-label="delete" onClick={() => handleDeletePost(params.row)}>
-                        <Delete />
-                    </IconButton>
-                </>
-            )
+        { field: 'name', headerName: 'Nom', width: 150 },
+        { field: 'description', headerName: 'Description', width: 200, },
+        { field: 'capacityPoste', headerName: 'Capacité', width: 100 },
+        { field: 'actions', 
+          headerName: 'Actions', 
+          width: 250,
+          renderCell: (params) => (
+                <Box className={styles.actionCell}>
+                    <Button  variant="outlined" color="primary" size="small" onClick={(event) => handleEditPost(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
+                        Modifier
+                    </Button>
+                    <Button  variant="outlined" color="error" size="small" onClick={(event) => handleDeletePost(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
+                        Supprimer
+                    </Button>
+                </Box>
+           ),
         },
     ];
 
@@ -113,21 +116,21 @@ const SectionCreateFestival = () => {
     const columnsCreneaux: GridColDef[] = [
         { field: 'timeStart', headerName: 'Heure de début', width: 150 },
         { field: 'timeEnd', headerName: 'Heure de fin', width: 150 },
-        { 
-            field: 'actions', 
-            headerName: 'Actions', 
-            width: 100, 
-            sortable: false,
-            renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => (
-                <>
-                    <IconButton aria-label="edit" onClick={() => handleEditCreneau(params.row)}>
-                        <Edit />
-                    </IconButton>
-                    <IconButton aria-label="delete" onClick={() => handleDeleteCreneau(params.row)}>
-                        <Delete />
-                    </IconButton>
-                </>
-            )
+        { field: 'actions', 
+          headerName: 'Actions', 
+          width: 250,
+          renderCell: (params) => (
+                <Box className={styles.actionCell}>
+                    <Button  variant="outlined" color="primary" size="small" onClick={(event) => handleEditCreneau(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
+                        Modifier
+                    </Button>
+                    <Button  variant="outlined" color="error" size="small" onClick={(event) => handleDeleteCreneau(params.row, event)}>
+                        <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
+                        Supprimer
+                    </Button>
+                </Box>
+           ),
         },
     ];
 
@@ -138,14 +141,16 @@ const SectionCreateFestival = () => {
     const [objectToUpdateCreneau, setObjectToUpdateCreneau] = useState({} as any);
 
     // Edit a post
-    const handleEditPost = (row: any) => {
+    const handleEditPost = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         setIsUpdatePost(true);
         setObjectToUpdatePost(row);
         handleOpenModalPost();
     }
 
     // Delete a post
-    const handleDeletePost = (row: any) => {
+    const handleDeletePost = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         try {
             const newDataPosts = dataPosts.filter((post: any) => post.id !== row.id);
             setDataPosts(newDataPosts);
@@ -158,14 +163,16 @@ const SectionCreateFestival = () => {
     }
 
     // Edit a creneau
-    const handleEditCreneau = (row: any) => {
+    const handleEditCreneau = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         setIsUpdateCreneau(true);
         setObjectToUpdateCreneau(row);
         handleOpenModalCreneau();
     }
 
     // Delete a creneau
-    const handleDeleteCreneau = (row: any) => {
+    const handleDeleteCreneau = (row: any, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.stopPropagation();
         try {
             const newDataCreneau = dataCreneau.filter((creneau: any) => creneau.id !== row.id);
             setDataCreneau(newDataCreneau);
@@ -177,7 +184,6 @@ const SectionCreateFestival = () => {
         }
     }
 
-    
     // Create a festival
     const navigate = useNavigate();
     const [isLoadingCreateFestival, setIsLoadingCreateFestival] = useState(false);
@@ -189,6 +195,13 @@ const SectionCreateFestival = () => {
         // Check if there is a name
         if(dataFestival.name === "") {
             handleShowAlertMessage("Erreur: Veuillez entrer un nom pour le festival.", "error");
+            setIsLoadingCreateFestival(false);
+            return;
+        }
+
+        // Check if the dateDebut is after today
+        if(dataFestival.dateDebut.isBefore(dayjs().subtract(1, 'day'))) {
+            handleShowAlertMessage("Erreur: La date de début ne peut pas être avant aujourd'hui.", "error");
             setIsLoadingCreateFestival(false);
             return;
         }
@@ -216,18 +229,34 @@ const SectionCreateFestival = () => {
 
         try {
             // Create the festival
-            const festivalToCreate = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate(), address: "Lorem Ipsum" };
+            const festivalToCreate = { ...dataFestival, dateDebut: dataFestival.dateDebut.toDate(), dateFin: dataFestival.dateFin.toDate(), address: "Corum", city: "Montpellier", postalCode: "34000", country: "France", isActive: true};
             console.log(festivalToCreate);
 
             const res = await createFestival(festivalToCreate);
             if(res && res.data) {
-                // Delete the data from the localStorage
-                localStorage.removeItem("dataFestival");
-                localStorage.removeItem("dataPosts");
-                localStorage.removeItem("dataCreneau");
+                // Create a dictionnary of espaceId
+                const listIdEspaceCreated = [] as Array<number>;
 
-                // Redirect to the home page
-                navigate("/", { state: { message: "Le festival a bien été créé.", severity: "success" }});
+                // Handle the creation of the postes and creneaux for the festival
+                const idFestival = res.data.idFestival;
+                const isPostesCreated = await handlePostesCreation(idFestival);
+                const isCreneauxCreated = await handleCreneauxCreation(idFestival);
+                const isEspaceCreated = await handleEspaceCreation(idFestival, listIdEspaceCreated);
+                const isCreneauxEspaceCreated = await handleCreneauxEspaceCreation(idFestival, listIdEspaceCreated);
+
+                if(isPostesCreated && isCreneauxCreated && isEspaceCreated && isCreneauxEspaceCreated) {
+                    // Delete the data from the localStorage
+                    localStorage.removeItem("dataFestival");
+                    localStorage.removeItem("dataPosts");
+                    localStorage.removeItem("dataCreneau");
+
+                    // Redirect to the page of the festival
+                    navigate(`/festival/${idFestival}`, { state: { message: "Le festival a bien été créé.", severity: "success" }});
+                } else {
+                    handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
+                }
+            } else {
+                handleShowAlertMessage("Une erreur est survenue lors de la création du festival.", "error");
             }
         } catch (error) {
             console.log(error);
@@ -237,17 +266,170 @@ const SectionCreateFestival = () => {
         }
     }
 
+    // Create all the postes for the festival
+    const handlePostesCreation = async (idFestival: number) => {
+        try {
+            const postesToCreate = dataPosts.map((post: any) => {
+                const { id, ...postWithoutId } = post;
+                return { ...postWithoutId, idFestival };
+            });
+            const res = await addMultiplePostes(postesToCreate);
+
+            if(res && res.data) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    // Create all the creneaux for the festival
+    const handleCreneauxCreation = async (idFestival: number) => {
+        try {
+            const creneauxToCreate : Creneau[] = dataCreneau.map((creneau: any) => {
+                const { id, timeStart, timeEnd, ...newCreneau } = creneau;
+
+                // Convert time strings to Date objects
+                const formattedTimeStart = parseTimeStringToDate(timeStart);
+                const formattedTimeEnd = parseTimeStringToDate(timeEnd);
+
+                return { ...newCreneau, idFestival, timeStart: formattedTimeStart, timeEnd: formattedTimeEnd };
+            });
+            const res = await addMultipleCreneau(creneauxToCreate);
+            if(res && res.data) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+    
+    const parseTimeStringToDate = (timeString: string) => {
+        const [hours, minutes] = timeString.split(':');
+        const currentDate = new Date();
+        currentDate.setUTCHours(parseInt(hours, 10));
+        currentDate.setUTCMinutes(parseInt(minutes, 10));
+        return currentDate;
+    };
+
+    // Create the espace default for each poste of the festival
+    const handleEspaceCreation = async (idFestival : number, listIdEspaceCreated: Array<number>) => {
+        try {
+            // Get all the postes created
+            const listPostesCreated = await getListPostesCreated(idFestival);
+    
+            if (listPostesCreated.length === 0) return false;
+    
+            // Create an espace for each poste
+            let errorDuringCreation = false;
+            await Promise.all(listPostesCreated.map(async (poste: any) => {
+                try {
+                    const resEspace = await addEspace({ name: poste.name });
+                    if (resEspace && resEspace.data) {
+                        const idEspace = resEspace.data.idEspace;
+
+                        // Store the created idEspace
+                        listIdEspaceCreated.push(idEspace); 
+    
+                        // Create a PosteEspace for each poste
+                        const dataPosteEspace = { idEspace, idPoste: poste.idPoste };
+                        const resPosteEspace = await addPosteEspace(dataPosteEspace);
+                        if (!resPosteEspace || !resPosteEspace.data) {
+                            errorDuringCreation = true;
+                        }
+                    } else {
+                        errorDuringCreation = true;
+                    }
+                } catch (error) {
+                    console.log(error);
+                    errorDuringCreation = true;
+                }
+            }));
+            return !errorDuringCreation;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    // Get the list of postes created
+    const getListPostesCreated = async (idFestival: number) => {
+        try {
+            const res = await getPostesByFestival(idFestival.toString());
+            if(res && res.data) {
+                return res.data;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    }
+
+    // Create an espace/creneau insertion in CreneauEspace for each creneau/espace
+    const handleCreneauxEspaceCreation = async (idFestival: number, listIdEspaceCreated: Array<number>) => {
+        try {
+            // Get all the creneaux created
+            const listCreneauxCreated = await getListCreneauxCreated(idFestival);
+
+            if(listCreneauxCreated.length === 0) return false;
+
+            if(listIdEspaceCreated.length === 0) return false;
+            
+            // Create an espace/creneau insertion in CreneauEspace for each creneau/espace
+            let errorDuringCreation = false;
+            listCreneauxCreated.forEach(async (creneau: any) => {
+                listIdEspaceCreated.forEach(async (idEspace: number) => {
+                    const dataCreneauEspace = { idCreneau: creneau.idCreneau, idEspace };
+                    const resCreneauEspace = await addCreneauEspace(dataCreneauEspace);
+                    if(!resCreneauEspace || !resCreneauEspace.data) {
+                        errorDuringCreation = true;
+                    }
+                });
+            });
+            return !errorDuringCreation;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    // Get the list of creneaux created
+    const getListCreneauxCreated = async (idFestival: number) => {
+        try {
+            const res = await getCreneauxByFestival(idFestival.toString());
+            if(res && res.data) {
+                return res.data;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    }
+
     return(
         <>
         {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
         <Box id={styles.boxSection}>
             <Typography id={styles.title} variant="h1" color="black">Créer un festival</Typography>
             <Box id={styles.boxForm}>
-                <TextField className={styles.fieldForm} label="Nom du festival" variant="standard" margin="dense" value={dataFestival.name} onChange={(e) => setDataFestival({...dataFestival, name: e.target.value})} required/>
-                <DatePicker className={styles.fieldForm} label="Date de début" minDate={dayjs()} value={dataFestival.dateDebut || dayjs()} onChange={(e) => setDataFestival({...dataFestival, dateDebut: e || dayjs()})} />
-                <DatePicker className={styles.fieldForm} label="Date de fin" minDate={dataFestival.dateDebut.add(1, 'day')} value={dataFestival.dateFin} onChange={(e) => setDataFestival({...dataFestival, dateFin: e || dayjs()})} />
-                <Box className={styles.boxTable}>
-                    <Typography className={styles.titleTable} variant="h2" color="initial">Liste des postes</Typography>
+                <Box id={styles.generalInformations}>
+                    <Typography className={styles.titleTable} variant="h3" color="initial">Informations générales</Typography>
+                    <TextField className={styles.fieldForm} label="Nom du festival" variant="standard" margin="dense" value={dataFestival.name} onChange={(e) => setDataFestival({...dataFestival, name: e.target.value})} required/>
+                    <DatePicker className={styles.fieldForm} label="Date de début"  minDate={dayjs()} value={dataFestival.dateDebut || dayjs()} onChange={(e) => setDataFestival({...dataFestival, dateDebut: e || dayjs()})} />
+                    <DatePicker className={styles.fieldForm} label="Date de fin" minDate={dataFestival.dateDebut.add(1, 'day')} value={dataFestival.dateFin} onChange={(e) => setDataFestival({...dataFestival, dateFin: e || dayjs()})} />
+                </Box>
+                <Box className={styles.boxTablePoste}>
+                    <Typography className={styles.titleTable} variant="h3" color="initial">Liste des postes</Typography>
                     {dataPosts.length === 0 ? (
                         <Typography className={styles.textTable} variant="body1" color="initial">Aucun poste pour le moment.</Typography>
                     ) : (
@@ -266,8 +448,8 @@ const SectionCreateFestival = () => {
                 <Box className={styles.boxButtonTable}>
                     <Button variant="outlined" color="primary" onClick={() => handleOpenModalPost()} disabled={isLoadingCreateFestival}>Ajouter un poste</Button>
                 </Box>
-                <Box className={styles.boxTable}>
-                    <Typography className={styles.titleTable} variant="h2" color="initial">Liste des créneaux</Typography>
+                <Box className={styles.boxTableCreneau}>
+                    <Typography className={styles.titleTable} variant="h3" color="initial">Liste des créneaux</Typography>
                     {dataCreneau.length === 0 ? (
                         <Typography className={styles.textTable} variant="body1" color="initial">Aucun créneau pour le moment.</Typography>
                     ) : (
