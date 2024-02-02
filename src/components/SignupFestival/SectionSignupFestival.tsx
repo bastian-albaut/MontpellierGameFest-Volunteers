@@ -180,7 +180,7 @@ const SectionSignupFestival = () => {
 
         // Increase currentCapacity
         if(creneauPostItem) {
-            creneauPostItem.capacityEspace += 1;
+            creneauPostItem.currentCapacity += 1;
         }
 
         // Disable all postes for this creneau except the current poste
@@ -206,7 +206,7 @@ const SectionSignupFestival = () => {
     const handleCreneauPostAlreadySelected = (creneauPostItem: any, idCreneau: number) => {
         if(creneauPostItem && creneauPostItem.selected) {
             // Decrease currentCapacity
-            creneauPostItem.capacityEspace -= 1;
+            creneauPostItem.currentCapacity -= 1;
 
             // Update the current creneau/post selected as not selected
             creneauPostItem.selected = false;
@@ -278,7 +278,7 @@ const SectionSignupFestival = () => {
         // Decrease the currentCapacity of the creneau/post selected
         const creneauPostItem = dataCreneauxEspaces.find((item: any) => item.idCreneau === idCreneau && item.selected === true);
         if(creneauPostItem) {
-            creneauPostItem.capacityEspace -= 1;
+            creneauPostItem.currentCapacity -= 1;
             creneauPostItem.selected = false;
         }
 
@@ -328,20 +328,24 @@ const SectionSignupFestival = () => {
               if(creneauPostItem) {
                 return (
                     <>
-                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={(creneauPostItem.capacityEspace >= capacityPoste) || creneau.isFlexible}>
+                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={(creneauPostItem.currentCapacity >= capacityPoste) || creneau.isFlexible}>
                         <Box id={styles.boxCircularProgress}>
                         <CircularProgress 
                             size={65} 
                             variant="determinate" 
-                            value={(creneauPostItem.capacityEspace / capacityPoste) * 100}
+                            value={
+                                creneauPostItem.currentCapacity > 0
+                                    ? (creneauPostItem.currentCapacity / capacityPoste) * 100
+                                    : 0.1
+                            }
                             style={{
                                 opacity: creneauPostItem.disabled ? 0.1 : 1,
                                 color:
-                                    creneauPostItem.capacityEspace >= capacityPoste
+                                    creneauPostItem.currentCapacity >= capacityPoste
                                         ? "green"
-                                        : creneauPostItem.capacityEspace >= capacityPoste / 2
+                                        : creneauPostItem.currentCapacity >= capacityPoste / 2
                                         ? "orange"
-                                        : creneauPostItem.capacityEspace >= capacityPoste / 3
+                                        : creneauPostItem.currentCapacity >= capacityPoste / 3
                                         ? "#ffd500"
                                         : "red"
                             }}
@@ -349,7 +353,7 @@ const SectionSignupFestival = () => {
                         />
                         <Box id={styles.boxTextInsideCircularProgress}>
                             <Typography variant="body2" component="div" color="initial">
-                            {`${creneauPostItem.capacityEspace}/${capacityPoste}`}
+                            {`${creneauPostItem.currentCapacity}/${capacityPoste}`}
                             </Typography>
                         </Box>
                         </Box>
@@ -381,7 +385,7 @@ const SectionSignupFestival = () => {
         }
 
         // Check if each creneau/post selected is not already full
-        const creneauPostSelectedFull = dataCreneauxEspaces.find((item: any) => item.selected === true && item.capacityEspace >= item.capacityPoste);
+        const creneauPostSelectedFull = dataCreneauxEspaces.find((item: any) => item.selected === true && item.currentCapacity >= item.capacityPoste);
         if(creneauPostSelectedFull) {
             handleShowAlertMessage("Un des créneaux sélectionnés est déjà complet.", "error");
             return;
