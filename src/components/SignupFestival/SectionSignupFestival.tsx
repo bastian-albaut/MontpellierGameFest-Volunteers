@@ -278,7 +278,7 @@ const SectionSignupFestival = () => {
         // Decrease the currentCapacity of the creneau/post selected
         const creneauPostItem = dataCreneauxEspaces.find((item: any) => item.idCreneau === idCreneau && item.selected === true);
         if(creneauPostItem) {
-            creneauPostItem.currentCapacity -= 1;
+            creneauPostItem.capacityEspace -= 1;
             creneauPostItem.selected = false;
         }
 
