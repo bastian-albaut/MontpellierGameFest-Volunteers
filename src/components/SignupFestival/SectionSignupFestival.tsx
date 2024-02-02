@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid";
 import useAlert from "../../hooks/useAlerts";
 import { useNavigate, useParams } from "react-router-dom";
-import { addVolunteer, getCreneauEspaceByCreneau, getCreneauxByFestival, getFestival, getPostesByFestival } from "../../api";
+import { addInscription, addVolunteer, getCreneauEspaceByCreneau, getCreneauxByFestival, getFestival, getPostesByFestival } from "../../api";
 import Loading from "../general/Loading";
 import { useUser } from "../../contexts/UserContext";
 import { isVolunteer } from "../../types/IsVolunteer";
+import AlertComponent from "../general/Alert";
 
 const SectionSignupFestival = () => {
 
@@ -160,7 +161,6 @@ const SectionSignupFestival = () => {
         },
     };
 
-    // Display alert message
     const { alertMessage, handleShowAlertMessage } = useAlert();
 
     const handleSelectCreneau = (params: any) => {
@@ -380,11 +380,27 @@ const SectionSignupFestival = () => {
             return;
         }
 
+        // Check if each creneau/post selected is not already full
+        const creneauPostSelectedFull = dataCreneauxEspaces.find((item: any) => item.selected === true && item.capacityEspace >= item.capacityPoste);
+        if(creneauPostSelectedFull) {
+            handleShowAlertMessage("Un des créneaux sélectionnés est déjà complet.", "error");
+            return;
+        }
+
         try {
             const data : isVolunteer = {sizeTeeShirt: sizeTeeShirt, isVege: isVege, idUser: user?.id?.toString()!, idFestival: parseInt(id!)};
             const res = await addVolunteer(data);
             if(res && res.data) {
-                handleShowAlertMessage("Inscription au festival réussie.", "success");
+                // Insert in Inscription table the idUser and the idCreneauEspace for each creneau/post selected
+                const dataInscription = dataCreneauxEspaces.filter((item: any) => item.selected === true).map((item: any) => { return {idUser: user?.id?.toString()!, idCreneauEspace: item.idCreneauEspace}});
+                // For each dataInscription, insert in Inscription table the idUser and the idCreneauEspace
+                const resInscription = await Promise.all(dataInscription.map(async (item: any) => {
+                    const res = await addInscription(item);
+                    return res;
+                }));
+                if(resInscription) {
+                    handleShowAlertMessage("Inscription au festival réussie.", "success");
+                }
             } else {
                 handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
             }
@@ -402,7 +418,7 @@ const SectionSignupFestival = () => {
 
 	return(
         <>
-        {/* {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />} */}
+        {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
         <Box id={styles.boxSection}>
             <Typography id={styles.title} variant="h1" color="black">Inscription festival</Typography>
             <Box id={styles.infoFestival}>

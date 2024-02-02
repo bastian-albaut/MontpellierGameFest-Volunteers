@@ -35,3 +35,4 @@ export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);
 export const deleteFestival = (id: string) => API.delete('/festivals/' + id);
 export const addCreneauEspace = (data: any) => API.post('/creneauEspaces', data);
 export const getCreneauEspaceByCreneau = (id: string) => API.get(`/creneauEspaces/creneau/${id}`);
+export const addInscription = (data: any) => API.post('/inscriptions', data);
