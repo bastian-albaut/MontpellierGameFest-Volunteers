@@ -18,6 +18,7 @@ import PostePage from './pages/Poste/PostePage';
 import ContactPage from './pages/Contact/ContactPage';
 import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
+import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 
 
 let theme = createTheme({
@@ -135,7 +136,9 @@ const App = () => {
                     <Route path="/poste/:id" element={<PostePage />}/>
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
+                    <Route path="/verify-email" element={<VerifyEmail/>} />
                     <Route path="*" element={<Navigate replace to="/" />} />
+
                 </Routes>
                 </BrowserRouter>
             </StyledEngineProvider>
