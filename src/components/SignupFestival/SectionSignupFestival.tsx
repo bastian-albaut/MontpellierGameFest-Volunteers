@@ -39,7 +39,6 @@ const SectionSignupFestival = () => {
             let isFetchFestival = false;
             let isFetchPostes = false;
             let isFetchCreneaux = false;
-            let isFetchCreneauxEspaces = false;
     
             try {
                 const [festivalResponse, postesResponse, creneauxResponse] = await Promise.all([
@@ -127,7 +126,7 @@ const SectionSignupFestival = () => {
         };
     
         fetchData();
-    }, [id, navigate]);
+    }, []);
 
     useEffect(() => {
         console.log(dataCreneauxEspaces);
@@ -165,7 +164,6 @@ const SectionSignupFestival = () => {
     const { alertMessage, handleShowAlertMessage } = useAlert();
 
     const handleSelectCreneau = (params: any) => {
-        console.log(params)
         // Get the current creneau id
         const idCreneau = parseInt(params.field.split("_")[1]);
 
