@@ -24,7 +24,7 @@ const VerifyEmail = () => {
 			const rep = await apiVerifyEmail(token);
 			setMessage('Votre email a été vérifié avec succès !');
 		}catch (error) {
-			console.log(error);
+			setMessage('Une erreur est survenue lors de la vérification de votre email.');
 		}finally {
 			setLoading(false);
 		}
