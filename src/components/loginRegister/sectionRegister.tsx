@@ -13,6 +13,13 @@ export default function Register(props: any) {
 
     const [formData, setFormData] = useState({firstName: '', lastName: '', address: ' ', email: '', password: '', file: '', associations: [] });
 
+    const navigate = useNavigate();
+
+    const handleGoogleSignIn = () => {
+        // Remplacez 'http://localhost:8080' par l'URL de base de votre backend si elle est différente
+        window.location.href = 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/auth/google';
+    };
+
     const [selectedFile, setSelectedFile] = useState(null);
 
     // Get all the associations on mount
@@ -177,6 +184,9 @@ export default function Register(props: any) {
 
                 <FileInput selectedFile={selectedFile} setSelectedFile={setSelectedFile} handleFileSelect={handleFileSelect} />
                 <Button id={styles.buttonRegister} variant="contained" color="primary" type="submit" onClick={(event) => handleSignUp(event)} disabled={props.isLoadingLoginRegister} >S'inscrire</Button>
+                <Button variant="contained" onClick={handleGoogleSignIn} sx={{ mt: 2 }}>
+                    Se connecter avec Google
+                </Button>
                 <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(true)} disabled={props.isLoadingLoginRegister} >J'ai déjà un compte</Button>
             </form>
         </Box>

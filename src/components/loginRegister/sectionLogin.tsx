@@ -11,6 +11,12 @@ import styles from "../../styles/components/loginRegister/sectionLogin.module.sc
 
 export default function Login(props: any) {
     const [data, setData] = useState({ email: '', password: '' });
+    const navigate = useNavigate();
+
+    const handleGoogleSignIn = () => {
+        // Remplacez 'http://localhost:8080' par l'URL de base de votre backend si elle est différente
+        window.location.href = 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/auth/google';
+    };
 
     // Manage the login
     const handleSignIn = async () => {
@@ -82,6 +88,9 @@ export default function Login(props: any) {
                                                                                                                                                                                                             />
                 </Box>
                 <Button id={styles.buttonLogin} variant="contained" color="primary" onClick={handleSignIn} disabled={props.isLoadingLoginRegister}>Connexion</Button>
+                <Button variant="contained" onClick={handleGoogleSignIn} sx={{ mt: 2 }}>
+                    Se connecter avec Google
+                </Button>
                 <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(false)} disabled={props.isLoadingLoginRegister}>Je n'ai pas de compte</Button>
             </Box>
         </Box>
