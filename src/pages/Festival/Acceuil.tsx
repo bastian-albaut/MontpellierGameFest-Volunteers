@@ -13,6 +13,11 @@ const Acceuil = () => {
 	// Get the current user
     const { user, loading } = useUser();
 
+    // Get the festival id from the url
+    const url = window.location.href;
+    const idFestival = url.substring(url.lastIndexOf('/') + 1);
+
+
     // Redirect to home page if not logged in
     const navigate = useNavigate();
     useEffect(() => {
@@ -30,7 +35,6 @@ const Acceuil = () => {
         }
     }, [location, handleShowAlertMessage]);
 
-
     if (loading) {
         return <Loading />;
     }
@@ -39,7 +43,7 @@ const Acceuil = () => {
 		<>
             <Appbar currentUser={user} />
 			{alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
-            <AcceuilComponent />
+            <AcceuilComponent idFestival={idFestival}/>
         </> 
     );
 }

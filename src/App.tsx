@@ -125,7 +125,7 @@ const App = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
             <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst>
-                <BrowserRouter>
+                <BrowserRouter> 
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
                     <Route path="/connexion" element={<LoginRegister />} />
@@ -136,7 +136,7 @@ const App = () => {
                     <Route path="/poste/:id" element={<PostePage />}/>
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
-                    <Route path="/gestionacceuil" element={<Acceuil />}/>
+                    <Route path="/gestionacceuil/:id" element={<Acceuil />}/>
                     <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>
                 </BrowserRouter>
