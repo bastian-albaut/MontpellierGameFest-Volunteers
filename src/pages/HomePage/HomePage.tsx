@@ -15,8 +15,16 @@ const HomePage = () => {
     // Display alert message from location state
     const location = useLocation();
     const { alertMessage, handleShowAlertMessage } = useAlert();
-    
+
     const navigate = useNavigate();
+
+    const handleNavigation = () => {
+        navigate('/connexion'); 
+    };
+
+    const handleContactClick = () => {
+        navigate('/contact');
+    };
 
     const dashboard = '/dashboard.jpeg';
     const faq = '/faq.jpeg';
@@ -32,6 +40,7 @@ const HomePage = () => {
         padding: '20px',
         backgroundImage: `url(${bgImage})`,
         backgroundSize: 'cover',
+        cursor: 'pointer',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         boxSizing: 'border-box',
@@ -80,14 +89,16 @@ const HomePage = () => {
             >
 
                 <Box sx={{ width: '100%', maxWidth: 1200, maxHeight: '100vh', overflow: 'auto' }}>
+
                     <Grid container spacing={2} justifyContent="center" sx={{ maxWidth: 1200 }}>
+
                         {/* Dashboard */}
                         <Grid item xs={12} md={6}>
                             <Paper sx={paperStyle(dashboard)}>
-                                <Box sx={{ mt: 'auto', width: '100%', textAlign: 'center' }}>
-                                    <Button variant="contained" color="primary" sx={{ m: 1, width: 150, height: 50 }}>Connexion</Button>
-                                    <Button variant="outlined" color="primary" sx={{ m: 1, width: 150, height: 50 }}>Inscription</Button>
-                                </Box>
+                            <Box sx={{ mt: 'auto', width: '100%', textAlign: 'center' }}>
+                                <Button variant="contained" color="primary" sx={{ m: 1, width: 150, height: 50 }} onClick={handleNavigation}>Connexion</Button>
+                                <Button variant="contained" sx={{ m: 1, width: 150, height: 50, backgroundColor: '#fff', color: '#6f9600', '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.08)' } }} onClick={handleNavigation}>Inscription</Button>
+                            </Box>
                             </Paper>
                         </Grid>
 
@@ -101,10 +112,11 @@ const HomePage = () => {
 
                                 {/* Contact Us */}
                                 <Grid item xs={12}>
-                                    <Paper sx={paperStyle(contactus, '33vh')}></Paper>
+                                    <Paper sx={paperStyle(contactus, '33vh')} onClick={handleContactClick}></Paper>
                                 </Grid>
                             </Grid>
                         </Grid>
+
                     </Grid>
                 </Box>
 
