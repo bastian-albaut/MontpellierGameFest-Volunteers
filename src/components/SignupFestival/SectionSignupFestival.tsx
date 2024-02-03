@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid";
 import useAlert from "../../hooks/useAlerts";
 import { useNavigate, useParams } from "react-router-dom";
-import { addInscription, addVolunteer, getCreneauEspaceByCreneau, getCreneauxByFestival, getFestival, getPostesByFestival } from "../../api";
+import { addInscription, addVolunteer, getCreneauEspaceByCreneau, getCreneauxByFestival, getFestival, getPostesByFestival, updateCreneauEspace } from "../../api";
 import Loading from "../general/Loading";
 import { useUser } from "../../contexts/UserContext";
 import { isVolunteer } from "../../types/IsVolunteer";
@@ -90,7 +90,6 @@ const SectionSignupFestival = () => {
                                     delete creneauEspace.idCreneauEspace;
                                     creneauEspace.selected = false;
                                     creneauEspace.disabled = false;
-                                    creneauEspace.currentCapacity = 0;
                                     return creneauEspace;
                                 });
                     
@@ -397,8 +396,9 @@ const SectionSignupFestival = () => {
             if(res && res.data) {
 
                 // Get all the creneauxEspaces selected by the user
+                console.log(dataCreneauxEspaces)
                 let dataInscription = dataCreneauxEspaces.filter((item: any) => item.selected === true).map((item: any) => {
-                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!};
+                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!, currentCapacity: item.currentCapacity};
                 });
 
                 // Get all flexible creneaux selected by the user
@@ -406,11 +406,10 @@ const SectionSignupFestival = () => {
 
                 // Get all creneauxEspaces for flexible creneaux
                 const flexibleCreneauxEspaces = dataCreneauxEspaces.filter((item: any) => flexibleCreneaux.find((creneau: any) => creneau.id === item.idCreneau));
-                console.log("=============flexibleCreneauxEspaces: ")
-                console.log(flexibleCreneauxEspaces);
+
                 // Add to dataInscription flexibleCreneauxEspaces
                 dataInscription = dataInscription.concat(flexibleCreneauxEspaces.map((item: any) => {
-                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!, isFlexible: true};
+                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!, currentCapacity: item.currentCapacity, isFlexible: true};
                 }));
                 
                 // Remove duplicates
@@ -420,16 +419,28 @@ const SectionSignupFestival = () => {
                     ))
                 );
 
-                console.log("=============dataInscription: ")
-                console.log(dataInscription);
+                // For each dataInscription, update in CreneauEspace table the currentCapacity
+                const resCreneauEspace = await Promise.all(dataInscription.map(async (item: any) => {
+                    const res = await updateCreneauEspace(item.idCreneauEspace, {currentCapacity: item.currentCapacity});
+                    return res;
+                }));
 
-                // For each dataInscription, insert in Inscription table the idUser and the idCreneauEspace
+                if(!resCreneauEspace) {
+                    handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
+                    return;
+                }
+
+                // For each dataInscription, insert in Inscription table the idUser, the idCreneauEspace and eventually the isFlexible
                 const resInscription = await Promise.all(dataInscription.map(async (item: any) => {
+                    delete item.currentCapacity;
                     const res = await addInscription(item);
                     return res;
                 }));
+
                 if(resInscription) {
                     handleShowAlertMessage("Inscription au festival réussie.", "success");
+                } else {
+                    handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
                 }
             } else {
                 handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
