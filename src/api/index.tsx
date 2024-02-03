@@ -5,7 +5,9 @@ import { Poste } from '../types/Poste';
 import { Creneau } from '../types/Creneau';
 import { isVolunteer } from '../types/IsVolunteer';
 
+// const API = axios.create({ baseURL : 'http://localhost:8080/' })
 const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
+
 
 // Send the token at each request
 API.interceptors.request.use((req) => {
@@ -35,6 +37,7 @@ export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);
 export const deleteFestival = (id: string) => API.delete('/festivals/' + id);
 export const addCreneauEspace = (data: any) => API.post('/creneauEspaces', data);
 export const addMultipleIsPlay = (data: any) => API.post('/isPlay/multiple', data);
+export const getGamesByFestival = (id: string) => API.get(`/festivals/${id}/games`);
 
 export const uploadFile = (file: any) => {
     const formData = new FormData();
