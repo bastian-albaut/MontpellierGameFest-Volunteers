@@ -1,9 +1,11 @@
+import AcceuilComponent from "../../components/Festival/Acceuil";
 import Appbar from "../../components/general/Appbar";
 import Loading from "../../components/general/Loading";
 import { useUser } from "../../contexts/UserContext";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { useEffect } from "react";
-import AcceuilComponent from "../../components/Festival/Acceuil";
+import useAlert from "../../hooks/useAlerts";
+import AlertComponent from "../../components/general/Alert"
 
 
 const Acceuil = () => {
@@ -19,6 +21,16 @@ const Acceuil = () => {
         }
     }, [user, loading, navigate]);
 
+    // Display alert message from location state
+    const location = useLocation();
+    const { alertMessage, handleShowAlertMessage } = useAlert();
+    useEffect(() => {
+        if (location?.state?.message !== undefined) {
+            handleShowAlertMessage(location.state.message, location.state.severity);
+        }
+    }, [location, handleShowAlertMessage]);
+
+
     if (loading) {
         return <Loading />;
     }
@@ -26,6 +38,7 @@ const Acceuil = () => {
 	return(
 		<>
             <Appbar currentUser={user} />
+			{alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
             <AcceuilComponent />
         </> 
     );

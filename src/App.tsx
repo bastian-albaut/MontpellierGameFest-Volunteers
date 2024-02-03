@@ -18,6 +18,7 @@ import PostePage from './pages/Poste/PostePage';
 import ContactPage from './pages/Contact/ContactPage';
 import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
+import Acceuil from './pages/Festival/Acceuil'
 
 
 let theme = createTheme({
@@ -135,6 +136,7 @@ const App = () => {
                     <Route path="/poste/:id" element={<PostePage />}/>
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
+                    <Route path="/gestionacceuil" element={<Acceuil />}/>
                     <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>
                 </BrowserRouter>
