@@ -6,6 +6,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Loading from '../general/Loading'; // Vérifiez le chemin
 import { Box, Typography } from '@mui/material';
 import { Creneau } from '../../types/Creneau';
+import { GridValueGetterParams } from '@mui/x-data-grid';
 
 
 
@@ -49,22 +50,33 @@ const Planning: React.FC<PlanningProps> = ({ idFestival }) => {
       width: 150,
       editable: true,
     },
-    // Autres colonnes...
+    {
+      field: 'timeStart',
+      headerName: 'Heure de début',
+      width: 130,
+      valueGetter: (params: GridValueGetterParams) => new Date(params.row.timeStart).toLocaleTimeString(),
+    },
+    {
+      field: 'timeEnd',
+      headerName: 'Heure de fin',
+      width: 130,
+      valueGetter: (params: GridValueGetterParams) => new Date(params.row.timeEnd).toLocaleTimeString(),
+    },
   ];
+  
 
   return (
     <>
-
-    <Box sx={{ height: 400, width: '100%' }}>
-      <Typography variant="h5" className={styles.heading}>Planning du Festival</Typography>
-      <DataGrid
-        rows={creneaux}
-        columns={columns}
-        getRowId={(row) => row.idCreneau}
-      />
-    </Box>
-    
-</> );
+      <Box sx={{ height: 400, width: '100%' }}>
+        <Typography variant="h5" className={styles.heading}>Planning du Festival</Typography>
+        <DataGrid
+          rows={creneaux}
+          columns={columns}
+          getRowId={(row) => row.idCreneau}
+        />
+      </Box>
+    </>
+  );
 };
 
 export default Planning;
