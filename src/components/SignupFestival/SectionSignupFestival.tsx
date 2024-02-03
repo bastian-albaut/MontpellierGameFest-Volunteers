@@ -66,7 +66,6 @@ const SectionSignupFestival = () => {
                     });
                     // Add the flexible poste
                     postesResponse.data.push({id: 0, name: "Flexible", capacityPoste: 0});
-
                     setDataPosts(postesResponse.data);
                     isFetchPostes = true;
                 } else {
@@ -377,9 +376,10 @@ const SectionSignupFestival = () => {
         // Disable the signup button during the signup process
         setSignupInprogress(true);
 
-        // Check if the user selected at least one creneau/post
+        // Check if the user selected at least one creneau/post or one flexible creneau
         const creneauPostSelected = dataCreneauxEspaces.find((item: any) => item.selected === true);
-        if(!creneauPostSelected) {
+        const flexibleCreneauSelected = dataCreneaux.find((item: any) => item.isFlexible === true);
+        if(!creneauPostSelected && !flexibleCreneauSelected) {
             handleShowAlertMessage("Vous devez sélectionner au moins un créneau.", "error");
             return;
         }
@@ -395,8 +395,34 @@ const SectionSignupFestival = () => {
             const data : isVolunteer = {sizeTeeShirt: sizeTeeShirt, isVege: isVege, idUser: user?.id?.toString()!, idFestival: parseInt(id!)};
             const res = await addVolunteer(data);
             if(res && res.data) {
-                // Insert in Inscription table the idUser and the idCreneauEspace for each creneau/post selected
-                const dataInscription = dataCreneauxEspaces.filter((item: any) => item.selected === true).map((item: any) => { return {idUser: user?.id?.toString()!, idCreneauEspace: item.idCreneauEspace}});
+
+                // Get all the creneauxEspaces selected by the user
+                let dataInscription = dataCreneauxEspaces.filter((item: any) => item.selected === true).map((item: any) => {
+                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!};
+                });
+
+                // Get all flexible creneaux selected by the user
+                const flexibleCreneaux = dataCreneaux.filter((item: any) => item.isFlexible === true);
+
+                // Get all creneauxEspaces for flexible creneaux
+                const flexibleCreneauxEspaces = dataCreneauxEspaces.filter((item: any) => flexibleCreneaux.find((creneau: any) => creneau.id === item.idCreneau));
+                console.log("=============flexibleCreneauxEspaces: ")
+                console.log(flexibleCreneauxEspaces);
+                // Add to dataInscription flexibleCreneauxEspaces
+                dataInscription = dataInscription.concat(flexibleCreneauxEspaces.map((item: any) => {
+                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!, isFlexible: true};
+                }));
+                
+                // Remove duplicates
+                dataInscription = dataInscription.filter((item: any, index: any, self: any) =>
+                    index === self.findIndex((t: any) => (
+                        t.idCreneauEspace === item.idCreneauEspace
+                    ))
+                );
+
+                console.log("=============dataInscription: ")
+                console.log(dataInscription);
+
                 // For each dataInscription, insert in Inscription table the idUser and the idCreneauEspace
                 const resInscription = await Promise.all(dataInscription.map(async (item: any) => {
                     const res = await addInscription(item);
@@ -450,12 +476,7 @@ const SectionSignupFestival = () => {
                         rowHeight={90}
                         rows={dataPosts}
                         columns={columnsGrid}
-                        initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
-                        },
-                        }}
-                        pageSizeOptions={[5, 10]}
+                        pageSizeOptions={[dataPosts.length]}
                     />
                 </Box>
                 <Typography id={styles.typoFlexible} variant="body1" color="initial">Le poste vous est égal ? Choisissez flexible pour le créneau correspondant.</Typography>
