@@ -30,7 +30,7 @@ function FileInput(props) {
         isDragReject,
     } = useDropzone({
         onDrop: handleDrop,
-        accept: '.xlsx, .csv',
+        accept: '.csv',
     });
   
     return (

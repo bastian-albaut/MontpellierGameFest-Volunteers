@@ -9,8 +9,12 @@ const ModalImportGames = (props: any) => {
 
     const [selectedFile, setSelectedFile] = useState(null);
     const[formError, setFormError] = useState("");
+    const[isSending, setIsSending] = useState(false);
 
     const handleSendCsv = async () => {
+
+        // Disable the button to avoid multiple click
+        setIsSending(true);
 
         // Check if a file is selected
         if(!selectedFile) {
@@ -18,17 +22,26 @@ const ModalImportGames = (props: any) => {
             return;
         }
 
+        // Check if the file is a CSV
+        if((selectedFile as File).type !== "text/csv") {
+            setFormError("Le fichier doit être au format CSV.");
+            return;
+        }
+
         try {
-            const data = {file: selectedFile};
-            console.log(data)
-            const res = await uploadFile(data);
+            const res = await uploadFile(selectedFile);
             if(res && res.data) {
-                console.log(res.data);
+                props.handleShowAlertMessage("Le fichier a bien été importé.", "success");
+                props.handleClose();
             } else {
-                console.log("Error");
+                props.handleShowAlertMessage("Une erreur est survenue lors de l'import du fichier.", "error");
+                props.handleClose();
             }
         } catch(error) {
-            console.log(error);
+            props.handleShowAlertMessage("Une erreur est survenue lors de l'import du fichier.", "error");
+            props.handleClose();
+        } finally {
+            setIsSending(false);
         }
     }
 
@@ -56,6 +69,7 @@ const ModalImportGames = (props: any) => {
                     variant="text"
                     color="primary"
                     onClick={() => handleSendCsv()}
+                    disabled={isSending}
                 >
                     Importer le fichier CSV
                 </Button>

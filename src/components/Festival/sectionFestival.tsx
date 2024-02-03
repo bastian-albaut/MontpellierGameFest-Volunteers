@@ -136,7 +136,7 @@ const SectionFestival = (props: any) => {
             <Box className={styles.boxElements}>
                 <Button variant="contained" color="primary" onClick={() => handleOpenModal()}>Importer des jeux</Button>
             </Box>
-            <ModalImportGames open={isModalOpen} handleClose={handleCloseModal} />
+            <ModalImportGames open={isModalOpen} handleClose={handleCloseModal} handleShowAlertMessage={props.handleShowAlertMessage}/>
         </Box>
     );
 };

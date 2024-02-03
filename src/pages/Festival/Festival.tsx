@@ -40,7 +40,7 @@ const Festival = () => {
         <>
             <Appbar currentUser={user} />
             {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
-            <SectionFestival idFestival={idFestival} />
+            <SectionFestival idFestival={idFestival} handleShowAlertMessage={handleShowAlertMessage} />
         </>
 	)
 }
