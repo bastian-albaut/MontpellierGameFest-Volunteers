@@ -5,7 +5,7 @@ import { Poste } from '../types/Poste';
 import { Creneau } from '../types/Creneau';
 import { isVolunteer } from '../types/IsVolunteer';
 
-const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
+const API = axios.create({ baseURL : 'http://localhost:8080/' })
 
 // Send the token at each request
 API.interceptors.request.use((req) => {
@@ -17,7 +17,20 @@ API.interceptors.request.use((req) => {
 })
 
 export const login = (data: any) => API.post('/login', data);
-export const register = (data: User) => API.post('/register', data);
+
+export const register = (data: any, file: any) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('data', JSON.stringify(data));
+
+    console.log(formData)
+    return API.post('/register', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+};
+
 export const getCurrentUser = () => API.get('/users/current');
 export const addMultiplePostes = (postes: Poste[]) => API.post('/postes/multiple', postes);
 export const addMultipleCreneau = (creneaux: Creneau[]) => API.post('/creneaux/multiple', creneaux);

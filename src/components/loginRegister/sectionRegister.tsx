@@ -107,11 +107,11 @@ export default function Register(props: any) {
         }
 
         // Create the user object
-        const userToCreate = { firstName: formData.firstName, lastName: formData.lastName, email: formData.email, password: formData.password, file: formData.file, associations: formData.associations, address: "Lorem Ipsum" };
+        const userToCreate = { firstName: formData.firstName, lastName: formData.lastName, email: formData.email, password: formData.password, associations: formData.associations, address: "Lorem Ipsum" };
 
         // Register the user
         try {
-            const res = await register(userToCreate);
+            const res = await register(userToCreate, formData.file);
             if (res && res.data) {
                 props.validateSignUp('Vous êtes enregistré avec succès ! Veuillez vous connecter.');
             }
