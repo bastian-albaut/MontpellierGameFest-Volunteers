@@ -1,14 +1,13 @@
 import { useEffect } from "react";
-import AlertComponent from "../../components/general/Alert"
 import { useLocation, useNavigate } from "react-router-dom";
-import Typography from '@mui/material/Typography'
-import Loading from "../../components/general/Loading";
 import { useUser } from "../../contexts/UserContext";
+import Loading from "../../components/general/Loading";
 import Appbar from "../../components/general/Appbar";
+import SectionDasboardAdmin from "../../components/Dashboard/SectionDasboardAdmin";
 import useAlert from "../../hooks/useAlerts";
-import SectionDashboard from "../../components/Dashboard/SectionDashboard";
+import AlertComponent from "../../components/general/Alert";
 
-const Dashboard = () => {
+const DashboardAdmin = () => {
 
     // Display alert message from location state
     const location = useLocation();
@@ -27,7 +26,7 @@ const Dashboard = () => {
         }
     }, [message, severity, handleShowAlertMessage]);
 
-    // Redirect to home page if not logged in
+	// Redirect to home page if not logged in
     const navigate = useNavigate();
     useEffect(() => {
         if (!user && !loading) {
@@ -41,11 +40,11 @@ const Dashboard = () => {
 
     return(
         <>
-            <Appbar currentUser={user} />
             {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
-            <SectionDashboard />
+            <Appbar currentUser={user} />
+            <SectionDasboardAdmin handleShowAlertMessage={handleShowAlertMessage} />
         </>
     )
 }
 
-export default Dashboard
+export default DashboardAdmin

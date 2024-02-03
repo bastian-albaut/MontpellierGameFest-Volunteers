@@ -5,10 +5,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { getFestivals } from '../../api';
 import { getSoirees } from '../../api';
-import { getIdFestival } from '../../api';
+import { getFestivalById } from '../../api';
 
 import { useUser } from "../../contexts/UserContext";
-import { getVolunteerFestivals } from '../../api';
+import { getVolunteersByFestival } from '../../api';
 
 import styles from "../../styles/components/Dashboard/sectiondashboard.module.scss";
 
@@ -51,7 +51,7 @@ const SectionDashboard: React.FC = () => {
     // Logique de récupération des festivals de l'utilisateur connecté
     const fetchUserFestivals = async (id: string) => {
         try {
-            const res = await getVolunteerFestivals(id);
+            const res = await getVolunteersByFestival(id);
             if (res.data) {
                 setUserFestivals(res.data);
                 console.log(res.data)

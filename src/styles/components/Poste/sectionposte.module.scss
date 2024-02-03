@@ -1,0 +1,34 @@
+@import "../../abstract/variables.module.scss";
+
+.posteContainer {
+    padding: 20px;
+    border: 1px solid $greyColor;
+    border-radius: 8px;
+    margin: 20px;
+    word-wrap: break-word;
+}
+
+.posteTitle {
+    margin-bottom: 10px;
+}
+
+.posteDescription {
+    color: $greyColor;
+    margin-bottom: 20px;
+}
+
+.referentsTitle {
+    margin-bottom: 10px;
+}
+
+.referentsList {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.referent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

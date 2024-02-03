@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import SectionCreateFestival from "../../components/CreateFestival/SectionCreateFestival"
 import Appbar from "../../components/general/Appbar";
 import Loading from "../../components/general/Loading";
 import { useUser } from "../../contexts/UserContext";
 import { useEffect } from "react";
+import SectionPoste from "../../components/Poste/SectionPoste";
 
-const CreateFestival = () => {
+const PostePage = () => {
 
     // Get the current user
     const { user, loading } = useUser();
@@ -18,6 +18,10 @@ const CreateFestival = () => {
         }
     }, [user, loading, navigate]);
 
+    // Get the poste id from the url
+    const url = window.location.href;
+    const idPoste = url.substring(url.lastIndexOf('/') + 1);
+
     if (loading) {
         return <Loading />;
     }
@@ -25,9 +29,9 @@ const CreateFestival = () => {
     return(
         <>
             <Appbar currentUser={user} />
-            <SectionCreateFestival />
+            <SectionPoste idPoste={idPoste} />
         </>
 	)
 }
 
-export default CreateFestival
+export default PostePage

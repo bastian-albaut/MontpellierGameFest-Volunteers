@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import SectionCreateFestival from "../../components/CreateFestival/SectionCreateFestival"
 import Appbar from "../../components/general/Appbar";
 import Loading from "../../components/general/Loading";
 import { useUser } from "../../contexts/UserContext";
+import SectionContact from "../../components/Contact/SectionContact";
+import { useNavigate } from "react-router";
 import { useEffect } from "react";
 
-const CreateFestival = () => {
+const ContactPage = () => {
 
     // Get the current user
     const { user, loading } = useUser();
@@ -25,9 +25,9 @@ const CreateFestival = () => {
     return(
         <>
             <Appbar currentUser={user} />
-            <SectionCreateFestival />
+            <SectionContact />
         </>
 	)
 }
 
-export default CreateFestival
+export default ContactPage

@@ -14,6 +14,9 @@ import useAlert from "../../hooks/useAlerts";
 const LoginRegister = () => {
     const [haveAccount, setHaveAccount] = useState(false);
     const navigate = useNavigate();
+
+    // Disable the login and register buttons when loading
+    const [isLoadingLoginRegister, setIsLoadingLoginRegister] = useState(false);
     
     // Set the token in the local storage and redirect to the user page
     const { reloadUserContext } = useUser();
@@ -23,6 +26,9 @@ const LoginRegister = () => {
         // Trigger the fetchUser function from the UserContext
         await reloadUserContext();
 
+        // Set loading to false after the login attempt is finished (success or failure)
+        setIsLoadingLoginRegister(false);
+
         // Redirect to the dashboard of the user
         const decodedToken = jwtDecode(userToken);
         const userId = (decodedToken as { userId: string }).userId;
@@ -30,8 +36,12 @@ const LoginRegister = () => {
     }
 
     // Set the token in the local storage and redirect to the login page
-    const validateSignUp = () => {
-        navigate("/");
+    const validateSignUp = (message: string) => {
+
+        // Set loading to false after the login attempt is finished (success or failure)
+        setIsLoadingLoginRegister(false);
+
+        navigate("/", { state: { message: message, severity: "success" } });
     }
 
     // Display alert message from location state
@@ -69,9 +79,9 @@ const LoginRegister = () => {
             {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
             {message && <AlertComponent message={message} severity="error" />}
             {haveAccount ? (
-                <Login validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowAlertMessage={handleShowAlertMessage} />
+                <Login validateSignIn={validateSignIn} setHaveAccount={setHaveAccount} handleShowAlertMessage={handleShowAlertMessage} isLoadingLoginRegister={isLoadingLoginRegister} setIsLoadingLoginRegister={setIsLoadingLoginRegister} />
             ) : (
-                <Register validateSignUp={validateSignUp} setHaveAccount={setHaveAccount} handleShowAlertMessage={handleShowAlertMessage} />
+                <Register validateSignUp={validateSignUp} setHaveAccount={setHaveAccount} handleShowAlertMessage={handleShowAlertMessage} isLoadingLoginRegister={isLoadingLoginRegister} setIsLoadingLoginRegister={setIsLoadingLoginRegister} />
             )}
         </>
     );
