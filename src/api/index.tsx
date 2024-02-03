@@ -28,7 +28,7 @@ export const getPosteById = (idPoste: string) => API.get(`/postes/${idPoste}`);
 export const getFestivalById = (id: string) => API.get(`/festivals/${id}`);
 export const getPostesByFestival = (id: string) => API.get(`/festivals/${id}/postes`);
 export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/creneaux`);
-export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`);
+export const getVolunteersByFestival = (id: string) => API.get(`/users/${id}/festivals`);
 export const getFestivals = () => API.get('/festivals');
 export const addEspace = (data: any) => API.post('/espaces', data);
 export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);
