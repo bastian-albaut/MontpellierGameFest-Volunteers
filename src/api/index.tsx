@@ -34,6 +34,7 @@ export const addEspace = (data: any) => API.post('/espaces', data);
 export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);
 export const deleteFestival = (id: string) => API.delete('/festivals/' + id);
 export const addCreneauEspace = (data: any) => API.post('/creneauEspaces', data);
+export const addMultipleIsPlay = (data: any) => API.post('/isPlay/multiple', data);
 
 export const uploadFile = (file: any) => {
     const formData = new FormData();

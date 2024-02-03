@@ -2,7 +2,7 @@ import { Box, Button, Modal, Typography } from "@mui/material";
 import styles from "../../styles/components/festival/modalImportGames.module.scss";
 import FileInput from "./FileInput";
 import { useState } from "react";
-import { uploadFile } from "../../api";
+import { addMultipleIsPlay, uploadFile } from "../../api";
 
 // Modal with start hour and end hour into a form
 const ModalImportGames = (props: any) => {
@@ -31,8 +31,22 @@ const ModalImportGames = (props: any) => {
         try {
             const res = await uploadFile(selectedFile);
             if(res && res.data) {
-                props.handleShowAlertMessage("Le fichier a bien été importé.", "success");
-                props.handleClose();
+                const idGamesCreated = res.data.createdGames;
+
+                // Create an array with the id of the game created and the festivalId
+                const idGamesCreatedWithFestivalId = idGamesCreated.map((idGame: string) => {
+                    return {idGame, idFestival: parseInt(props.idFestival)};
+                });
+
+                // Add insertion in IsPlay table for each game created
+                const resIsPlay = await addMultipleIsPlay(idGamesCreatedWithFestivalId);
+                if(resIsPlay && resIsPlay.data) {
+                    props.handleShowAlertMessage("Le fichier a bien été importé.", "success");
+                    props.handleClose();
+                } else {
+                    props.handleShowAlertMessage("Une erreur est survenue lors de l'import du fichier.", "error");
+                    props.handleClose();
+                }
             } else {
                 props.handleShowAlertMessage("Une erreur est survenue lors de l'import du fichier.", "error");
                 props.handleClose();
