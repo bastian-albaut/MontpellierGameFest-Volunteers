@@ -17,7 +17,7 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 const SectionCreateFestival = () => {
 
     const [dataFestival, setDataFestival] = useState({name: "", dateDebut: dayjs(), dateFin: dayjs().add(1, 'day')})
-    const [dataPosts, setDataPosts] = useState([])
+    const [dataPosts, setDataPosts] = useState([{id: 100, name: "Animation Jeux", description: "Description de l'animation jeux", capacityPoste: 10}])
     const [dataCreneau, setDataCreneau] = useState([])
 
     // Modal for create/update a post
@@ -121,11 +121,11 @@ const SectionCreateFestival = () => {
           width: 250,
           renderCell: (params) => (
                 <Box className={styles.actionCell}>
-                    <Button  variant="outlined" color="primary" size="small" onClick={(event) => handleEditCreneau(params.row, event)}>
+                    <Button variant="outlined" color="primary" size="small" onClick={(event) => handleEditCreneau(params.row, event)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
                         Modifier
                     </Button>
-                    <Button  variant="outlined" color="error" size="small" onClick={(event) => handleDeleteCreneau(params.row, event)}>
+                    <Button variant="outlined" color="error" size="small" onClick={(event) => handleDeleteCreneau(params.row, event)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
                         Supprimer
                     </Button>
@@ -269,6 +269,13 @@ const SectionCreateFestival = () => {
     // Create all the postes for the festival
     const handlePostesCreation = async (idFestival: number) => {
         try {
+            // Check if there is already the "Animation Jeux" poste
+            const isAnimationJeuxPoste = dataPosts.find((post: any) => post.name === "Animation Jeux");
+            if(!isAnimationJeuxPoste) {
+                handleShowAlertMessage("Erreur: Veuillez créer un poste 'Animation Jeux'.", "error");
+                return false;
+            }
+
             const postesToCreate = dataPosts.map((post: any) => {
                 const { id, ...postWithoutId } = post;
                 return { ...postWithoutId, idFestival };
