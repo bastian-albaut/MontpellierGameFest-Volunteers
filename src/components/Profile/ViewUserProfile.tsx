@@ -7,7 +7,6 @@ import useAlert from "../../hooks/useAlerts";
 import AlertComponent from '../general/Alert';
 
 
-
 const ViewUserProfileComponent = () => {
     const { user } = useUser();
     const { alertMessage, handleShowAlertMessage } = useAlert();
@@ -22,6 +21,7 @@ const ViewUserProfileComponent = () => {
         address: '',
         picture: '',
     });
+
 
     // Met à jour l'état avec les informations de l'utilisateur après le rendu initial
     useEffect(() => {
@@ -66,7 +66,6 @@ const ViewUserProfileComponent = () => {
                     style={{ width: '150px', height: '150px' }} 
                 />
             )}
-
 
             <TextField
                 label="Prénom"

@@ -5,6 +5,7 @@ import styles from "../../styles/pages/Profile/userprofile.module.scss";
 import useAlert from "../../hooks/useAlerts";
 import AlertComponent from '../general/Alert';
 import { useNavigate } from 'react-router-dom';
+import FileInput from "../loginRegister/FileInput";
 
 
 import { modifyUser } from '../../api';
@@ -17,7 +18,6 @@ const UserProfileComponent = () => {
     const { reloadUserContext } = useUser();
 
 
-
 	// Initialise l'état avec des valeurs par défaut
     const [userInfo, setUserInfo] = useState({
         firstName: '',
@@ -26,6 +26,38 @@ const UserProfileComponent = () => {
         address: '',
         picture: '',
     });
+
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [formData, setFormData] = useState({firstName: '', lastName: '', address: ' ', email: '', password: '', file: '', associations: [] });
+
+    const handleFileSelect = async (file: any) => {
+        setSelectedFile(file);
+        const base64 = await convertBase64(file);
+        setFormData({...formData, file: base64 as string})
+    };
+
+    const convertBase64 = (file: any) => {
+        return new Promise((resolve, reject) => {
+          if (!file || !(file instanceof Blob)) {
+            reject(new Error('Invalid file'));
+            return;
+          }
+      
+          const fileReader = new FileReader();
+          fileReader.onload = () => {
+            resolve(fileReader.result);
+          };
+          fileReader.onerror = (error) => {
+            console.error('Error reading file:', error);
+            reject(error);
+          };
+      
+          fileReader.readAsDataURL(file);
+        });
+      };
+
+
 
     // Met à jour l'état avec les informations de l'utilisateur après le rendu initial
     useEffect(() => {
@@ -127,6 +159,8 @@ const UserProfileComponent = () => {
                     style={{ width: '150px', height: '150px' }} 
                 />
             )}
+
+            <FileInput selectedFile={selectedFile} setSelectedFile={setSelectedFile} handleFileSelect={handleFileSelect} />
 
             {/* Ajoutez un champ pour la sélection de la nouvelle photo */}
             <InputLabel htmlFor="profile-picture" className={styles.fileInputLabel}>
