@@ -142,7 +142,19 @@ const UserProfileComponent = () => {
         navigate('/viewprofil'); 
     };
     
-    
+    /* Ajoutez un champ pour la sélection de la nouvelle photo
+    <InputLabel htmlFor="profile-picture" className={styles.fileInputLabel}>
+    Choisir une nouvelle photo de profil
+    </InputLabel>
+    <Input
+        type="file"
+        id="profile-picture"
+        inputProps={{ accept: "image/*,.heic,.heif" }} 
+        onChange={handlePictureChange}
+        className={styles.fileInput}
+    />
+    */
+
     
     return (
 
@@ -162,18 +174,7 @@ const UserProfileComponent = () => {
 
             <FileInput selectedFile={selectedFile} setSelectedFile={setSelectedFile} handleFileSelect={handleFileSelect} />
 
-            {/* Ajoutez un champ pour la sélection de la nouvelle photo */}
-            <InputLabel htmlFor="profile-picture" className={styles.fileInputLabel}>
-                Choisir une nouvelle photo de profil
-            </InputLabel>
-            <Input
-                type="file"
-                id="profile-picture"
-                inputProps={{ accept: "image/*,.heic,.heif" }} 
-                onChange={handlePictureChange}
-                className={styles.fileInput}
-            />
-
+    
             <TextField
                 label="Prénom"
                 variant="outlined"
