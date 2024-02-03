@@ -15,16 +15,16 @@ import styles from "../../styles/components/Dashboard/sectiondashboard.module.sc
 interface Festival {
 	id: string;
     name: string;
-	lieu: string;
+	address: string;
     dateDebut: string;
 	dateFin: string;
 }
 
 interface Soiree {
     id: string;
-    nom: string;
-    lieu: string;
-    date: string;
+    name: string;
+    address: string;
+    dateEvent: string;
 }
 
 const SectionDashboard: React.FC = () => {
@@ -32,11 +32,9 @@ const SectionDashboard: React.FC = () => {
 
     // Exemple de données de soirées pour le test
     const exampleSoirees: Soiree[] = [
-    
     ];
 
-
-    const { user } = useUser(); // Récupération des données de l'utilisateur connecté
+    const { user, loading } = useUser(); // Récupération des données de l'utilisateur connecté
     const [userFestivals, setUserFestivals] = useState<Festival[]>([]); // Liste des festivals de l'utilisateur connecté
     const [showUserFestivals, setShowUserFestivals] = useState<boolean>(false); // Affichage de la liste des festivals de l'utilisateur connecté
 
@@ -50,27 +48,27 @@ const SectionDashboard: React.FC = () => {
     const [showSoirees, setShowSoirees] = useState<boolean>(false);
 
 
-    
     // Logique de récupération des festivals de l'utilisateur connecté
-    const fetchUserFestivals = async (userId: string) => {
+    const fetchUserFestivals = async (id: string) => {
         try {
-            const res = await getVolunteerFestivals(userId);
+            const res = await getVolunteerFestivals(id);
             if (res.data) {
                 setUserFestivals(res.data);
+                console.log(res.data)
+                console.log(userFestivals)
             }
         } catch (error) {
             console.error('Error fetching user festivals data', error);
         }
     };
-    
+
     
     useEffect(() => {
-        if (user && user.userId) {
-            fetchUserFestivals(user.userId.toString());
+        if (!loading) {
+            console.log('User id:', user?.id);
         }
-    }, [user]);
+    }, [user, loading]);
     
-
 
     // Récupération des festivals depuis la base de donnée
 	const fetchFestivals = async () => {
@@ -145,7 +143,7 @@ const SectionDashboard: React.FC = () => {
                                 <ListItem key={index} divider>
                                     <ListItemText primary={festival.name} secondary={`Du ${festival.dateDebut} au ${festival.dateFin}`} />
                                     <Typography variant="body2">
-                                        {festival.lieu}
+                                        {festival.address}
                                     </Typography>
                                 </ListItem>
                             ))
@@ -173,7 +171,7 @@ const SectionDashboard: React.FC = () => {
                         {festivals.length > 0 ? (
                             festivals.map((festival, index) => (
                                 <ListItem key={index} divider>
-                                    <ListItemText primary={festival.name} />
+                                    <ListItemText primary={festival.name} secondary={`Du ${festival.dateDebut} au ${festival.dateFin}`} />
                                     <Button variant="contained" color="primary">
                                         S'inscrire
                                     </Button>
@@ -202,9 +200,9 @@ const SectionDashboard: React.FC = () => {
                         {soirees.length > 0 ? (
                             soirees.map((soiree, index) => (
                                 <ListItem key={index} divider>
-                                    <ListItemText primary={soiree.nom} secondary={`${soiree.date}`} />
+                                    <ListItemText primary={soiree.name} secondary={`${soiree.dateEvent}`} />
                                     <Typography variant="body2">
-                                        {soiree.lieu}
+                                        {soiree.address}
                                     </Typography>
                                 </ListItem>
                             ))
