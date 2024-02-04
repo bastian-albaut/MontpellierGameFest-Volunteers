@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import Loading from '../general/Loading'; // Assurez-vous que le chemin est correct
-import { getCreneauxByUserAndFestival } from '../../api'; // Importez la fonction de l'API
+import { getCreneauxByUserAndFestival,getInscriptionByUserAndFestival } from '../../api'; // Importez la fonction de l'API
 import { Creneau } from '../../types/Creneau';
 
 interface PlanningProps {
@@ -18,10 +18,17 @@ const Planning: React.FC<PlanningProps> = ({ idFestival, userId }) => {
     const fetchCreneaux = async () => {
       setLoading(true);
       try {
-        const response = await getCreneauxByUserAndFestival(userId,idFestival.toString());
-        setCreneaux(response.data);
-        console.error(response.data);
-        console.error("salut")
+        if(!userId){
+          console.error("User non connecté");
+          return;
+        }
+         console.error("UserID",userId)
+          console.error("Festival",idFestival)
+          const response = await getInscriptionByUserAndFestival(userId,idFestival.toString());
+          setCreneaux(response.data);
+          console.error(response.data);
+          console.error("salut")
+      
       } catch (error) {
         console.error('Erreur lors de la récupération des créneaux', error);
       } finally {
@@ -33,29 +40,34 @@ const Planning: React.FC<PlanningProps> = ({ idFestival, userId }) => {
   }, [idFestival, userId]);
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
     {
-      field: 'firstName',
-      headerName: 'Prénom',
+      field: 'idCreneauEspace',
+      headerName: 'ID Créneau Espace',
       width: 150,
-      editable: true,
     },
     {
       field: 'timeStart',
       headerName: 'Heure de début',
-      width: 130,
+      width: 200,
       valueGetter: (params: GridValueGetterParams) =>
-        new Date(params.row.timeStart).toLocaleTimeString(),
+        new Date(params.row.creneauEspace.creneau.timeStart).toLocaleTimeString(),
     },
     {
       field: 'timeEnd',
       headerName: 'Heure de fin',
-      width: 130,
+      width: 200,
       valueGetter: (params: GridValueGetterParams) =>
-        new Date(params.row.timeEnd).toLocaleTimeString(),
+        new Date(params.row.creneauEspace.creneau.timeEnd).toLocaleTimeString(),
     },
-    // Ajoutez ici d'autres colonnes si nécessaire
+    {
+      field: 'nameEspace',
+      headerName: 'Espace',
+      width: 150,
+      valueGetter: (params: GridValueGetterParams) => params.row.creneauEspace.espace.name,
+    },
+    // Vous pouvez ajouter d'autres colonnes basées sur les informations que vous souhaitez afficher
   ];
+  
 
   if (loading) {
     return <Loading />;
@@ -72,7 +84,7 @@ const Planning: React.FC<PlanningProps> = ({ idFestival, userId }) => {
   // Retirez les lignes suivantes si vous utilisez la version gratuite de DataGrid
   // pageSize={5}
   // rowsPerPageOptions={[5]}
-  getRowId={(row) => row.id}
+  getRowId={(row) => row.idCreneauEspace}
 />
     </Box>
   );

@@ -84,7 +84,7 @@ const MonFestival: React.FC = () => {
           Bienvenue au festival {currentFestival.name}
         </Typography>
         {/* Autres utilisations de currentFestival avec vérification de nullité */}
-        <Planning idFestival={currentFestival.idFestival!.toString()} userId={user.userId ?? ''} />
+        <Planning idFestival={currentFestival.idFestival!.toString()} userId={user.id ?? ''} />
         <SectionPoste idPoste="id_du_poste_sélectionné" />
       </>
     )}
