@@ -5,6 +5,7 @@ import { getFestivals } from '../../api';
 import Planning from '../Dashboard/Planning'; // Importez le composant Planning ici
 import { Festival } from '../../types/Festival';
 import styles from '../../styles/components/MyFestival/monFestival.module.scss';
+import SectionPoste from '../Poste/SectionPoste';
 
 
 
@@ -67,6 +68,7 @@ const MonFestival: React.FC = () => {
           </Typography>
           {/* Insérez le composant Planning ici */}
           <Planning idFestival={selectedFestival?.idFestival?.toString() || ''} />
+          <SectionPoste idPoste="id_du_poste_sélectionné" />
 
         </>
       )}

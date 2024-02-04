@@ -12,17 +12,19 @@ const SectionPoste: React.FC<SectionPosteProps> = ({ idPoste }) => {
     const [poste, setPoste] = useState<Poste | null>(null);
     
     useEffect(() => {
-    const fetchPoste = async () => {
-      try {
-        const response = await getPosteById(idPoste);
-        setPoste(response.data);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des détails du poste', error);
-      }
-    };
-
-    fetchPoste();
-}, [idPoste]);
+        const fetchPoste = async () => {
+          try {
+            const response = await getPosteById(idPoste);
+            console.log("Détails du poste reçus:", response.data); // Ajoutez ceci pour afficher les données dans la console
+            setPoste(response.data);
+          } catch (error) {
+            console.error('Erreur lors de la récupération des détails du poste', error);
+          }
+        };
+      
+        fetchPoste();
+      }, [idPoste]);
+      
 
 if (!poste) {
   return <div>Chargement...</div>; // Ou un autre élément de placeholder

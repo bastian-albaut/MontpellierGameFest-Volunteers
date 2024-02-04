@@ -1,17 +1,6 @@
 export interface Poste {
-    idPoste: string;
+    id: string;
     name: string;
-    capacityPoste: number;
-    idFestival: string;
-    description: string;
-    referents: Referent[];
-    // Ajoutez d'autres champs nécessaires correspondant à la réponse de l'API pour un poste
+    description: string; // Ajoutez cette ligne si votre API renvoie une description
+    // Ajoutez toutes les autres propriétés attendues ici
   }
-  
-  export interface Referent {
-    idReferent: string;
-    firstName: string;
-    lastName: string;
-    // Ajoutez d'autres champs nécessaires correspondant à la réponse de l'API pour un référent
-  }
-  
