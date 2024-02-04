@@ -17,7 +17,8 @@ API.interceptors.request.use((req) => {
 })
 
 export const login = (data: any) => API.post('/login', data);
-export const register = (data: User) => API.post('/register', data);
+export const modifyUser = async ({ id, ...data }: any) => { return API.put(`/users/${id}`, data); }
+export const register = (data: any) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/users/current');
 export const getUserById = (id: string) => API.get('/users/' + id);
 export const addMultiplePostes = (postes: Poste[]) => API.post('/postes/multiple', postes);
