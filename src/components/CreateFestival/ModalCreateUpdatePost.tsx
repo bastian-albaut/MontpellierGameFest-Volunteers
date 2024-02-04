@@ -1,6 +1,7 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import styles from "../../styles/components/createFestival/modalCreateUpdate.module.scss";
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 // Modal with name and capacity into a form
 const ModalCreateUpdatePost = (props: any) => {
@@ -34,7 +35,7 @@ const ModalCreateUpdatePost = (props: any) => {
             return;
         }
 
-        const newPost = { id: props.dataPosts.length + 1, name: currentPost.name, capacityPoste: currentPost.capacityPoste, description: currentPost.description };
+        const newPost = { id: uuidv4(), name: currentPost.name, capacityPoste: currentPost.capacityPoste, description: currentPost.description };
         props.setDataPosts([...props.dataPosts, newPost]);
         setCurrentPost({ name: "", capacityPoste: 1, description: "" });
         props.handleClose();

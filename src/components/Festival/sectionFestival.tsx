@@ -1,6 +1,6 @@
 // FestivalDetails.tsx
 import { useEffect, useState } from "react";
-import { getCreneauxByFestival, getFestivalById, getPostesByFestival, getVolunteersByFestival } from "../../api"; // Assurez-vous d'avoir une fonction getFestivalById dans votre fichier api
+import { getCreneauxByFestival, getFestivalById, getPostesByFestival, getUserById, getVolunteersByFestival } from "../../api"; // Assurez-vous d'avoir une fonction getFestivalById dans votre fichier api
 import styles from "../../styles/components/festival/sectionfestival.module.scss";
 import { Festival } from "../../types/Festival";
 import { Avatar, Box, Typography, Button } from "@mui/material";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../general/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt, faUsers, faUserFriends } from "@fortawesome/free-solid-svg-icons";
+import ModalImportGames from "./ModalImportGames";
 
 const SectionFestival = (props: any) => {
     const [festival, setFestival] = useState<Festival | null>(null);
@@ -25,7 +26,7 @@ const SectionFestival = (props: any) => {
                     getFestivalById(props.idFestival),
                     getPostesByFestival(props.idFestival),
                     getCreneauxByFestival(props.idFestival),
-                    getVolunteersByFestival(props.idFestival)
+                    getVolunteersByFestival(props.idFestival),
                 ]);
 
                 if (festivalData && festivalData.data && postesData && postesData.data && creneauxData && creneauxData.data && volunteersData && volunteersData.data) {
@@ -35,7 +36,17 @@ const SectionFestival = (props: any) => {
                     setFestival(festivalData.data);
                     setPostes(postesData.data);
                     setCreneaux(creneauxData.data);
-                    setVolunteers(volunteersData.data);
+                    console.log(volunteersData.data);
+
+                    // Get user data for each volunteer
+                    const UsersData = await Promise.all(volunteersData.data.map(async (volunteer: any) => {
+                        const res = await getUserById(volunteer.idUser);
+                        return res.data;
+                    }));
+                    if(UsersData && UsersData.length > 0) {
+                        console.log(UsersData)
+                        setVolunteers(UsersData);
+                    }
                 } else {
                     navigate("/", { state: { message: "Une erreur est survenu lors de la récupération des données du festival.", severity: "error" } });
                 }
@@ -66,6 +77,11 @@ const SectionFestival = (props: any) => {
         return formattedTime;
     }
 
+    // Modal for import games
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOpenModal = () => setIsModalOpen(true);
+    const handleCloseModal = () => setIsModalOpen(false);
+
     if (isLoadingFetch) {
         return <Loading />;
     }
@@ -89,9 +105,9 @@ const SectionFestival = (props: any) => {
                 <Box className={styles.list}>
                     {volunteers.map((volunteer, index) => {
                         return (
-                            <Box key={index}>
-                                <Avatar alt={volunteer.firstname} src={volunteer.firstname} />
-                                <Typography variant="subtitle1">{`${volunteer.firstname} ${volunteer.lastname}`}</Typography>
+                            <Box className={styles.boxVolunteer} key={index}>
+                                <Avatar alt="Photo de profil" src={volunteer.picture} />
+                                <Typography variant="subtitle1">{`${volunteer.firstName} ${volunteer.lastName}`}</Typography>
                             </Box>
                         )
                     })}
@@ -127,6 +143,11 @@ const SectionFestival = (props: any) => {
                     })}
                 </Box>
             </Box>
+
+            <Box className={styles.boxElements}>
+                <Button variant="contained" color="primary" onClick={() => handleOpenModal()}>Importer des jeux</Button>
+            </Box>
+            <ModalImportGames open={isModalOpen} handleClose={handleCloseModal} handleShowAlertMessage={props.handleShowAlertMessage} idFestival={props.idFestival}/>
         </Box>
     );
 };
