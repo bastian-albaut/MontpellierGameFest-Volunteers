@@ -14,6 +14,11 @@ $breakpointXL: 1536px;
 
 $minHeightAppBarSmallScreen: 56px;
 $minHeightAppBarWideScreen: 64px;
+$borderRadius: 4px;
+$boxShadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+// Définir la couleur grise pour la variable manquante
+$lightGreyColor: #D3D3D3; // Choisissez une couleur grise appropriée
 
 :export {
   textColor: $textColor;
@@ -30,4 +35,6 @@ $minHeightAppBarWideScreen: 64px;
   breakpointXL: $breakpointXL;
   minHeightAppBarSmallScreen: $minHeightAppBarSmallScreen;
   minHeightAppBarWideScreen: $minHeightAppBarWideScreen;
+  borderRadius: $borderRadius;
+  boxShadow: $boxShadow;
 }

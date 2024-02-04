@@ -18,8 +18,10 @@ const Planning: React.FC<PlanningProps> = ({ idFestival, userId }) => {
     const fetchCreneaux = async () => {
       setLoading(true);
       try {
-        const response = await getCreneauxByUserAndFestival(userId, idFestival);
+        const response = await getCreneauxByUserAndFestival(userId,idFestival.toString());
         setCreneaux(response.data);
+        console.error(response.data);
+        console.error("salut")
       } catch (error) {
         console.error('Erreur lors de la récupération des créneaux', error);
       } finally {

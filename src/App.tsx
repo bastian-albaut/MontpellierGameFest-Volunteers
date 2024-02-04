@@ -19,7 +19,9 @@ import ContactPage from './pages/Contact/ContactPage';
 import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
 import MonFestival from './pages/MyFestival/MonFestivalPage';
-;
+import FAQPage from './pages/FAQ/FAQPage'; // Assurez-vous que le chemin est correct
+
+
 
 
 
@@ -139,6 +141,7 @@ const App = () => {
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
                     <Route path="/mon-festival" element={<MonFestival />} />
+                    <Route path="/faq" element={<FAQPage />} />
                     <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>
                 </BrowserRouter>
