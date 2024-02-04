@@ -7,7 +7,7 @@ import { Avatar, Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Loading from "../general/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faMapMarkerAlt, faUsers, faUserFriends, faGamepad } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faMapMarkerAlt, faUsers, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import ModalImportGames from "./ModalImportGames";
 
 const SectionFestival = (props: any) => {
@@ -27,7 +27,6 @@ const SectionFestival = (props: any) => {
                     getPostesByFestival(props.idFestival),
                     getCreneauxByFestival(props.idFestival),
                     getVolunteersByFestival(props.idFestival),
-                    // getGamesByFestival(props.idFestival)
                 ]);
 
                 if (festivalData && festivalData.data && postesData && postesData.data && creneauxData && creneauxData.data && volunteersData && volunteersData.data) {
@@ -129,21 +128,6 @@ const SectionFestival = (props: any) => {
                         return (
                             <Box key={index}>
                                 <Typography variant="subtitle1">{`${formattedTime(new Date(creneau.timeStart))} - ${formattedTime(new Date(creneau.timeEnd))}`}</Typography>
-                            </Box>
-                        )
-                    })}
-                </Box>
-            </Box>
-            <Box className={styles.boxElements}>
-                <Box className={styles.boxIconText}>
-                    <FontAwesomeIcon icon={faGamepad} className={styles.icon} />
-                    <Typography variant="h5">Jeux</Typography>
-                </Box>
-                <Box className={styles.list}>
-                    {creneaux.map((creneau, index) => {
-                        return (
-                            <Box key={index}>
-                                <Typography variant="subtitle1">jeux1</Typography>
                             </Box>
                         )
                     })}

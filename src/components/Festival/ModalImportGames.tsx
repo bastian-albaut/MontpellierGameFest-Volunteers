@@ -31,22 +31,8 @@ const ModalImportGames = (props: any) => {
         try {
             const res = await uploadFile(selectedFile);
             if(res && res.data) {
-                // const idGamesCreated = res.data.createdGames;
-
-                // // Create an array with the id of the game created and the festivalId
-                // const idGamesCreatedWithFestivalId = idGamesCreated.map((idGame: string) => {
-                //     return {idGame, idFestival: parseInt(props.idFestival)};
-                // });
-
-                // // Add insertion in IsPlay table for each game created
-                // const resIsPlay = await addMultipleIsPlay(idGamesCreatedWithFestivalId);
-                // if(resIsPlay && resIsPlay.data) {
-                    props.handleShowAlertMessage("Le fichier a bien été importé.", "success");
-                    props.handleClose();
-                // } else {
-                //     props.handleShowAlertMessage("Une erreur est survenue lors de l'import du fichier.", "error");
-                //     props.handleClose();
-                // }
+                props.handleShowAlertMessage("Le fichier a bien été importé.", "success");
+                props.handleClose();
             } else {
                 props.handleShowAlertMessage("Une erreur est survenue lors de l'import du fichier.", "error");
                 props.handleClose();

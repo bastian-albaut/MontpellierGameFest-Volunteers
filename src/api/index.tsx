@@ -5,8 +5,8 @@ import { Poste } from '../types/Poste';
 import { Creneau } from '../types/Creneau';
 import { isVolunteer } from '../types/IsVolunteer';
 
-// const API = axios.create({ baseURL : 'http://localhost:8080/' })
-const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
+const API = axios.create({ baseURL : 'http://localhost:8080/' })
+// const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
 
 
 // Send the token at each request
