@@ -32,6 +32,7 @@ interface VolunteerFestival {
     role: string;
     jeuxIdGame?: any; 
     festival: Festival; 
+    status: string;
 }
 
 interface Soiree {
@@ -44,17 +45,32 @@ interface Soiree {
 
 const SectionDashboard: React.FC = () => {
 
+    //example de soirée
+    const exampleSoirees = [ 
+        {
+            id: "1",
+            name: "Soirée de lancement",
+            address: "Rue de la soiree",
+            dateEvent: "2023-12-31T23:59:59.999Z"
+        },
+        {
+            id: "2",
+            name: "Soirée de cloture",
+            address: "Rue de la cloture",
+            dateEvent: "2023-12-31T23:59:59.999Z"
+        }
+    ];
+
 
     const { user, loading } = useUser(); 
     const [userFestivals, setUserFestivals] = useState<VolunteerFestival[]>([]); 
     const [showUserFestivals, setShowUserFestivals] = useState<boolean>(false); 
 
-
     const [festivals, setFestivals] = useState<Festival[]>([]); 
 	const [showFestivals, setShowFestivals] = useState<boolean>(false); 
 
-
-    const [soirees, setSoirees] = useState<Soiree[]>([]) //
+   
+    const [soirees, setSoirees] = useState<Soiree[]>(exampleSoirees);
     const [showSoirees, setShowSoirees] = useState<boolean>(false);
 
 
@@ -77,7 +93,6 @@ const SectionDashboard: React.FC = () => {
             fetchUserFestivals(user.id); 
         }
     }, [user, loading]);
-    
     
 
     // Récupération des festivals depuis la base de donnée
@@ -104,6 +119,7 @@ const SectionDashboard: React.FC = () => {
 	}, []);
 
 
+    /*
     // Récupération des soirées depuis la base de donnée
     const fetchSoirees = async () => {
         try {
@@ -120,6 +136,7 @@ const SectionDashboard: React.FC = () => {
     useEffect(() => {
         fetchSoirees();
     }, []);
+    */
 
 
 
@@ -134,6 +151,18 @@ const SectionDashboard: React.FC = () => {
      const toggleSoirees = () => {
         setShowSoirees(!showSoirees);
     };
+
+    const getStatusDescription = (status: string) => {
+        switch (status) {
+            case "notAccepted":
+                return "Non accepté";
+            case "accepted":
+                return "Accepté";
+            default:
+                return "Statut inconnu";
+        }
+    };
+    
    
 
 	return (
@@ -162,7 +191,7 @@ const SectionDashboard: React.FC = () => {
                                         secondary={`Du ${new Date(volunteerFestival.festival.dateDebut).toLocaleDateString()} au ${new Date(volunteerFestival.festival.dateFin).toLocaleDateString()}`} 
                                     />
                                     <Typography variant="body2">
-                                        {volunteerFestival.festival.address} 
+                                        {getStatusDescription(volunteerFestival.status)} 
                                     </Typography>
                                 </ListItem>
                             ))
