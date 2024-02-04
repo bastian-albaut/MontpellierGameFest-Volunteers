@@ -91,15 +91,6 @@ const ViewUserProfileComponent = () => {
                 className={styles.userInfo}
                 disabled
             />
-            <TextField
-                label="Adresse"
-                variant="outlined"
-                name="address"
-                value={userInfo.address}
-                className={styles.userInfo}
-                disabled
-            />
-
 
             {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
 

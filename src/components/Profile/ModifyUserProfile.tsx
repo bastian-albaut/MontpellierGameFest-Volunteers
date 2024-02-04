@@ -199,15 +199,6 @@ const UserProfileComponent = () => {
                 onChange={handleChange}
                 className={styles.userInfo}
             />
-            <TextField
-                label="Adresse"
-                variant="outlined"
-                name="address"
-                value={userInfo.address}
-                onChange={handleChange}
-                className={styles.userInfo}
-            />
-
 
             {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
 
