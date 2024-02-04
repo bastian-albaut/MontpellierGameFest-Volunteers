@@ -41,4 +41,5 @@ export const addInscription = (data: any) => API.post('/inscriptions', data);
 export const getEspacesByPoste = (idPoste: string) => API.get(`/posteEspaces/poste/${idPoste}`);
 export const getGames = () => API.get('/games');
 export const addMultipleIsPlay = (data: any) => API.post('/isPlay/multiple', data);
+export const deleteIsPlay = (data: any) => API.delete(`/isPlay/${data.idGame}/${data.idFestival}/${data.idEspace}`);
 export const getIsPlayByEspaceAndFestival = (idEspace: string, idFestival: string) => API.get(`/isPlay/${idEspace}/${idFestival}`);

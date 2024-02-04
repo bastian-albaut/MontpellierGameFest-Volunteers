@@ -18,10 +18,6 @@ const SectionPoste = (props: any) => {
     const [listEspaces, setListEspaces] = useState<any[]>([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log(listEspaces);
-    }, [listEspaces]);
-
     const handleDeleteEspace = (index: number) => {
         console.log("delete espace", index);
     }
@@ -131,7 +127,7 @@ const SectionPoste = (props: any) => {
                                         <Typography key={gameIndex} variant="body1" color="initial">{game.game.name}</Typography>
                                     ))}
                                 </Box>
-                                <Button variant="text" color="primary" onClick={() => handleOpenLinkGamesModal(espace)}>Ajouter des jeux</Button>
+                                <Button variant="text" color="primary" onClick={() => handleOpenLinkGamesModal(espace)}>Ajouter/Supprimer des jeux</Button>
                             </ListItem>
                         <Divider />
                     </React.Fragment>

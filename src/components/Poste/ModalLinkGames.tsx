@@ -1,7 +1,7 @@
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Modal, OutlinedInput, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { Box, Button, FormControl, Input, InputLabel, MenuItem, Modal, Select, SelectChangeEvent, Typography } from "@mui/material";
 import styles from "../../styles/components/Poste/modalLinkGames.module.scss";
 import { useEffect, useState } from "react";
-import { addMultipleIsPlay, getGames } from "../../api";
+import { addMultipleIsPlay, deleteIsPlay, getGames } from "../../api";
 import Loading from "../general/Loading";
 
 const ModalLinkGames = (props: any) => {
@@ -33,6 +33,7 @@ const ModalLinkGames = (props: any) => {
 
         if(listGamesSelected.length === 0) {
             setFormError("Vous devez sélectionner au moins un jeu.");
+            setIsLoadingAddGames(false);
             return;
         }
 
@@ -45,9 +46,21 @@ const ModalLinkGames = (props: any) => {
         try {
         const resIsPlay = await addMultipleIsPlay(data);
         if(resIsPlay && resIsPlay.data) {
+            // Remove the games that were already linked to the espace
+            const gamesToRemove = listGamesSelectedOnInitialRender.filter((idGame: string) => !listGamesSelected.includes(idGame));
+            const data = gamesToRemove.map((idGame: string) => {
+                return {idGame, idFestival: parseInt(props.idFestival), idEspace: parseInt(props.espaceSelected.espace.idEspace)};
+            });
+            data.forEach((d: any) => {
+                const res = deleteIsPlay(d);
+                if(!res) {
+                    props.handleShowAlertMessage("Une erreur est survenue lors de la suppression des jeux de l'espace.", "error");
+                    props.handleClose();
+                }
+            });
             // Trigger a reRender of the list of games in the espace
             props.triggerRefresh();
-            props.handleShowAlertMessage("Les jeux ont bien été ajoutés à l'espace.", "success");
+            props.handleShowAlertMessage("La liste des jeux a bien été mise à jour.", "success");
             props.handleClose();
         } else {
             props.handleShowAlertMessage("Une erreur est survenue lors de l'ajout des jeux à l'espace.", "error");
@@ -73,8 +86,15 @@ const ModalLinkGames = (props: any) => {
     },
     };
 
-
     const [listGamesSelected, setListGamesSelected] = useState<any[]>([]);
+    const [listGamesSelectedOnInitialRender, setListGamesSelectedOnInitialRender] = useState<any[]>([]);
+    useEffect(() => {
+        if(props.espaceSelected?.games) {
+            setListGamesSelected(props.espaceSelected.games.map((game: any) => game.idGame));
+            setListGamesSelectedOnInitialRender(props.espaceSelected.games.map((game: any) => game.idGame));
+        }
+    }, [props.espaceSelected]);
+
     const handleChange = (event: SelectChangeEvent<typeof listGamesSelected>) => {
         const {
             target: { value },
@@ -155,7 +175,7 @@ const ModalLinkGames = (props: any) => {
                     onClick={() => handleAddGames()}
                     disabled={isLoadingAddGames}
                 >
-                    Ajouter le(s) jeu(x)
+                    Mettre à jour la liste des jeux
                 </Button>
             </Box>
         </Modal>
