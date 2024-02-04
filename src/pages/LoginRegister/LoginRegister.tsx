@@ -65,7 +65,7 @@ const LoginRegister = () => {
     useEffect(() => {
         if (user) {
             console.log("User is already logged in");
-            navigate(`/tableaudebord/${user.userId}`);
+            navigate(`/tableaudebord/${user.id}`);
         }
     }, [user, navigate]);
 

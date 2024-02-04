@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User } from '../types/User';
+import { User, registerUser } from '../types/User';
 import { Festival } from '../types/Festival';
 import { Poste } from '../types/Poste';
 import { Creneau } from '../types/Creneau';
@@ -16,7 +16,17 @@ API.interceptors.request.use((req) => {
     return req;
 })
 
+interface UserUpdateData {
+    id: string; 
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    address?: string;
+    picture: string;
+}
+
 export const login = (data: any) => API.post('/login', data);
+export const modifyUser = async ({ id, ...data }: UserUpdateData) => { return API.put(`/users/${id}`, data); }
 export const register = (data: User) => API.post('/register', data);
 export const getCurrentUser = () => API.get('/users/current');
 export const getUserById = (id: string) => API.get('/users/' + id);
