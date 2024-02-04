@@ -40,36 +40,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if ((error as any).response && (error as any).response.status === 401) {
                 // Unauthorized (token expired or invalid)
                 console.log('Removing token from local storage');
-                setMessage('Votre session a expiré. Veuillez vous reconnecter.');
-                setSeverity("warning");
                 
                 localStorage.removeItem('token');
                 setUser(null);
-
-                // Display the message only if it hasn't been displayed before
-                if (!messageDisplayed) {
-                    setMessageDisplayed(true);
-                    setTimeout(() => {
-                        setMessage(null);
-                    }, 3000); // Delay of 3 seconds
-                } else {
-                    setMessage(null);
-                }
             } else {
-                // Handle other types of errors (network issues, server errors) as needed
-                setMessage('Erreur: Connexion au serveur impossible.');
-                setSeverity("error");
-
-                // Display the message only if it hasn't been displayed before
-                if (!messageDisplayed) {
-                    setMessageDisplayed(true);
-                    setTimeout(() => {
-                        setMessage(null);
-                    }, 3000); // Delay of 3 seconds
-                } else {
-                    setMessage(null);
-                }
-            } 
+                console.log('Error fetching user data', error);
+            }
         }
         setLoading(false);
     };

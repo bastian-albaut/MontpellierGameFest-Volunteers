@@ -43,3 +43,15 @@ export const getGames = () => API.get('/games');
 export const addMultipleIsPlay = (data: any) => API.post('/isPlay/multiple', data);
 export const deleteIsPlay = (data: any) => API.delete(`/isPlay/${data.idGame}/${data.idFestival}/${data.idEspace}`);
 export const getIsPlayByEspaceAndFestival = (idEspace: string, idFestival: string) => API.get(`/isPlay/${idEspace}/${idFestival}`);
+export const getGamesByFestival = (id: string) => API.get(`/festivals/${id}/games`);
+
+export const uploadFile = (file: any) => {
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    return API.post('/uploads/csv', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+};

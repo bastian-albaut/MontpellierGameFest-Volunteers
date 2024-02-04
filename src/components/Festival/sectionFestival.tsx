@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../general/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faMapMarkerAlt, faUsers, faUserFriends } from "@fortawesome/free-solid-svg-icons";
+import ModalImportGames from "./ModalImportGames";
 
 const SectionFestival = (props: any) => {
     const [festival, setFestival] = useState<Festival | null>(null);
@@ -25,7 +26,7 @@ const SectionFestival = (props: any) => {
                     getFestivalById(props.idFestival),
                     getPostesByFestival(props.idFestival),
                     getCreneauxByFestival(props.idFestival),
-                    getVolunteersByFestival(props.idFestival)
+                    getVolunteersByFestival(props.idFestival),
                 ]);
 
                 if (festivalData && festivalData.data && postesData && postesData.data && creneauxData && creneauxData.data && volunteersData && volunteersData.data) {
@@ -75,6 +76,11 @@ const SectionFestival = (props: any) => {
         const formattedTime = `${hours}:${minutes}`;
         return formattedTime;
     }
+
+    // Modal for import games
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOpenModal = () => setIsModalOpen(true);
+    const handleCloseModal = () => setIsModalOpen(false);
 
     if (isLoadingFetch) {
         return <Loading />;
@@ -137,6 +143,11 @@ const SectionFestival = (props: any) => {
                     })}
                 </Box>
             </Box>
+
+            <Box className={styles.boxElements}>
+                <Button variant="contained" color="primary" onClick={() => handleOpenModal()}>Importer des jeux</Button>
+            </Box>
+            <ModalImportGames open={isModalOpen} handleClose={handleCloseModal} handleShowAlertMessage={props.handleShowAlertMessage} idFestival={props.idFestival}/>
         </Box>
     );
 };
