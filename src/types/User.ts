@@ -1,19 +1,11 @@
 export type User = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    address: string;
-    email: string;
-    password: string;
-    picture: string;
-  };
-
-
-export type registerUser = {
+    userId?: number;
+    id?: string;
     firstName: string;
     lastName: string;
     address: string;
     email: string;
     password: string;
     file: string;
+    picture: string;
 }

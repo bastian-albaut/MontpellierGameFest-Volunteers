@@ -8,8 +8,8 @@ import dayjs from "dayjs";
 const ModalCreateUpdateCreneau = (props: any) => {
 
     const parseTimeString = (timeString: string) => {
-        // set to the native format of dayjs which is YYYY-MM-DDTHH:mm:ss.SSSZ
-        const time = dayjs(`2024-01-01T${timeString}:00.000Z`);
+        // set to the native format of dayjs which is YYYY-MM-DDTHH:mm:ss.SSSZ without the timezone
+        const time = dayjs(timeString, 'HH:mm');
         return time;
     };
 
