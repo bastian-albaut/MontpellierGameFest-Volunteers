@@ -1,7 +1,7 @@
 import { Box, Button, FormControl, Input, InputLabel, MenuItem, Modal, OutlinedInput, Select, SelectChangeEvent, Typography } from "@mui/material";
 import styles from "../../styles/components/Poste/modalLinkGames.module.scss";
 import { useEffect, useState } from "react";
-import { getGames } from "../../api";
+import { addMultipleIsPlay, getGames } from "../../api";
 import Loading from "../general/Loading";
 
 const ModalLinkGames = (props: any) => {
@@ -18,7 +18,6 @@ const ModalLinkGames = (props: any) => {
             try {
                 const res = await getGames();
                 if(res && res.data) {
-                    console.log(res.data);
                     setListGames(res.data);
                 }
             } catch (error) {
@@ -37,6 +36,29 @@ const ModalLinkGames = (props: any) => {
             return;
         }
 
+        // Create an array with the id of the game selected, the id of the festival and the id of the espace
+        const data = listGamesSelected.map((idGame: string) => {
+            return {idGame, idFestival: parseInt(props.idFestival), idEspace: parseInt(props.espaceSelected.espace.idEspace)};
+        });
+
+        // Add insertion in IsPlay table for each game linked to the festival and the espace
+        try {
+        const resIsPlay = await addMultipleIsPlay(data);
+        if(resIsPlay && resIsPlay.data) {
+            // Trigger a reRender of the list of games in the espace
+            props.triggerRefresh();
+            props.handleShowAlertMessage("Les jeux ont bien été ajoutés à l'espace.", "success");
+            props.handleClose();
+        } else {
+            props.handleShowAlertMessage("Une erreur est survenue lors de l'ajout des jeux à l'espace.", "error");
+            props.handleClose();
+        } 
+        } catch (error) {
+            props.handleShowAlertMessage("Une erreur est survenue lors de l'ajout des jeux à l'espace.", "error");
+            props.handleClose();
+        } finally {
+            setIsLoadingAddGames(false);
+        }
     }
 
 
@@ -88,11 +110,6 @@ const ModalLinkGames = (props: any) => {
         'Kelly Snyder',
       ];
       
-      // COnsole log the list of selected games
-    useEffect(() => {
-        console.log(listGamesSelected);
-    }, [listGamesSelected]);
-
     if(isLoadingFetchGames) {
         return (
             <Loading />

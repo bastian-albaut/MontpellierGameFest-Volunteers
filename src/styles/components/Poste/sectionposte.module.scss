@@ -52,7 +52,20 @@
     margin: 10px 0;
 }
 
+.boxListGames {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 40px;
+}
+
 .listItem {
     display: flex;
     gap: 5px;
+}
+
+.listGames {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
