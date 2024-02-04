@@ -79,6 +79,11 @@ export default function ToolbarConnected(props: any) {
         }
     ];
 
+  const handleGoToProfile = () => {
+      handleCloseUserMenu();
+      navigate("/viewprofil"); 
+  };
+
   return (
     <AppBar position="static">
         <Toolbar disableGutters id={styles.toolbar}>
@@ -183,6 +188,9 @@ export default function ToolbarConnected(props: any) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              <MenuItem onClick={handleGoToProfile}>
+                <Typography textAlign="center">Mon Profil</Typography>
+              </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography textAlign="center">Déconnexion</Typography>
               </MenuItem>

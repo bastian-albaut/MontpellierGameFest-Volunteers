@@ -7,4 +7,5 @@ export type User = {
     email: string;
     password: string;
     file: string;
-  };
+    picture: string;
+}
