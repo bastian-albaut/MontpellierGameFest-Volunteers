@@ -59,6 +59,11 @@ export default function ToolbarConnected(props: any) {
         handleCloseNavMenu();
         navigate(`/contact`);
     }
+
+    const handleMyFestival = () => {
+      handleCloseNavMenu();
+      navigate(`/mon-festival`);
+  }
     
     const pages = [
         {
@@ -76,7 +81,11 @@ export default function ToolbarConnected(props: any) {
         {
             name: 'Contact',
             function : handleContact
-        }
+        },
+        {
+          name: 'Mon Festival',
+          function : handleMyFestival
+      }
     ];
 
   return (
