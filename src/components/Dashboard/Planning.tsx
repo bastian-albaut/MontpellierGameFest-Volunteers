@@ -1,33 +1,25 @@
-import styles from '../../styles/components/Dashboard/dashboard.module.scss';
-
 import React, { useEffect, useState } from 'react';
-import { getCreneauxByFestival } from '../../api'; // Ajustez selon votre API
-import { DataGrid } from '@mui/x-data-grid';
-import Loading from '../general/Loading'; // Vérifiez le chemin
 import { Box, Typography } from '@mui/material';
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import Loading from '../general/Loading'; // Assurez-vous que le chemin est correct
+import { getCreneauxByUserAndFestival } from '../../api'; // Importez la fonction de l'API
 import { Creneau } from '../../types/Creneau';
-import { GridValueGetterParams } from '@mui/x-data-grid';
 
-
-
-interface PlanningProps  {
-  idFestival: string ;
+interface PlanningProps {
+  idFestival: string;
+  userId: string; // Utilisez cette prop pour récupérer les créneaux de l'utilisateur
 }
 
-const Planning: React.FC<PlanningProps> = ({ idFestival }) => {
+const Planning: React.FC<PlanningProps> = ({ idFestival, userId }) => {
   const [creneaux, setCreneaux] = useState<Creneau[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCreneaux = async () => {
+      setLoading(true);
       try {
-        const response = await getCreneauxByFestival(idFestival);
-        // Typage explicite de la variable 'creneau' dans le callback map
-        const transformedData = response.data.map((creneau: Creneau) => ({
-          ...creneau,
-          id: creneau.idCreneau, // Utilisez l'ID de créneau comme clé unique pour chaque ligne
-        }));
-        setCreneaux(transformedData);
+        const response = await getCreneauxByUserAndFestival(userId, idFestival);
+        setCreneaux(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des créneaux', error);
       } finally {
@@ -36,17 +28,13 @@ const Planning: React.FC<PlanningProps> = ({ idFestival }) => {
     };
 
     fetchCreneaux();
-  }, [idFestival]);
+  }, [idFestival, userId]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  const columns = [
+  const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
       field: 'firstName',
-      headerName: 'First name',
+      headerName: 'Prénom',
       width: 150,
       editable: true,
     },
@@ -54,28 +42,37 @@ const Planning: React.FC<PlanningProps> = ({ idFestival }) => {
       field: 'timeStart',
       headerName: 'Heure de début',
       width: 130,
-      valueGetter: (params: GridValueGetterParams) => new Date(params.row.timeStart).toLocaleTimeString(),
+      valueGetter: (params: GridValueGetterParams) =>
+        new Date(params.row.timeStart).toLocaleTimeString(),
     },
     {
       field: 'timeEnd',
       headerName: 'Heure de fin',
       width: 130,
-      valueGetter: (params: GridValueGetterParams) => new Date(params.row.timeEnd).toLocaleTimeString(),
+      valueGetter: (params: GridValueGetterParams) =>
+        new Date(params.row.timeEnd).toLocaleTimeString(),
     },
+    // Ajoutez ici d'autres colonnes si nécessaire
   ];
-  
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
-    <>
-      <Box sx={{ height: 400, width: '100%' }}>
-        <Typography variant="h5" className={styles.heading}>Planning du Festival</Typography>
-        <DataGrid
-          rows={creneaux}
-          columns={columns}
-          getRowId={(row) => row.idCreneau}
-        />
-      </Box>
-    </>
+    <Box sx={{ height: 400, width: '100%' }}>
+      <Typography variant="h5" gutterBottom>
+        Planning du Festival
+      </Typography>
+      <DataGrid
+  rows={creneaux}
+  columns={columns}
+  // Retirez les lignes suivantes si vous utilisez la version gratuite de DataGrid
+  // pageSize={5}
+  // rowsPerPageOptions={[5]}
+  getRowId={(row) => row.id}
+/>
+    </Box>
   );
 };
 

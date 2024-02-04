@@ -1,13 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useUser } from '../../contexts/UserContext';
 import { getFestivals } from '../../api';
-import Planning from '../Dashboard/Planning'; // Importez le composant Planning ici
+import Planning from '../Dashboard/Planning';
 import { Festival } from '../../types/Festival';
 import styles from '../../styles/components/MyFestival/monFestival.module.scss';
 import SectionPoste from '../Poste/SectionPoste';
-
-
 
 const MonFestival: React.FC = () => {
   const { user, loading: userLoading, reloadUserContext } = useUser();
@@ -22,6 +20,7 @@ const MonFestival: React.FC = () => {
         try {
           const response = await getFestivals();
           setFestivals(response.data);
+          // Specify the type for 'f' as 'Festival'
           const activeOrUpcomingFestival = response.data.find((f: Festival) => f.isActive || new Date(f.dateDebut) > new Date());
           setSelectedFestival(activeOrUpcomingFestival || null);
         } catch (error) {
@@ -66,10 +65,9 @@ const MonFestival: React.FC = () => {
           <Typography variant="h6" className={styles.monFestivalDate}>
             {`Du ${formatDate(new Date(selectedFestival.dateDebut))} au ${formatDate(new Date(selectedFestival.dateFin))}`}
           </Typography>
-          {/* Insérez le composant Planning ici */}
-          <Planning idFestival={selectedFestival?.idFestival?.toString() || ''} />
+          {/* Use optional chaining and provide a fallback empty string */}
+          <Planning idFestival={selectedFestival.idFestival?.toString() || ''} userId={user.userId?.toString() || ''} />
           <SectionPoste idPoste="id_du_poste_sélectionné" />
-
         </>
       )}
     </Box>

@@ -23,3 +23,4 @@ export const getPostesByFestival = (id: string) => API.get(`/festivals/${id}/pos
 export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/creneaux`);
 export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`);
 export const getFestivals = () => API.get('/festivals');
+export const getCreneauxByUserAndFestival = (idUser: string, idFestival: string) => API.get(`/creneaux/user/${idUser}/festival/${idFestival}`);
