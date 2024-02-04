@@ -3,6 +3,6 @@ export interface Creneau {
     timeStart: Date;
     timeEnd: Date;
     idFestival: number;
-    creneauEspace: any[]; // Remplacez any par un type approprié si vous en avez un
+    creneauEspace?: any[]; // Remplacez any par un type approprié si vous en avez un
     // Ajoutez toutes les autres propriétés nécessaires ici
   }
