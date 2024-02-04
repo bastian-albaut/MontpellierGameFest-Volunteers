@@ -1,0 +1,30 @@
+@import '../../abstract/variables.module.scss';
+
+#boxModal {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 400px;
+    min-width: 300px;
+    background-color: $whiteColor;
+    border: 2px solid #000;
+    box-shadow: 24px;
+    padding: 30px 10px;
+}
+
+.typoFormError {
+    margin: 10px 0;
+    text-align: center;
+}
+
+#button {
+    margin-top: 20px;
+}
+
+.typoTitle {
+    text-align: center;
+}

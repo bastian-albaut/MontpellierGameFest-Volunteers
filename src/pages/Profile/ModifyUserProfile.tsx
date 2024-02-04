@@ -1,14 +1,18 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
-import Loading from "../../components/general/Loading";
-import Appbar from "../../components/general/Appbar";
-import SectionDasboardAdmin from "../../components/Dashboard/SectionDasboardAdmin";
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
+import styles from "../../styles/pages/Profile/userprofile.module.scss";
 import useAlert from "../../hooks/useAlerts";
-import AlertComponent from "../../components/general/Alert";
+import AlertComponent from '../../components/general/Alert';
 
-const DashboardAdmin = () => {
+import { useLocation } from 'react-router-dom';
+import Appbar from '../../components/general/Appbar';
+import Loading from "../../components/general/Loading";
+import UserProfileComponent from '../../components/Profile/ModifyUserProfile';
 
+
+const UserProfilePage = () => {
+    
     // Display alert message from location state
     const location = useLocation();
     const { alertMessage, handleShowAlertMessage } = useAlert();
@@ -26,7 +30,7 @@ const DashboardAdmin = () => {
         }
     }, [message, severity, handleShowAlertMessage]);
 
-	// Redirect to home page if not logged in
+    // Redirect to home page if not logged in
     const navigate = useNavigate();
     useEffect(() => {
         if (!user && !loading) {
@@ -38,13 +42,20 @@ const DashboardAdmin = () => {
         return <Loading />;
     }
 
-    return(
-        <>
-            {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
-            <Appbar currentUser={user} />
-            <SectionDasboardAdmin handleShowAlertMessage={handleShowAlertMessage} />
-        </>
-    )
-}
+    
+    return (
 
-export default DashboardAdmin
+        <>
+            <Appbar currentUser={user} />
+            {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
+            <UserProfileComponent />
+
+        </>
+
+    );
+
+
+};
+    
+
+export default UserProfilePage;

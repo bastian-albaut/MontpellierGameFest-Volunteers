@@ -1,0 +1,29 @@
+@import '../../abstract/variables.module.scss';
+
+.userProfile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.userProfileTitle {
+    margin: 50px 0 20px 0;
+    font-size: 3rem; // Ajustez selon votre préférence
+    font-weight: bold;
+}
+
+.userInfo {
+    margin: 10px 0;
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .label {
+        font-weight: bold;
+    }
+}
+
+
