@@ -18,7 +18,7 @@ import PostePage from './pages/Poste/PostePage';
 import ContactPage from './pages/Contact/ContactPage';
 import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
-import MonFestival from './components/MyFestival/MonFestival';
+import MonFestival from './pages/MyFestival/MonFestivalPage';
 ;
 
 
