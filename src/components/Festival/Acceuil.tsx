@@ -18,11 +18,12 @@ import { getFestivalById } from "../../api";
 
 const Acceuil = (props: any) => {
 
-    const location = useLocation();
     const navigate = useNavigate();
     const { user, loading } = useUser();
-    const [presenceStatus, setPresenceStatus] = useState({}); 
+    const [presenceStatus, setPresenceStatus] = useState<Record<string, boolean>>({});
+    const [festival, setFestival] = useState<Festival | null>(null);
     const [volunteers, setVolunteers] = useState<isVolunteer[]>([]);
+    const [isDataFetching, setIsDataFetching] = useState<boolean>(false);
  
     // Redirect to home page if not logged in
     useEffect(() => {
@@ -30,26 +31,13 @@ const Acceuil = (props: any) => {
             navigate("/");
         }
     }, [user, loading, navigate]);
-
    
 
     const [columns, setColumns] = useState<GridColDef[]>([
         { field: 'lastName', headerName: 'Nom', width: 130,  renderCell: (params) => params.row.user.lastName, },
         { field: 'firstName', headerName: 'Prénom', width: 130, renderCell: (params) => params.row.user.firstName, },
         {
-            field: 'present',  
-            headerName: 'Présent',
-            width: 100,
-            renderCell: (params) => (
-                <input
-                    type="checkbox"
-                    checked={params.value}
-                    onChange={(e) => handlePresentChange(params.row, e.target.checked)}
-                />
-            ),
-        },
-        {
-             field: 'getTeeShirt',
+            field: 'getTeeShirt',
             headerName: 'T-shirt récupéré',
             width: 150,
             renderCell: (params) => (
@@ -74,18 +62,76 @@ const Acceuil = (props: any) => {
         },
     ]);
 
+    const loadPresenceForAllVolunteers = async () => {
+        // Vérifiez si `festival` est `null` et arrêtez l'exécution de la fonction si c'est le cas
+        if (!festival) {
+            console.error("Festival est null, impossible de charger la présence pour les bénévoles.");
+            return;
+        }
     
+        const festivalDays = getDatesBetween(new Date(festival.dateDebut), new Date(festival.dateFin));
+        let newPresenceStatus: Record<string, boolean> = {};
+    
+        for (const volunteer of volunteers) {
+            for (const day of festivalDays) {
+                const formattedDay = day.toISOString().split('T')[0];
+                const key = `${volunteer.idUser}-${formattedDay}`;
+                try {
+                    const response = await getPresent({
+                        idFestival: Number(props.idFestival),
+                        idUser: volunteer.idUser,
+                        date: formattedDay
+                    });
+                    console.log(response);
+                    // Si la réponse n'est pas null, considérez le bénévole comme présent
+                    if (response.data !== null) {
+                        newPresenceStatus[key] = true;
+                    } else {
+                        // Si la réponse est null, considérez le bénévole comme non présent
+                        newPresenceStatus[key] = false;
+                    }
+                } catch (error) {
+                    console.error("Erreur lors du chargement de la présence", error);
+                    newPresenceStatus[key] = false;
+                }
+            }
+        }
+    
+        setPresenceStatus(newPresenceStatus);
+        setIsDataFetching(true);
+    };
+
+    
+
+    useEffect(() => {
+        if (festival && isDataFetching) {
+            const presenceColumns = generatePresenceColumns(festival);
+            const uniqueColumns = new Map();
+    
+            // Ajoutez d'abord les colonnes statiques pour garantir leur présence
+            columns.forEach(col => uniqueColumns.set(col.field, col));
+    
+            // Ensuite, ajoutez ou mettez à jour les colonnes dynamiques
+            presenceColumns.forEach(col => uniqueColumns.set(col.field, col));
+    
+            // Convertissez les valeurs de la Map en tableau pour setColumns
+            const updatedColumns = Array.from(uniqueColumns.values());
+            setColumns(updatedColumns);
+        }
+    }, [festival, isDataFetching, presenceStatus]); // Dépendances mises à jour pour inclure presenceStatus
+    
+    
+
+
+
     useEffect(() => {
         if (props.idFestival) {
             // Récupérer les détails du festival par son ID
             getFestivalById(props.idFestival)
                 .then(festivalResponse => {
-                    const festival: Festival = festivalResponse.data;
-                    // Générer les colonnes de présence en fonction des dates du festival
-                    const presenceColumns = generatePresenceColumns(festival);
-    
-                    // Mettre à jour l'état des colonnes avec les colonnes de base + colonnes de présence
-                    setColumns(currentColumns => [...currentColumns, ...presenceColumns]);
+                    const festivalData: Festival = festivalResponse.data;
+                    setFestival(festivalData);
+
                 })
                 .catch(error => {
                     console.error("Erreur lors de la récupération des détails du festival", error);
@@ -109,27 +155,13 @@ const Acceuil = (props: any) => {
         }
     }, [props.idFestival]);
 
-     /*
+
     useEffect(() => {
-        if (props.idFestival) {
-            getVolunteersByFestival(props.idFestival)
-                .then(response => {
-                    const volunteersData: isVolunteer[] = response.data.map((item: any) => ({
-                        ...item,
-                        idFestival: item.idFestival,
-                        idUser: item.idUser,
-                        lastName: item.user.lastName,
-                        firstName: item.user.firstName,
-                    }));
-                    setVolunteers(volunteersData);
-                    console.log(volunteersData);
-                })
-                .catch(error => {
-                    console.error("Erreur lors du chargement des bénévoles", error);
-                });
+        if (festival && volunteers.length > 0) {
+            loadPresenceForAllVolunteers();
         }
-    }, [props.idFestival]);
-    */
+    }, [festival, volunteers]); 
+    
 
 
     function getDatesBetween(startDate: Date, endDate: Date): Date[] {
@@ -144,129 +176,58 @@ const Acceuil = (props: any) => {
         return dates;
     }
 
-    // Cette fonction doit être utilisée dans le composant où vous définissez vos colonnes pour DataGrid
+
     function generatePresenceColumns(festival: Festival): GridColDef[] {
         const festivalDays = getDatesBetween(new Date(festival.dateDebut), new Date(festival.dateFin));
-
-        return festivalDays.map(day => ({
-            field: day.toISOString().split('T')[0],
-            headerName: day.toLocaleDateString(),
-            width: 150,
-            renderCell: (params: GridRenderCellParams): React.ReactNode => {
-                // La logique pour déterminer si le bénévole est présent ce jour devra être implémentée
-                // en fonction de vos données et de la manière dont vous accédez à l'état de présence
-                const isPresentToday = false; // Remplacez par la logique appropriée
-                return (
-                    <input
-                        type="checkbox"
-                        checked={isPresentToday}
-                        onChange={(e) => handleDayPresenceChange(params.row as isVolunteer, day, e.target.checked)}
-                    />
-                );
-            },
-        }));
+    
+        return festivalDays.map(day => {
+            const formattedDay = day.toISOString().split('T')[0];
+            return {
+                field: formattedDay,
+                headerName: day.toLocaleDateString(),
+                width: 150,
+                renderCell: (params: GridRenderCellParams): React.ReactNode => {
+                    const key = `${params.row.idUser}-${formattedDay}`;
+                    const isPresentToday = presenceStatus[key];
+                    return (
+                        <input
+                            type="checkbox"
+                            checked={isPresentToday}
+                            onChange={(e) => handleDayPresenceChange(params.row as isVolunteer, day, e.target.checked)}
+                        />
+                    );
+                },
+            };
+        });
     }
-
-
-    /*
-    const columns: GridColDef[] = [
-        { field: 'lastName', headerName: 'Nom', width: 130,  renderCell: (params) => params.row.user.lastName, },
-        { field: 'firstName', headerName: 'Prénom', width: 130, renderCell: (params) => params.row.user.firstName, },
-        {
-            field: 'present',  
-            headerName: 'Présent',
-            width: 100,
-            renderCell: (params) => (
-                <input
-                    type="checkbox"
-                    checked={params.value}
-                    onChange={(e) => handlePresentChange(params.row, e.target.checked)}
-                />
-            ),
-        },
-        {
-             field: 'getTeeShirt',
-            headerName: 'T-shirt récupéré',
-            width: 150,
-            renderCell: (params) => (
-                <input
-                    type="checkbox"
-                    checked={params.row.getTeeShirt || false}
-                    onChange={(e) => handleTshirtChange(params.row, e.target.checked)}
-                />
-            ),
-        },
-        {
-            field: 'isVege',
-            headerName: 'Végétarien',
-            width: 130,
-            renderCell: (params) => (
-                <input
-                    type="checkbox"
-                    checked={params.row.isVege || false}
-                    onChange={(e) => handleVegetarianChange(params.row, e.target.checked)}
-                />
-            ),
-        },
-    ];
-    */
-
-
-    const handlePresentChange = async (row: any, isChecked: boolean) => {
-        const today = new Date().toISOString().split('T')[0];
-    
-        const data: IsPresent = {
-            idFestival: row.idFestival, 
-            idUser: row.idUser,
-            date: today,
-        };
-    
-        try {
-            if (isChecked) {
-                await addPresent(data);
-                console.log(`Présence ajoutée pour ${row.idUser} le ${today}`);
-            } else {
-                await deletePresent(data);
-                console.log(`Présence supprimée pour ${row.idUser} le ${today}`);
-            }
-        } catch (error) {
-            console.error("Erreur lors de l'ajout/suppression de la présence", error);
-        }
-    };
 
 
     const handleDayPresenceChange = async (volunteer: isVolunteer, day: Date, isChecked: boolean) => {
         const formattedDay = day.toISOString().split('T')[0];
-        const data: IsPresent = {
-            idFestival: volunteer.idFestival, 
-            idUser: volunteer.idUser,
-            date: formattedDay,
-        };
-    
+        const key = `${volunteer.idUser}-${formattedDay}`;
+        const data: IsPresent = { idFestival: volunteer.idFestival, idUser: volunteer.idUser, date: formattedDay };
         try {
             if (isChecked) {
                 await addPresent(data);
-                console.log(`Présence ajoutée pour ${volunteer.idUser} le ${formattedDay}`);
+                console.log(`Présence ajoutée`, data);
             } else {
-                // Implémentez deletePresent selon votre API
-                console.log(`Présence supprimée pour ${volunteer.idUser} le ${formattedDay}`);
+                await deletePresent(data);
+                console.log(`Présence supprimée`, data);
             }
+            let currentPresence = presenceStatus[key];
+            setPresenceStatus(prevPresenceStatus => ({ ...prevPresenceStatus, [key]: !currentPresence }));
         } catch (error) {
             console.error("Erreur lors de l'ajout/suppression de la présence", error);
         }
     };
-    
 
   
     const handleVegetarianChange = async (row: isVolunteer, isVegetarian: boolean) => {
         const idFestival = String(row.idFestival);
         const idUser = row.idUser;
         const data = { isVege: isVegetarian };
-
         try {
             await modifyVolunteersFestival(idFestival, idUser, data);
-            console.log(`Statut végétarien mis à jour : ${isVegetarian}`);
-
             // Mettre à jour l'état local pour refléter le changement
             setVolunteers(prevVolunteers =>
                 prevVolunteers.map(volunteer =>
@@ -289,8 +250,6 @@ const Acceuil = (props: any) => {
 
         try {
             await modifyVolunteersFestival(idFestival, idUser, data);
-            console.log(`Statut de récupération du t-shirt pour ${idUser} mis à jour : ${isChecked}`);
-
             // Mettre à jour l'état local pour refléter le changement
             setVolunteers(prevVolunteers =>
                 prevVolunteers.map(volunteer =>
@@ -303,8 +262,6 @@ const Acceuil = (props: any) => {
             console.error("Erreur lors de la mise à jour de la récupération du t-shirt", error);
         }
     };
-
-
 
 
     if (loading) {
