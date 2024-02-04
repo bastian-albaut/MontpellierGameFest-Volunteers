@@ -32,3 +32,22 @@
     flex-direction: column;
     align-items: center;
 }
+
+.boxElements {
+    margin-top: 30px;
+}
+
+.boxIconText {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+#buttonAddEspace {
+    margin-top: 10px;
+}
+
+.fieldForm {
+    margin: 10px 0;
+}
