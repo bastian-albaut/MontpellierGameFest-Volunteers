@@ -42,30 +42,45 @@ const Planning: React.FC<PlanningProps> = ({ idFestival, userId }) => {
   const columns: GridColDef[] = [
     {
       field: 'idCreneauEspace',
-      headerName: 'ID Créneau Espace',
-      width: 150,
+      headerName: 'ID Créneau',
+      width: 130,
     },
     {
       field: 'timeStart',
-      headerName: 'Heure de début',
+      headerName: 'Début du créneau',
       width: 200,
+      // Formatage de la date et de l'heure de début
       valueGetter: (params: GridValueGetterParams) =>
-        new Date(params.row.creneauEspace.creneau.timeStart).toLocaleTimeString(),
+        new Date(params.row.creneauEspace.creneau.timeStart).toLocaleString('fr-FR', {
+          day: '2-digit', // Jour
+          month: '2-digit', // Mois
+          year: 'numeric', // Année
+          hour: '2-digit', // Heure
+          minute: '2-digit', // Minute
+          hour12: false // Format 24h
+        }),
     },
     {
       field: 'timeEnd',
-      headerName: 'Heure de fin',
+      headerName: 'Fin du créneau',
       width: 200,
+      // Formatage de la date et de l'heure de fin
       valueGetter: (params: GridValueGetterParams) =>
-        new Date(params.row.creneauEspace.creneau.timeEnd).toLocaleTimeString(),
+        new Date(params.row.creneauEspace.creneau.timeEnd).toLocaleString('fr-FR', {
+          day: '2-digit', // Jour
+          month: '2-digit', // Mois
+          year: 'numeric', // Année
+          hour: '2-digit', // Heure
+          minute: '2-digit', // Minute
+          hour12: false // Format 24h
+        }),
     },
     {
-      field: 'nameEspace',
-      headerName: 'Espace',
-      width: 150,
+      field: 'zoneName',
+      headerName: 'Zone',
+      width: 200,
       valueGetter: (params: GridValueGetterParams) => params.row.creneauEspace.espace.name,
     },
-    // Vous pouvez ajouter d'autres colonnes basées sur les informations que vous souhaitez afficher
   ];
   
 
