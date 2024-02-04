@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getEspacesByPoste, getPosteById } from "../../api";
 import styles from "../../styles/components/Poste/sectionposte.module.scss" 
 import { Poste } from "../../types/Poste";
-import { Avatar, Box, Button, Typography } from "@mui/material";
+import { Avatar, Box, Button, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Loading from "../general/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationArrow } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash, faLocationArrow, faGamepad } from "@fortawesome/free-solid-svg-icons";
 import ModalCreateEspace from "./ModalCreateEspace";
+import ModalLinkGames from "./ModalLinkGames";
 
 const SectionPoste = (props: any) => {
 
@@ -15,6 +16,14 @@ const SectionPoste = (props: any) => {
     const [isLoadingFetch, setIsLoadingFetch] = useState<boolean>(false);
     const [listEspaces, setListEspaces] = useState<any[]>([]);
     const navigate = useNavigate();
+
+    const handleEditEspace = (index: number) => {
+        console.log("edit espace", index);
+    }
+
+    const handleDeleteEspace = (index: number) => {
+        console.log("delete espace", index);
+    }
 
     // Fetch the poste data from the api
     useEffect(() => {
@@ -47,9 +56,14 @@ const SectionPoste = (props: any) => {
     }, [props.idPoste, navigate]);
 
     // Modal for create a new espace
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
+    const [isEspaceModalOpen, setIsEspaceModalOpen] = useState(false);
+    const handleOpenEspaceModal = () => setIsEspaceModalOpen(true);
+    const handleCloseEspaceModal = () => setIsEspaceModalOpen(false);
+
+    // Modal for link games to an espace
+    const [isLinkGamesModalOpen, setIsLinkGamesModalOpen] = useState(false);
+    const handleOpenLinkGamesModal = () => setIsLinkGamesModalOpen(true);
+    const handleCloseLinkGamesModal = () => setIsLinkGamesModalOpen(false);
 
     if(isLoadingFetch) {
         return (
@@ -78,19 +92,43 @@ const SectionPoste = (props: any) => {
                     <FontAwesomeIcon icon={faLocationArrow} className={styles.icon}/>
                     <Typography variant="h5">Espaces</Typography>
                 </Box>
-                <Box className={styles.list}>
-                    {listEspaces.map((espace, index) => {
-                        return (
-                            <Box key={index}>
-                                <Typography variant="body1" color="initial">{espace.espace.name}</Typography>
-                            </Box>
-                        )
-                    })}
-                </Box>
-                <Button id={styles.buttonAddEspace} variant="outlined" color="primary" onClick={() => handleOpenModal()}>Ajouter un espace</Button>
+                <List>
+                {listEspaces.map((espace, index) => (
+                    <React.Fragment key={index}>
+                        <ListItem className={styles.listItem}>
+                            <ListItemText primary={espace.espace.name} />
+                            <Button variant="outlined" color="success" size="small" onClick={() => handleEditEspace(index)}>
+                                <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
+                                Modifier
+                            </Button>
+                            <Button variant="outlined" color="error" size="small" onClick={() => handleDeleteEspace(index)}>
+                                <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
+                                Supprimer
+                            </Button>
+                        </ListItem>
+                        <ListItem>
+                            <Typography variant="subtitle1">Jeux:</Typography>
+                            <List>
+                                {/* {espace.games.map((game: any, gameIndex: number) => (
+                                    <ListItem key={gameIndex}>
+                                        <ListItemIcon>
+                                            <FontAwesomeIcon icon={faGamepad} />
+                                        </ListItemIcon>
+                                        <ListItemText primary={game.name} />
+                                    </ListItem>
+                                ))} */}
+                            </List>
+                            <Button variant="text" color="primary" onClick={() => handleOpenLinkGamesModal()}>Ajouter des jeux</Button>
+                        </ListItem>
+                        <Divider />
+                    </React.Fragment>
+                ))}
+            </List>
+                <Button id={styles.buttonAddEspace} variant="outlined" color="primary" onClick={() => handleOpenEspaceModal()}>Ajouter un espace</Button>
             </Box>
         )}
-        <ModalCreateEspace idPoste={poste?.idPoste} handleShowAlertMessage={props.handleShowAlertMessage} open={isModalOpen} handleClose={handleCloseModal} listEspaces={listEspaces} setListEspaces={setListEspaces}/>
+        <ModalCreateEspace idPoste={poste?.idPoste} handleShowAlertMessage={props.handleShowAlertMessage} open={isEspaceModalOpen} handleClose={handleCloseEspaceModal} listEspaces={listEspaces} setListEspaces={setListEspaces}/>
+        <ModalLinkGames idPoste={poste?.idPoste} handleShowAlertMessage={props.handleShowAlertMessage} open={isLinkGamesModalOpen} handleClose={handleCloseLinkGamesModal} listEspaces={listEspaces} setListEspaces={setListEspaces}/>           
     </Box>
   );
 }

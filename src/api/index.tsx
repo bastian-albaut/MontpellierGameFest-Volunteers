@@ -39,3 +39,4 @@ export const updateCreneauEspace = (id: string, data: any) => API.put('/creneauE
 export const getCreneauEspaceByCreneau = (id: string) => API.get(`/creneauEspaces/creneau/${id}`);
 export const addInscription = (data: any) => API.post('/inscriptions', data);
 export const getEspacesByPoste = (idPoste: string) => API.get(`/posteEspaces/poste/${idPoste}`);
+export const getGames = () => API.get('/games');

@@ -1,5 +1,5 @@
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
-import styles from "../../styles/components/createFestival/modalCreateUpdate.module.scss";
+import styles from "../../styles/components/Poste/modalCreateEspace.module.scss";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { addEspace, addPosteEspace } from "../../api";
