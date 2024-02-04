@@ -5,7 +5,7 @@ import { getFestivals } from '../../api';
 import Planning from '../Dashboard/Planning';
 import { Festival } from '../../types/Festival';
 import styles from '../../styles/components/MyFestival/monFestival.module.scss';
-import SectionPoste from '../Poste/SectionPoste';
+import SectionPosteMyFestival from '../Poste/SectionPosteMyFestival';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 const MonFestival: React.FC = () => {
@@ -85,7 +85,7 @@ const MonFestival: React.FC = () => {
         </Typography>
         {/* Autres utilisations de currentFestival avec vérification de nullité */}
         <Planning idFestival={currentFestival.idFestival!.toString()} userId={user.id ?? ''} />
-        <SectionPoste idPoste="id_du_poste_sélectionné" />
+        <SectionPosteMyFestival idPoste="id_du_poste_sélectionné" />
       </>
     )}
   </Box>

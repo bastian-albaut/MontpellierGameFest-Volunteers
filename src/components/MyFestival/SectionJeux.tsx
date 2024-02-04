@@ -1,14 +1,14 @@
-// Dans SectionPoste.tsx
+// Dans SectionPosteMyFestival.tsx
 
 import React, { useState, useEffect } from 'react';
 import { getPosteById } from '../../api'; // Ajustez selon votre API
 import { Poste } from '../../types/Poste';
 
-interface SectionPosteProps {
+interface SectionPosteMyFestivalProps {
   idPoste: string;
 }
 
-const SectionPoste: React.FC<SectionPosteProps> = ({ idPoste }) => {
+const SectionPosteMyFestival: React.FC<SectionPosteMyFestivalProps> = ({ idPoste }) => {
     const [poste, setPoste] = useState<Poste | null>(null);
     
     useEffect(() => {
@@ -31,7 +31,7 @@ if (!poste) {
 }
 
 return (
-    <div className="sectionPosteContainer">
+    <div className="SectionPosteMyFestivalContainer">
       {/* Affichez les détails de votre poste ici */}
       <h1 className="posteTitle">{poste.name}</h1>
       {/* ... autres éléments */}
@@ -39,4 +39,4 @@ return (
   );
 };
 
-export default SectionPoste;
+export default SectionPosteMyFestival;

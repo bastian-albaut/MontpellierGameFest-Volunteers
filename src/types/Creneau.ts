@@ -1,5 +1,5 @@
 export interface Creneau {
-    idCreneau: number;
+    idCreneau?: number;
     timeStart: Date;
     timeEnd: Date;
     idFestival: number;

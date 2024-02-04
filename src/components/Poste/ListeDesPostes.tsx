@@ -1,7 +1,7 @@
 // Assurez-vous que ces imports sont en haut de votre fichier
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SectionPoste from './SectionPoste';
+import SectionPosteMyFestival from './SectionPosteMyFestival';
 import { Poste } from '../../types/Poste'; // Ce fichier doit définir le type Poste
 
 const ListeDesPostes = () => {
@@ -32,7 +32,7 @@ const ListeDesPostes = () => {
           {poste.name}
         </div>
       ))}
-      {selectedPosteId && <SectionPoste idPoste={selectedPosteId} />}
+      {selectedPosteId && <SectionPosteMyFestival idPoste={selectedPosteId} />}
     </div>
   );
 };
