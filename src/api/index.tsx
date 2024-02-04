@@ -5,8 +5,8 @@ import { Poste } from '../types/Poste';
 import { Creneau } from '../types/Creneau';
 import { isVolunteer } from '../types/IsVolunteer';
 
-const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
-
+//const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
+const API = axios.create({ baseURL : ' http://localhost:8080/' })
 // Send the token at each request
 API.interceptors.request.use((req) => {
     const token = localStorage.getItem('token');
@@ -34,3 +34,5 @@ export const addEspace = (data: any) => API.post('/espaces', data);
 export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);
 export const deleteFestival = (id: string) => API.delete('/festivals/' + id);
 export const addCreneauEspace = (data: any) => API.post('/creneauEspaces', data);
+export const motsDePasseOublie = (email: string) => API.post('/reset-password', { email });
+export const resetPasswordApi = (password: any) => API.post('/update-password-with-token', password );

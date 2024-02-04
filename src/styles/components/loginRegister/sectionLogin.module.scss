@@ -21,3 +21,25 @@
 #buttonLogin {
     margin: 20px 0 10px 0;
 }
+
+.googleButton {
+    margin: 10px 0 10px 0;
+    padding-right: 20px;
+    font-size: 1.5em;
+}
+
+.googleLogin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color:blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    &:hover {
+        background-color: darken(blue, 10%);
+    }
+}

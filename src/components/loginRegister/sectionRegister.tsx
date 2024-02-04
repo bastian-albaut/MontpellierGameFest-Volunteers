@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { register } from "../../api";
 import { CheckBox } from "@mui/icons-material";
 import { User } from "../../types/User";
+import {FcGoogle} from "react-icons/fc";
 
 export default function Register(props: any) {
 
@@ -184,8 +185,9 @@ export default function Register(props: any) {
 
                 <FileInput selectedFile={selectedFile} setSelectedFile={setSelectedFile} handleFileSelect={handleFileSelect} />
                 <Button id={styles.buttonRegister} variant="contained" color="primary" type="submit" onClick={(event) => handleSignUp(event)} disabled={props.isLoadingLoginRegister} >S'inscrire</Button>
-                <Button variant="contained" onClick={handleGoogleSignIn} sx={{ mt: 2 }}>
-                    Se connecter avec Google
+                <Button id={styles.googleLogin} variant="outlined" color="primary" onClick={handleGoogleSignIn} disabled={props.isLoadingLoginRegister} size="medium">
+                    <FcGoogle className={styles.googleButton} />
+                    Continuer avec Google
                 </Button>
                 <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(true)} disabled={props.isLoadingLoginRegister} >J'ai déjà un compte</Button>
             </form>
