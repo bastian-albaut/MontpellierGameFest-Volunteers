@@ -8,6 +8,7 @@ import Appbar from "../../components/general/Appbar";
 import useAlert from "../../hooks/useAlerts";
 import SectionDashboard from "../../components/Dashboard/SectionDashboard";
 
+
 const Dashboard = () => {
 
     // Display alert message from location state

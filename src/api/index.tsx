@@ -32,6 +32,8 @@ export const getPostesByFestival = (id: string) => API.get(`/festivals/${id}/pos
 export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/creneaux`);
 export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`);
 export const getFestivals = () => API.get('/festivals');
+export const getCreneauxByUserAndFestival = (idUser: string, idFestival: string) => API.get(`/creneaux/user/${idUser}/festivals/${idFestival}`);
+export const getInscriptionByUserAndFestival =(idUser: string, idFestival: string) => API.get(`/inscriptions/${idUser}/festivals/${idFestival}`);
 export const addEspace = (data: any) => API.post('/espaces', data);
 export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);
 export const deleteFestival = (id: string) => API.delete('/festivals/' + id);

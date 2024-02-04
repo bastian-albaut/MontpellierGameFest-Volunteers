@@ -12,7 +12,7 @@ import ModalLinkGames from "./ModalLinkGames";
 
 const SectionPoste = (props: any) => {
 
-    const [poste, setPoste] = useState<Poste | null>(null);
+    const [poste, setPoste] = useState<any>(null);
     const [isLoadingFetch, setIsLoadingFetch] = useState<boolean>(false);
     const [isRefresh, setIsRefresh] = useState<boolean>(false);
     const [listEspaces, setListEspaces] = useState<any[]>([]);

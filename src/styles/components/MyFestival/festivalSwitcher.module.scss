@@ -1,0 +1,18 @@
+.festivalSwitcherContainer {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  
+    .switcherSelect {
+      border: 1px solid $greyColor;
+      border-radius: 4px;
+      padding: 10px;
+      background-color: $whiteColor;
+      color: $darkColor;
+    }
+  
+    // Ajoutez d'autres styles spécifiques au switcher de festival ici
+  }
+  
