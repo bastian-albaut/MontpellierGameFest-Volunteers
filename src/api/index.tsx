@@ -33,8 +33,9 @@ export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/c
 export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`); 
 export const modifyVolunteersFestival = (idFestival: string, idUser: string, data: Partial<isVolunteer>) => API.put(`/festivals/${idFestival}/volunteers/${idUser}`, data);
 export const addPresent = (data: IsPresent) => API.post('/isPresent', data);
+export const getPresent = (data: IsPresent) => API.get(`/isPresent/` + data.idFestival + `/` + data.idUser+ `/`+ data.date +``);
 export const modifyPresent = (idFestival: string, idUser: string, date: string) => API.put(`/isPresent/${idFestival}/${idUser}/${date}`);
-export const deletePresent = (idFestival: string, idUser: string, date: string) => API.delete(`/isPresent/${idFestival}/${idUser}/${date}`);
+export const deletePresent = (data: IsPresent) => API.delete(`/isPresent/` + data.idFestival + `/` + data.idUser+ `/`+ data.date +``);
 
 
 export const getFestivals = () => API.get('/festivals');
