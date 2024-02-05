@@ -9,6 +9,7 @@ import { getFestivalById } from '../../api';
 
 import { useUser } from "../../contexts/UserContext";
 import { getVolunteersByFestival } from '../../api';
+import { useNavigate } from "react-router-dom";
 
 import styles from "../../styles/components/Dashboard/sectiondashboard.module.scss";
 
@@ -163,8 +164,8 @@ const SectionDashboard: React.FC = () => {
         }
     };
     
+    const navigate = useNavigate();
    
-
 	return (
         <>
 
@@ -223,7 +224,7 @@ const SectionDashboard: React.FC = () => {
                                         primary={festival.name} 
                                         secondary={`Du ${new Date(festival.dateDebut).toLocaleDateString()} au ${new Date(festival.dateFin).toLocaleDateString()}`} 
                                     />
-                                    <Button variant="contained" color="primary">
+                                    <Button variant="contained" color="primary" onClick={() => navigate(`/festival/inscription/${festival.idFestival}`)}>
                                         S'inscrire
                                     </Button>
                                 </ListItem>
