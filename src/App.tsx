@@ -24,7 +24,6 @@ import Acceuil from './pages/Festival/Acceuil'
 import MonFestival from './components/MyFestival/MonFestival';
 import FAQPage from './pages/FAQ/FAQPage';
 
-
 let theme = createTheme({
   palette: {
     mode: 'light',
