@@ -20,12 +20,9 @@ import PostePage from './pages/Poste/PostePage';
 import ContactPage from './pages/Contact/ContactPage';
 import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
-import MonFestival from './pages/MyFestival/MonFestivalPage';
-import FAQPage from './pages/FAQ/FAQPage'; // Assurez-vous que le chemin est correct
-
-
-
-
+import Acceuil from './pages/Festival/Acceuil'
+import MonFestival from './components/MyFestival/MonFestival';
+import FAQPage from './pages/FAQ/FAQPage';
 
 let theme = createTheme({
   palette: {
@@ -131,7 +128,7 @@ const App = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
             <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst>
-                <BrowserRouter>
+                <BrowserRouter> 
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
                     <Route path="/connexion" element={<LoginRegister />} />
@@ -144,6 +141,7 @@ const App = () => {
                     <Route path="/poste/:id" element={<PostePage />}/>
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
+                    <Route path="/gestionacceuil/:id" element={<Acceuil />}/>
                     <Route path="/mon-festival" element={<MonFestival />} />
                     <Route path="/faq" element={<FAQPage />} />
                     <Route path="*" element={<Navigate replace to="/" />} />

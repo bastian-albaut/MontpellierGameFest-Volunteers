@@ -4,6 +4,7 @@ import { Festival } from '../types/Festival';
 import { Poste } from '../types/Poste';
 import { Creneau } from '../types/Creneau';
 import { isVolunteer } from '../types/IsVolunteer';
+import { IsPresent } from '../types/IsPresent';
 
 const API = axios.create({ baseURL : 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/' })
 
@@ -30,7 +31,15 @@ export const getPosteById = (idPoste: string) => API.get(`/postes/${idPoste}`);
 export const getFestivalById = (id: string) => API.get(`/festivals/${id}`);
 export const getPostesByFestival = (id: string) => API.get(`/festivals/${id}/postes`);
 export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/creneaux`);
-export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`);
+
+export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`); 
+export const modifyVolunteersFestival = (idFestival: string, idUser: string, data: Partial<isVolunteer>) => API.put(`/festivals/${idFestival}/volunteers/${idUser}`, data);
+export const addPresent = (data: IsPresent) => API.post('/isPresent', data);
+export const getPresent = (data: IsPresent) => API.get(`/isPresent/` + data.idFestival + `/` + data.idUser+ `/`+ data.date +``);
+export const modifyPresent = (idFestival: string, idUser: string, date: string) => API.put(`/isPresent/${idFestival}/${idUser}/${date}`);
+export const deletePresent = (data: IsPresent) => API.delete(`/isPresent/` + data.idFestival + `/` + data.idUser+ `/`+ data.date +``);
+
+
 export const getFestivals = () => API.get('/festivals');
 export const getCreneauxByUserAndFestival = (idUser: string, idFestival: string) => API.get(`/creneaux/user/${idUser}/festivals/${idFestival}`);
 export const getInscriptionByUserAndFestival =(idUser: string, idFestival: string) => API.get(`/inscriptions/${idUser}/festivals/${idFestival}`);

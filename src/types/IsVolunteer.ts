@@ -4,6 +4,7 @@ export type isVolunteer = {
     role?: Role;
     isVege?: boolean;
     sizeTeeShirt?: string;
+    getTeeShirt?: boolean;
     status?: Status;
 }
 

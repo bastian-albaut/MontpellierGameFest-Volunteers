@@ -4,7 +4,6 @@ import { Typography, List, ListItem, ListItemText, Button, Box } from '@mui/mate
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { getFestivals } from '../../api';
-import { getSoirees } from '../../api';
 import { getFestivalById } from '../../api';
 
 import { useUser } from "../../contexts/UserContext";
