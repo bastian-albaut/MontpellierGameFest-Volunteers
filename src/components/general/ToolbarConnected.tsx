@@ -65,28 +65,31 @@ export default function ToolbarConnected(props: any) {
       navigate(`/mon-festival`);
   }
     
-    const pages = [
-        {
-            name: 'Accueil',
-            function : handleHomepage
-        },
-        {
-            name: 'Tableau de bord',
-            function : handleDashboard
-        }, 
-        {
-            name: 'Tableau de bord admin',
-            function : handleDashboardAdmin
-        },
-        {
-            name: 'Contact',
-            function : handleContact
-        },
-        {
-          name: 'Mon Festival',
-          function : handleMyFestival
-      }
-    ];
+  const pages = [
+    // {
+    //     name: 'Accueil',
+    //     function: handleHomepage,
+    // },
+    {
+        name: 'Tableau de bord',
+        function: handleDashboard,
+        condition: !props.currentUser.isGod
+    },
+    {
+        name: 'Tableau de bord admin',
+        function: handleDashboardAdmin,
+        condition: props.currentUser.isGod
+    },
+    {
+        name: 'Contact',
+        function: handleContact
+    },
+    {
+        name: 'Mon Festival',
+        function: handleMyFestival,
+        condition: !props.currentUser.isGod
+    }
+].filter(page => page.condition === undefined || page.condition);
 
   const handleGoToProfile = () => {
       handleCloseUserMenu();

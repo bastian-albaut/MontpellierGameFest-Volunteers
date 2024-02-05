@@ -8,4 +8,5 @@ export type User = {
     password: string;
     file: string;
     picture: string;
+    isGod?: boolean;
 }
