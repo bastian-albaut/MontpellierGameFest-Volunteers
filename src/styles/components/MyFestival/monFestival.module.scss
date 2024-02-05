@@ -1,0 +1,43 @@
+@import "../../abstract/variables.module.scss";
+
+.monFestivalContainer {
+  padding: 20px;
+  border: 1px solid $greyColor;
+  border-radius: 8px;
+  margin: 20px;
+  background-color: $whiteColor; // Utilisez la couleur de fond de votre choix
+}
+
+.monFestivalTitle {
+  color: $primaryColor;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.monFestivalDate {
+  color: $darkColor;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.monFestivalAddress {
+  color: $greyColor;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.monFestivalButton {
+  background-color: $primaryColor;
+  color: $whiteColor;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken($primaryColor, 10%);
+  }
+}
+
+// Utilisez les classes de .icon et .list si nécessaire pour la mise en forme de vos icônes et listes
