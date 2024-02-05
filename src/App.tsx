@@ -23,6 +23,7 @@ import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
 import Acceuil from './pages/Festival/Acceuil'
 import MonFestival from './components/MyFestival/MonFestival';
 import FAQPage from './pages/FAQ/FAQPage';
+import MonFestivalPage from './pages/MyFestival/MonFestivalPage';
 
 let theme = createTheme({
   palette: {
@@ -142,7 +143,7 @@ const App = () => {
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
                     <Route path="/gestionacceuil/:id" element={<Acceuil />}/>
-                    <Route path="/mon-festival" element={<MonFestival />} />
+                    <Route path="/mon-festival" element={<MonFestivalPage />} />
                     <Route path="/faq" element={<FAQPage />} />
                     <Route path="*" element={<Navigate replace to="/" />} />
                 </Routes>

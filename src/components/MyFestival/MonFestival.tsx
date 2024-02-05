@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Typography, CircularProgress, FormControl, InputLabel, Select, MenuItem, Button } from '@mui/material';
 import { useUser } from '../../contexts/UserContext';
 import { getFestivals } from '../../api';
 import Planning from '../Dashboard/Planning';
@@ -7,6 +7,7 @@ import { Festival } from '../../types/Festival';
 import styles from '../../styles/components/MyFestival/monFestival.module.scss';
 import SectionPosteMyFestival from '../Poste/SectionPosteMyFestival';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { useNavigate } from 'react-router-dom';
 
 const MonFestival: React.FC = () => {
   const { user, loading: userLoading, reloadUserContext } = useUser();
@@ -41,6 +42,7 @@ const MonFestival: React.FC = () => {
   const handleFestivalChange = (event: SelectChangeEvent) => {
     setSelectedFestival(event.target.value as string);
   };
+  const navigate = useNavigate();
 
   if (userLoading || loading) {
     return <CircularProgress />;
@@ -59,6 +61,7 @@ const MonFestival: React.FC = () => {
   };
 
   const currentFestival = festivals.find(festival => festival.idFestival?.toString() === selectedFestival);
+
 
   return (
     <Box className={styles.monFestivalContainer}>
@@ -86,6 +89,16 @@ const MonFestival: React.FC = () => {
         {/* Autres utilisations de currentFestival avec vérification de nullité */}
         <Planning idFestival={currentFestival.idFestival!.toString()} userId={user.id ?? ''} />
         <SectionPosteMyFestival idPoste="id_du_poste_sélectionné" />
+        <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+            navigate("/gestionacceuil/" + currentFestival.idFestival)
+            }}
+            sx={{ mt: 5 }}
+        >
+            Gestion de l'accueil
+        </Button>
       </>
     )}
   </Box>
