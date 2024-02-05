@@ -17,7 +17,7 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 const SectionCreateFestival = () => {
 
     const [dataFestival, setDataFestival] = useState({name: "", dateDebut: dayjs(), dateFin: dayjs().add(1, 'day')})
-    const [dataPosts, setDataPosts] = useState([])
+    const [dataPosts, setDataPosts] = useState([{id: 100, name: "Animation Jeux", description: "Description de l'animation jeux", capacityPoste: 10}])
     const [dataCreneau, setDataCreneau] = useState([])
 
     // Modal for create/update a post
@@ -121,11 +121,11 @@ const SectionCreateFestival = () => {
           width: 250,
           renderCell: (params) => (
                 <Box className={styles.actionCell}>
-                    <Button  variant="outlined" color="primary" size="small" onClick={(event) => handleEditCreneau(params.row, event)}>
+                    <Button variant="outlined" color="primary" size="small" onClick={(event) => handleEditCreneau(params.row, event)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faEdit} />
                         Modifier
                     </Button>
-                    <Button  variant="outlined" color="error" size="small" onClick={(event) => handleDeleteCreneau(params.row, event)}>
+                    <Button variant="outlined" color="error" size="small" onClick={(event) => handleDeleteCreneau(params.row, event)}>
                         <FontAwesomeIcon className={styles.iconActionCell} icon={faTrash} />
                         Supprimer
                     </Button>
@@ -269,6 +269,13 @@ const SectionCreateFestival = () => {
     // Create all the postes for the festival
     const handlePostesCreation = async (idFestival: number) => {
         try {
+            // Check if there is already the "Animation Jeux" poste
+            const isAnimationJeuxPoste = dataPosts.find((post: any) => post.name === "Animation Jeux");
+            if(!isAnimationJeuxPoste) {
+                handleShowAlertMessage("Erreur: Veuillez créer un poste 'Animation Jeux'.", "error");
+                return false;
+            }
+
             const postesToCreate = dataPosts.map((post: any) => {
                 const { id, ...postWithoutId } = post;
                 return { ...postWithoutId, idFestival };
@@ -289,17 +296,30 @@ const SectionCreateFestival = () => {
     // Create all the creneaux for the festival
     const handleCreneauxCreation = async (idFestival: number) => {
         try {
-            const creneauxToCreate : Creneau[] = dataCreneau.map((creneau: any) => {
-                const { id, timeStart, timeEnd, ...newCreneau } = creneau;
+            const dates: Date[] = getListDatesBetweenDates(dataFestival.dateDebut.toDate(), dataFestival.dateFin.toDate());
 
-                // Convert time strings to Date objects
-                const formattedTimeStart = parseTimeStringToDate(timeStart);
-                const formattedTimeEnd = parseTimeStringToDate(timeEnd);
+            const creneauxToCreate: Creneau[] = [];
 
-                return { ...newCreneau, idFestival, timeStart: formattedTimeStart, timeEnd: formattedTimeEnd };
-            });
+            for (const date of dates) {
+                for (const creneau of dataCreneau) {
+                    const { id, timeStart, timeEnd } = creneau;
+                    
+                    // Convert time strings to Date objects
+                    const formattedTimeStart = parseTimeStringToDate(timeStart, date);
+                    const formattedTimeEnd = parseTimeStringToDate(timeEnd, date);
+
+                    const creneauToAdd: Creneau = {
+                        idFestival,
+                        timeStart: formattedTimeStart,
+                        timeEnd: formattedTimeEnd,
+                    };
+
+                    creneauxToCreate.push(creneauToAdd);
+                }
+            }
+
             const res = await addMultipleCreneau(creneauxToCreate);
-            if(res && res.data) {
+            if (res && res.data) {
                 return true;
             } else {
                 return false;
@@ -310,13 +330,24 @@ const SectionCreateFestival = () => {
         }
     }
     
-    const parseTimeStringToDate = (timeString: string) => {
+    const parseTimeStringToDate = (timeString: string, date: Date) => {
         const [hours, minutes] = timeString.split(':');
-        const currentDate = new Date();
-        currentDate.setUTCHours(parseInt(hours, 10));
-        currentDate.setUTCMinutes(parseInt(minutes, 10));
-        return currentDate;
+        const formattedDate = new Date(date);
+        formattedDate.setUTCHours(parseInt(hours));
+        formattedDate.setUTCMinutes(parseInt(minutes));
+        return formattedDate;
     };
+
+    const getListDatesBetweenDates = (startDate: Date, endDate: Date) => {
+        const dates = [] as Array<Date>;
+        let currentDate = startDate;
+        while (currentDate <= endDate) {
+            dates.push(new Date(currentDate));
+            currentDate = new Date(currentDate);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        return dates;
+    }
 
     // Create the espace default for each poste of the festival
     const handleEspaceCreation = async (idFestival : number, listIdEspaceCreated: Array<number>) => {

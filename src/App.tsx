@@ -13,6 +13,8 @@ import CreateFestival from './pages/CreateFestival/CreateFestival';
 import LoginRegister from './pages/LoginRegister/LoginRegister';
 import Dashboard from './pages/Dashboard/Dashboard';
 import { UserProvider } from './contexts/UserContext';
+import ModifyUserProfile from './pages/Profile/ModifyUserProfile';
+import ViewUserProfile from './pages/Profile/ViewUserProfile';
 import SignupFestival from './pages/SignupFestival/SignupFestival';
 import PostePage from './pages/Poste/PostePage';
 import ContactPage from './pages/Contact/ContactPage';
@@ -20,6 +22,10 @@ import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 
+import Acceuil from './pages/Festival/Acceuil'
+import MonFestival from './components/MyFestival/MonFestival';
+import FAQPage from './pages/FAQ/FAQPage';
+import MonFestivalPage from './pages/MyFestival/MonFestivalPage';
 
 let theme = createTheme({
   palette: {
@@ -125,18 +131,23 @@ const App = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
             <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst>
-                <BrowserRouter>
+                <BrowserRouter> 
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
                     <Route path="/connexion" element={<LoginRegister />} />
                     <Route path="/festival/creation" element={<CreateFestival />}/>
                     <Route path="/tableaudebord/:id" element={<Dashboard />}/>
+                    <Route path="/modifyprofil" element={<ModifyUserProfile />}/>
+                    <Route path="/viewprofil" element={<ViewUserProfile />}/>
                     <Route path="/tableaudebord/admin/:id" element={<DashboardAdmin />}/>
                     <Route path="/festival/inscription/:id" element={<SignupFestival />}/>
                     <Route path="/poste/:id" element={<PostePage />}/>
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
                     <Route path="/verify-email" element={<VerifyEmail/>} />
+                    <Route path="/gestionacceuil/:id" element={<Acceuil />}/>
+                    <Route path="/mon-festival" element={<MonFestivalPage />} />
+                    <Route path="/faq" element={<FAQPage />} />
                     <Route path="*" element={<Navigate replace to="/" />} />
 
                 </Routes>

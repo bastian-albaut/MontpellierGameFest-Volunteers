@@ -59,6 +59,11 @@ export default function ToolbarConnected(props: any) {
         handleCloseNavMenu();
         navigate(`/contact`);
     }
+
+    const handleMyFestival = () => {
+      handleCloseNavMenu();
+      navigate(`/mon-festival`);
+  }
     
     const pages = [
         {
@@ -76,8 +81,17 @@ export default function ToolbarConnected(props: any) {
         {
             name: 'Contact',
             function : handleContact
-        }
+        },
+        {
+          name: 'Mon Festival',
+          function : handleMyFestival
+      }
     ];
+
+  const handleGoToProfile = () => {
+      handleCloseUserMenu();
+      navigate("/viewprofil"); 
+  };
 
   return (
     <AppBar position="static">
@@ -183,6 +197,9 @@ export default function ToolbarConnected(props: any) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              <MenuItem onClick={handleGoToProfile}>
+                <Typography textAlign="center">Mon Profil</Typography>
+              </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography textAlign="center">Déconnexion</Typography>
               </MenuItem>

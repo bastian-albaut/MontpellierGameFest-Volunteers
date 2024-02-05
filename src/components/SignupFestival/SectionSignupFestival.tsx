@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from "@mui/x-data-grid";
 import useAlert from "../../hooks/useAlerts";
 import { useNavigate, useParams } from "react-router-dom";
-import { addVolunteer, getCreneauxByFestival, getFestival, getPostesByFestival } from "../../api";
+import { addInscription, addVolunteer, getCreneauEspaceByCreneau, getCreneauxByFestival, getFestival, getPostesByFestival, updateCreneauEspace } from "../../api";
 import Loading from "../general/Loading";
-import { Poste } from "../../types/Poste";
 import { useUser } from "../../contexts/UserContext";
 import { isVolunteer } from "../../types/IsVolunteer";
+import AlertComponent from "../general/Alert";
 
 const SectionSignupFestival = () => {
 
@@ -19,7 +19,6 @@ const SectionSignupFestival = () => {
     };
 
   const handleVegetarianChange = (event: SelectChangeEvent) => {
-    console.log(event.target.value);
     setIsVege(event.target.value === "true" ? true : false);
   };
 
@@ -34,6 +33,8 @@ const SectionSignupFestival = () => {
     const [dataFestival, setDataFestival] = useState<any>();
     const [dataPosts, setDataPosts] = useState<any>();
     const [dataCreneaux, setDataCreneaux] = useState<any>([]);
+    const [dataCreneauxEspaces, setDataCreneauxEspaces] = useState<any>([]);
+    
     useEffect(() => {
         const fetchData = async () => {
             let isFetchFestival = false;
@@ -46,6 +47,8 @@ const SectionSignupFestival = () => {
                     getPostesByFestival(id!),
                     getCreneauxByFestival(id!)
                 ]);
+
+                console.log(creneauxResponse.data)
     
                 if (festivalResponse && festivalResponse.data) {
                     // Format date
@@ -63,24 +66,78 @@ const SectionSignupFestival = () => {
                         poste.id = poste.idPoste;
                         delete poste.idPoste;
                     });
+                    // Add the flexible poste
+                    postesResponse.data.push({id: 0, name: "Flexible", capacityPoste: 0});
                     setDataPosts(postesResponse.data);
                     isFetchPostes = true;
-                    console.log(postesResponse.data);
                 } else {
                     navigate("/", { state: { message: "Erreur pendant la récupération des postes du festival.", severity: "error" } });
                 }
 
-                if(creneauPost && creneauxResponse.data) {
-                    // Rename idCreneau attribute to id and format time
-                    creneauxResponse.data.forEach((creneau: any) => {
-                        creneau.id = creneau.idCreneau;
-                        delete creneau.idCreneau;
-                        creneau.timeStart = formatTimeToHHMM(new Date(creneau.timeStart));
-                        creneau.timeEnd = formatTimeToHHMM(new Date(creneau.timeEnd));
-                    });
-                    setDataCreneaux(creneauxResponse.data);
-                    isFetchCreneaux = true;
-                    console.log(creneauxResponse.data);
+                if (creneauxResponse && creneauxResponse.data) {
+
+                    // Create an array that contains each creneau separated by date
+                    const creneauxSeparated = creneauxResponse.data.reduce((acc: any, creneau: any) => {
+                        const date = new Date(creneau.timeStart).toDateString();
+                        // Format date
+                        const dateFormatted = formattedDate(date);
+                        if (!acc[dateFormatted]) {
+                            acc[dateFormatted] = [];
+                        }
+                        acc[dateFormatted].push(creneau);
+                        return acc;
+                    }, {});
+
+                    // Transform the object into an array of dates with creneaux
+                    const creneauxArray = Object.entries(creneauxSeparated).map(([date, creneaux]) => ({
+                        date,
+                        creneaux,
+                    }));
+
+                    console.log(creneauxArray);
+                    
+                    if(creneauxArray) {
+
+                        // Rename idCreneau attribute to id and format time
+                        creneauxArray.forEach(async (dayCreneau: any) => {
+                            dayCreneau.creneaux.forEach(async (creneau: any) => {
+                                try {
+                                    creneau.id = creneau.idCreneau;
+                                    delete creneau.idCreneau;
+                                    creneau.timeStart = formatTimeToHHMM(new Date(creneau.timeStart));
+                                    creneau.timeEnd = formatTimeToHHMM(new Date(creneau.timeEnd));
+                                    creneau.isFlexible = false;
+                            
+                                    const creneauEspaceResponse = await getCreneauEspaceByCreneau(creneau.id);
+                            
+                                    if (creneauEspaceResponse && creneauEspaceResponse.data) {
+                                        const processedCreneauEspaces = creneauEspaceResponse.data.map((creneauEspace: any) => {
+                                            creneauEspace.id = creneauEspace.idCreneauEspace;
+                                            delete creneauEspace.idCreneauEspace;
+                                            creneauEspace.selected = false;
+                                            creneauEspace.disabled = false;
+                                            return creneauEspace;
+                                        });
+                            
+                                        // Use Promise.all to wait for all asynchronous operations to complete
+                                        await Promise.all(processedCreneauEspaces.map(async (creneauEspace: any) => {
+                                            setDataCreneauxEspaces((prevState: any) => {
+                                                return [...prevState, creneauEspace];
+                                            });
+                                        }));
+
+                                    } else {
+                                        navigate("/", { state: { message: "Erreur pendant la récupération des informations du festival.", severity: "error" } });
+                                    }
+                                } catch (error) {
+                                    console.error(`Error fetching CreneauEspaces for Creneau ${creneau.id}:`, error);
+                                    navigate("/", { state: { message: "Erreur pendant la récupération des informations du festival.", severity: "error" } });
+                                }
+                            });
+                        });
+                        isFetchCreneaux = true;
+                        setDataCreneaux(creneauxArray);
+                    } 
                 } else {
                     navigate("/", { state: { message: "Erreur pendant la récupération des créneaux du festival.", severity: "error" } });
                 }
@@ -96,7 +153,7 @@ const SectionSignupFestival = () => {
         };
     
         fetchData();
-    }, [id, navigate]);
+    }, []);
 
     // Format date
     const formattedDate = (date: string) => {
@@ -126,15 +183,14 @@ const SectionSignupFestival = () => {
         },
     };
 
-    // Display alert message
     const { alertMessage, handleShowAlertMessage } = useAlert();
 
     const handleSelectCreneau = (params: any) => {
         // Get the current creneau id
         const idCreneau = parseInt(params.field.split("_")[1]);
 
-        // Get the creneau/post selected
-        const creneauPostItem = creneauPost.find(item => item.id_poste === params.row.id && item.id_creneau === idCreneau);
+        // Get the creneau/espace selected
+        const creneauPostItem = dataCreneauxEspaces.find((item: any) => item.espace.name === params.row.name && item.idCreneau === idCreneau);
         
         // Handle if the creneau/post selected was already selected
         if(handleCreneauPostAlreadySelected(creneauPostItem, idCreneau)) {
@@ -150,8 +206,8 @@ const SectionSignupFestival = () => {
         }
 
         // Disable all postes for this creneau except the current poste
-        setCreneauPost(creneauPost.map(item => {
-            if(item.id_creneau === idCreneau && item.id_poste !== params.row.id) {
+        setDataCreneauxEspaces(dataCreneauxEspaces.map((item: any) => {
+            if(item.idCreneau === idCreneau && item.espace.name !== params.row.name) {
                 item.disabled = true;
             }
             return item;
@@ -159,8 +215,8 @@ const SectionSignupFestival = () => {
         ));
 
         // Update the current creneau/post selected as selected
-        setCreneauPost(creneauPost.map(item => {
-            if(item.id_creneau === idCreneau && item.id_poste === params.row.id) {
+        setDataCreneauxEspaces(dataCreneauxEspaces.map((item: any) => {
+            if(item.idCreneau === idCreneau && item.espace.name === params.row.name) {
                 item.selected = true;
             }
             return item;
@@ -178,8 +234,8 @@ const SectionSignupFestival = () => {
             creneauPostItem.selected = false;
 
             // Enable all postes for this creneau
-            setCreneauPost(creneauPost.map(item => {
-                if(item.id_creneau === idCreneau) {
+            setDataCreneauxEspaces(dataCreneauxEspaces.map((item: any) => {
+                if(item.idCreneau === idCreneau) {
                     item.disabled = false;
                 }
                 return item;
@@ -192,7 +248,7 @@ const SectionSignupFestival = () => {
 
     // Handle if there was already a selection for this creneau
     const handleCreneauAlreadySelected = (idCreneau: number) => {
-        const creneauPostAlreadySelected = creneauPost.find(item => item.id_creneau === idCreneau && item.selected === true);
+        const creneauPostAlreadySelected = dataCreneauxEspaces.find((item: any) => item.idCreneau === idCreneau && item.selected === true);
         if(creneauPostAlreadySelected) {
             // Decrease currentCapacity
             creneauPostAlreadySelected.currentCapacity -= 1;
@@ -201,8 +257,8 @@ const SectionSignupFestival = () => {
             creneauPostAlreadySelected.selected = false;
 
             // Enable all postes for this creneau
-            setCreneauPost(creneauPost.map(item => {
-                if(item.id_creneau === idCreneau) {
+            setDataCreneauxEspaces(dataCreneauxEspaces.map((item: any) => {
+                if(item.idCreneau === idCreneau) {
                     item.disabled = false;
                 }
                 return item;
@@ -211,46 +267,42 @@ const SectionSignupFestival = () => {
         }
     }
 
-    const handleIsFlexible = (idCreneau: number) => {
-        // If the creneau is flexible, update all creneau/post for this creneau as not disabled
-        if(dataCreneaux.find((item : any) => item.id === idCreneau && item.isFlexible === true)) {
-            setCreneauPost(creneauPost.map(item => {
-                if(item.id_creneau === idCreneau) {
+    const handleIsFlexible = (idCreneau: number, dayCreneau: any) => {
+        // If the creneau is flexible
+        if(dayCreneau.creneaux.find((item : any) => item.id === idCreneau && item.isFlexible === true)) {
+            
+            // Update all creneau/post for this creneau as not disabled
+            setDataCreneauxEspaces(dataCreneauxEspaces.map((item: any) => {
+                if(item.idCreneau === idCreneau) {
                     item.disabled = false;
                 }
                 return item;
             }
             ));
             // Update the current creneau as not flexible
-            setDataCreneaux(dataCreneaux.map((item : any) => {
-                if(item.id === idCreneau) {
-                    item.isFlexible = false;
-                }
-                return item;
+            const creneauToUpdate = dayCreneau.creneaux.find((creneau : any) => creneau.id === idCreneau);
+            if(creneauToUpdate) {
+                creneauToUpdate.isFlexible = false;
             }
-            ));
             return;
         }
 
         // Update the current creneau as flexible
-        setDataCreneaux(dataCreneaux.map((item : any) => {
-            if(item.id === idCreneau) {
-                item.isFlexible = true;
-            }
-            return item;
+        const creneauToUpdate = dayCreneau.creneaux.find((creneau : any) => creneau.id === idCreneau);
+        if(creneauToUpdate) {
+            creneauToUpdate.isFlexible = true;
         }
-        ));
 
         // Decrease the currentCapacity of the creneau/post selected
-        const creneauPostItem = creneauPost.find(item => item.id_creneau === idCreneau && item.selected === true);
+        const creneauPostItem = dataCreneauxEspaces.find((item: any) => item.idCreneau === idCreneau && item.selected === true);
         if(creneauPostItem) {
             creneauPostItem.currentCapacity -= 1;
             creneauPostItem.selected = false;
         }
 
         // Update all creneau/post for this creneau as disabled
-        setCreneauPost(creneauPost.map(item => {
-            if(item.id_creneau === idCreneau) {
+        setDataCreneauxEspaces(dataCreneauxEspaces.map((item: any) => {
+            if(item.idCreneau === idCreneau) {
                 item.disabled = true;
             }
             return item;
@@ -258,25 +310,9 @@ const SectionSignupFestival = () => {
         ));
     }
 
-    // const [dataCreneaux, setDataCreneaux] = useState([{id: 1, timeStart: "10:00", timeEnd: "12:00", isFlexible: false}, {id: 2, timeStart: "14:00", timeEnd: "16:00", isFlexible: false}, {id: 3, timeStart: "18:00", timeEnd: "20:00", isFlexible: false}, {id: 4, timeStart: "21:00", timeEnd: "22:00", isFlexible: false}, {id: 5, timeStart: "22:30", timeEnd: "23:30", isFlexible: false}]);
-    const [creneauPost, setCreneauPost] = useState([{id: 1, id_poste: 1, id_creneau: 1, currentCapacity: 20, disabled: false, selected: false },
-                                                    {id: 2, id_poste: 1, id_creneau: 2, currentCapacity: 19, disabled: false, selected: false },
-                                                    {id: 3, id_poste: 1, id_creneau: 3, currentCapacity: 20, disabled: false, selected: false },
-                                                    {id: 4, id_poste: 1, id_creneau: 4, currentCapacity: 3, disabled: false, selected: false },
-                                                    {id: 5, id_poste: 1, id_creneau: 5, currentCapacity: 20, disabled: false, selected: false },
-                                                    {id: 6, id_poste: 2, id_creneau: 1, currentCapacity: 14, disabled: false, selected: false },
-                                                    {id: 7, id_poste: 2, id_creneau: 2, currentCapacity: 4, disabled: false, selected: false },
-                                                    {id: 8, id_poste: 2, id_creneau: 3, currentCapacity: 10, disabled: false, selected: false },
-                                                    {id: 9, id_poste: 2, id_creneau: 4, currentCapacity: 3, disabled: false, selected: false },
-                                                    {id: 10, id_poste: 2, id_creneau: 5, currentCapacity: 20, disabled: false, selected: false },
-                                                    {id: 11, id_poste: 3, id_creneau: 1, currentCapacity: 8, disabled: false, selected: false },
-                                                    {id: 12, id_poste: 3, id_creneau: 2, currentCapacity: 7, disabled: false, selected: false },
-                                                    {id: 13, id_poste: 3, id_creneau: 3, currentCapacity: 10, disabled: false, selected: false },
-                                                    {id: 14, id_poste: 3, id_creneau: 4, currentCapacity: 8, disabled: false, selected: false },
-                                                    {id: 15, id_poste: 3, id_creneau: 5, currentCapacity: 5, disabled: false, selected: false }]);
-    
-    // Define columns for the DataGrid that correspond to each creneau
-    const columnsGrid: GridColDef[] = [
+    // Function to generate columns for a specific dayCreneau
+    const generateColumns = (dayCreneau: any) => {
+        return [
         {
           field: 'poste',
           headerName: 'Poste',
@@ -288,64 +324,69 @@ const SectionSignupFestival = () => {
             </>
           ),
         },
-        ...dataCreneaux.map((creneau : any) => {
-          return {
+        ...dayCreneau.creneaux.map((creneau: any) => {
+        return {
             field: `creneau_${creneau.id}`,
             headerName: `${creneau.timeStart} - ${creneau.timeEnd}`,
             width: 150,
             sortable: false,
             renderCell: (params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) => {
-                // Check if the cell corresponding to the row flexible
-                if(params.row.name === "Flexible") {
+                // Check if the cell corresponds to the row flexible
+                if (params.row.name === "Flexible") {
                     return (
                         <>
-                        <Checkbox className={styles.checkbox} checked={creneau.isFlexible} onChange={() => handleIsFlexible(creneau.id)} />
+                            <Checkbox className={styles.checkbox} checked={creneau.isFlexible} onChange={() => handleIsFlexible(creneau.id, dayCreneau)} />
                         </>
                     );
                 }
 
-              const creneauPostItem = creneauPost.find(item => item.id_poste === params.row.id && item.id_creneau === creneau.id);
-              const capacityPoste = params.row.capacityPoste;
-              // Check error
-              if(creneauPostItem) {
+                const creneauPostItem = dataCreneauxEspaces.find((item: any) => item.espace.name === params.row.name && item.idCreneau === creneau.id);
+                const capacityPoste = params.row.capacityPoste;
+
+                // Check error
+                if (creneauPostItem) {
+                    return (
+                        <>
+                            <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={(creneauPostItem.currentCapacity >= capacityPoste) || creneau.isFlexible}>
+                                <Box id={styles.boxCircularProgress}>
+                                    <CircularProgress
+                                        size={65}
+                                        variant="determinate"
+                                        value={
+                                            creneauPostItem.currentCapacity > 0
+                                                ? (creneauPostItem.currentCapacity / capacityPoste) * 100
+                                                : 0.1
+                                        }
+                                        style={{
+                                            opacity: creneauPostItem.disabled ? 0.1 : 1,
+                                            color:
+                                                creneauPostItem.currentCapacity >= capacityPoste
+                                                    ? "green"
+                                                    : creneauPostItem.currentCapacity >= capacityPoste / 2
+                                                    ? "orange"
+                                                    : creneauPostItem.currentCapacity >= capacityPoste / 3
+                                                    ? "#ffd500"
+                                                    : "red"
+                                        }}
+                                        thickness={8}
+                                    />
+                                    <Box id={styles.boxTextInsideCircularProgress}>
+                                        <Typography variant="body2" component="div" color="initial">
+                                            {`${creneauPostItem.currentCapacity}/${capacityPoste}`}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </IconButton>
+                        </>
+                    );
+                }
                 return (
-                    <>
-                    <IconButton aria-label="select" onClick={() => handleSelectCreneau(params)} disabled={(creneauPostItem.currentCapacity >= capacityPoste) || creneau.isFlexible}>
-                        <Box id={styles.boxCircularProgress}>
-                        <CircularProgress 
-                            size={65} 
-                            variant="determinate" 
-                            value={creneauPostItem ? (creneauPostItem.currentCapacity / capacityPoste) * 100 : 0}
-                            style={{
-                                opacity: creneauPostItem.disabled ? 0.1 : 1,
-                                color:
-                                    creneauPostItem.currentCapacity >= capacityPoste
-                                        ? "green"
-                                        : creneauPostItem.currentCapacity >= capacityPoste / 2
-                                        ? "orange"
-                                        : creneauPostItem.currentCapacity >= capacityPoste / 3
-                                        ? "#ffd500"
-                                        : "red"
-                            }}
-                            thickness={8}
-                        />
-                        <Box id={styles.boxTextInsideCircularProgress}>
-                            <Typography variant="body2" component="div" color="initial">
-                            {creneauPostItem ? `${creneauPostItem.currentCapacity}/${capacityPoste}` : '0/X'}
-                            </Typography>
-                        </Box>
-                        </Box>
-                    </IconButton>
-                    </>
-                );
-                } 
-                return (
-                    <Typography variant="body1" color="initial">Erreur</Typography>
+                    <CircularProgress />
                 );
             },
-          };
-        }),
-    ];
+        };
+    })
+    ]};
 
     // Disable the signup button during the signup process
     const [signupInprogress, setSignupInprogress] = useState<boolean>(false);
@@ -355,21 +396,75 @@ const SectionSignupFestival = () => {
         // Disable the signup button during the signup process
         setSignupInprogress(true);
 
-        // Check if the user selected at least one creneau/post
-        const creneauPostSelected = creneauPost.find(item => item.selected === true);
-        if(!creneauPostSelected) {
+        // Check if the user selected at least one creneau/post or one flexible creneau
+        const creneauPostSelected = dataCreneauxEspaces.find((item: any) => item.selected === true);
+        const flexibleCreneauSelected = dataCreneaux.find((item: any) => item.isFlexible === true);
+        if(!creneauPostSelected && !flexibleCreneauSelected) {
             handleShowAlertMessage("Vous devez sélectionner au moins un créneau.", "error");
             return;
         }
 
+        // Check if each creneau/post selected is not already full
+        const creneauPostSelectedFull = dataCreneauxEspaces.find((item: any) => item.selected === true && item.currentCapacity >= item.capacityPoste);
+        if(creneauPostSelectedFull) {
+            handleShowAlertMessage("Un des créneaux sélectionnés est déjà complet.", "error");
+            return;
+        }
+
         try {
-            console.log(user)
             const data : isVolunteer = {sizeTeeShirt: sizeTeeShirt, isVege: isVege, idUser: user?.id?.toString()!, idFestival: parseInt(id!)};
-            console.log(data);
             const res = await addVolunteer(data);
-            console.log(res);
             if(res && res.data) {
-                handleShowAlertMessage("Inscription au festival réussie.", "success");
+
+                // Get all the creneauxEspaces selected by the user
+                console.log(dataCreneauxEspaces)
+                let dataInscription = dataCreneauxEspaces.filter((item: any) => item.selected === true).map((item: any) => {
+                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!, currentCapacity: item.currentCapacity};
+                });
+
+                // Get all flexible creneaux selected by the user
+                const flexibleCreneaux = dataCreneaux.filter((item: any) => item.isFlexible === true);
+
+                // Get all creneauxEspaces for flexible creneaux
+                const flexibleCreneauxEspaces = dataCreneauxEspaces.filter((item: any) => flexibleCreneaux.find((creneau: any) => creneau.id === item.idCreneau));
+
+                // Add to dataInscription flexibleCreneauxEspaces
+                dataInscription = dataInscription.concat(flexibleCreneauxEspaces.map((item: any) => {
+                    return {idCreneauEspace: item.id, idUser: user?.id?.toString()!, currentCapacity: item.currentCapacity, isFlexible: true};
+                }));
+                
+                // Remove duplicates
+                dataInscription = dataInscription.filter((item: any, index: any, self: any) =>
+                    index === self.findIndex((t: any) => (
+                        t.idCreneauEspace === item.idCreneauEspace
+                    ))
+                );
+
+                console.log(dataInscription)
+
+                // For each dataInscription, update in CreneauEspace table the currentCapacity
+                const resCreneauEspace = await Promise.all(dataInscription.map(async (item: any) => {
+                    const res = await updateCreneauEspace(item.idCreneauEspace, {currentCapacity: item.currentCapacity});
+                    return res;
+                }));
+
+                if(!resCreneauEspace) {
+                    handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
+                    return;
+                }
+
+                // For each dataInscription, insert in Inscription table the idUser, the idCreneauEspace and eventually the isFlexible
+                const resInscription = await Promise.all(dataInscription.map(async (item: any) => {
+                    delete item.currentCapacity;
+                    const res = await addInscription(item);
+                    return res;
+                }));
+
+                if(resInscription) {
+                    handleShowAlertMessage("Inscription au festival réussie.", "success");
+                } else {
+                    handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
+                }
             } else {
                 handleShowAlertMessage("Erreur pendant l'inscription au festival.", "error");
             }
@@ -387,7 +482,7 @@ const SectionSignupFestival = () => {
 
 	return(
         <>
-        {/* {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />} */}
+        {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
         <Box id={styles.boxSection}>
             <Typography id={styles.title} variant="h1" color="black">Inscription festival</Typography>
             <Box id={styles.infoFestival}>
@@ -410,20 +505,19 @@ const SectionSignupFestival = () => {
                     <FormControlLabel value="false" control={<Radio />} label="Non" />
                 </RadioGroup>
                 <Typography className={styles.titleSectionForm} variant="h3" color="initial">Choix des postes</Typography>
-                <Box id={styles.boxGrid}>
+                <Typography id={styles.typoFlexible} variant="body1" color="initial">Le poste vous est égal ? Choisissez flexible pour le créneau correspondant.</Typography>
+                {dataCreneaux.map((dayCreneau: any, index: number) => (
+                <Box id={styles.boxGrid} key={index}>
+                    <Typography variant="h6" color="initial">{dayCreneau.date}</Typography>
                     <DataGrid
-                        rowHeight={90}
-                        rows={dataPosts}
-                        columns={columnsGrid}
-                        initialState={{
-                        pagination: {
-                            paginationModel: { page: 0, pageSize: 5 },
-                        },
-                        }}
-                        pageSizeOptions={[5, 10]}
+                    key={index}
+                    rowHeight={90}
+                    rows={dataPosts}
+                    columns={generateColumns(dayCreneau)}
+                    pageSizeOptions={[dataPosts.length]}
                     />
                 </Box>
-                <Typography id={styles.typoFlexible} variant="body1" color="initial">Le poste vous est égal ? Choisissez flexible pour le créneau correspondant.</Typography>
+                ))}
                 <Button id={styles.buttonSignup} variant="contained" color="primary" onClick={() => handleSignup()} disabled={signupInprogress}>Je m'inscris au festival</Button>
             </Box>
         </Box>

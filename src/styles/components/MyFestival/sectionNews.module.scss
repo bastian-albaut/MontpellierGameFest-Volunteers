@@ -1,0 +1,16 @@
+.sectionNewsContainer {
+    padding: 20px;
+    border: 1px solid $greyColor;
+    border-radius: 8px;
+    background-color: $whiteColor;
+    margin-bottom: 20px;
+  
+    .newsTitle {
+      color: $primaryColor;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  
+    // Ajoutez d'autres styles spécifiques aux news ici
+  }
+  
