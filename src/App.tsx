@@ -20,6 +20,8 @@ import PostePage from './pages/Poste/PostePage';
 import ContactPage from './pages/Contact/ContactPage';
 import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
+import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
+
 import Acceuil from './pages/Festival/Acceuil'
 import MonFestival from './components/MyFestival/MonFestival';
 import FAQPage from './pages/FAQ/FAQPage';
@@ -142,10 +144,12 @@ const App = () => {
                     <Route path="/poste/:id" element={<PostePage />}/>
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
+                    <Route path="/verify-email" element={<VerifyEmail/>} />
                     <Route path="/gestionacceuil/:id" element={<Acceuil />}/>
                     <Route path="/mon-festival" element={<MonFestivalPage />} />
                     <Route path="/faq" element={<FAQPage />} />
                     <Route path="*" element={<Navigate replace to="/" />} />
+
                 </Routes>
                 </BrowserRouter>
             </StyledEngineProvider>
