@@ -33,6 +33,7 @@ export const getPostesByFestival = (id: string) => API.get(`/festivals/${id}/pos
 export const getCreneauxByFestival = (id: string) => API.get(`/festivals/${id}/creneaux`);
 
 export const getVolunteersByFestival = (id: string) => API.get(`/festivals/${id}/volunteers`); 
+export const getFestivalsOfVolunteer = (id: string) => API.get(`/users/${id}/festivals`);
 export const modifyVolunteersFestival = (idFestival: string, idUser: string, data: Partial<isVolunteer>) => API.put(`/festivals/${idFestival}/volunteers/${idUser}`, data);
 export const addPresent = (data: IsPresent) => API.post('/isPresent', data);
 export const getPresent = (data: IsPresent) => API.get(`/isPresent/` + data.idFestival + `/` + data.idUser+ `/`+ data.date +``);

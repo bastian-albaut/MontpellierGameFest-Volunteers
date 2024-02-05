@@ -36,7 +36,6 @@ const SectionFestival = (props: any) => {
                     setFestival(festivalData.data);
                     setPostes(postesData.data);
                     setCreneaux(creneauxData.data);
-                    console.log(volunteersData.data);
 
                     // Get user data for each volunteer
                     const UsersData = await Promise.all(volunteersData.data.map(async (volunteer: any) => {

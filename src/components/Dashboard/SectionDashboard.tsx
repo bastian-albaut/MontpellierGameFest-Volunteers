@@ -3,11 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Typography, List, ListItem, ListItemText, Button, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { getFestivals } from '../../api';
-import { getFestivalById } from '../../api';
+import { getFestivals, getFestivalsOfVolunteer } from '../../api';
 
 import { useUser } from "../../contexts/UserContext";
-import { getVolunteersByFestival } from '../../api';
 import { useNavigate } from "react-router-dom";
 
 import styles from "../../styles/components/Dashboard/sectiondashboard.module.scss";
@@ -77,7 +75,7 @@ const SectionDashboard: React.FC = () => {
     // Récupération des festivals de l'utilisateur connecté
     const fetchUserFestivals = async (id: string) => {
         try {
-            const res = await getVolunteersByFestival(id);
+            const res = await getFestivalsOfVolunteer(id);
             if (res.data) {
                 setUserFestivals(res.data);
                 console.log(res.data)
