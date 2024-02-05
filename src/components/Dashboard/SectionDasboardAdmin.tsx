@@ -14,7 +14,7 @@ const SectionDasboardAdmin = (props: any) => {
 	const [festivals, setFestivals] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         const fetchFestivals = async () => {
             try {

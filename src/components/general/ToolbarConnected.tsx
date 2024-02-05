@@ -59,25 +59,42 @@ export default function ToolbarConnected(props: any) {
         handleCloseNavMenu();
         navigate(`/contact`);
     }
+
+    const handleMyFestival = () => {
+      handleCloseNavMenu();
+      navigate(`/mon-festival`);
+  }
     
-    const pages = [
-        {
-            name: 'Accueil',
-            function : handleHomepage
-        },
-        {
-            name: 'Tableau de bord',
-            function : handleDashboard
-        }, 
-        {
-            name: 'Tableau de bord admin',
-            function : handleDashboardAdmin
-        },
-        {
-            name: 'Contact',
-            function : handleContact
-        }
-    ];
+  const pages = [
+    // {
+    //     name: 'Accueil',
+    //     function: handleHomepage,
+    // },
+    {
+        name: 'Tableau de bord',
+        function: handleDashboard,
+        condition: !props.currentUser.isGod
+    },
+    {
+        name: 'Tableau de bord admin',
+        function: handleDashboardAdmin,
+        condition: props.currentUser.isGod
+    },
+    {
+        name: 'Contact',
+        function: handleContact
+    },
+    {
+        name: 'Mon Festival',
+        function: handleMyFestival,
+        condition: !props.currentUser.isGod
+    }
+].filter(page => page.condition === undefined || page.condition);
+
+  const handleGoToProfile = () => {
+      handleCloseUserMenu();
+      navigate("/viewprofil"); 
+  };
 
   return (
     <AppBar position="static">
@@ -183,6 +200,9 @@ export default function ToolbarConnected(props: any) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              <MenuItem onClick={handleGoToProfile}>
+                <Typography textAlign="center">Mon Profil</Typography>
+              </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography textAlign="center">Déconnexion</Typography>
               </MenuItem>

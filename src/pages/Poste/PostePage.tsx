@@ -4,6 +4,8 @@ import Loading from "../../components/general/Loading";
 import { useUser } from "../../contexts/UserContext";
 import { useEffect } from "react";
 import SectionPoste from "../../components/Poste/SectionPoste";
+import useAlert from "../../hooks/useAlerts";
+import AlertComponent from "../../components/general/Alert";
 
 const PostePage = () => {
 
@@ -22,14 +24,17 @@ const PostePage = () => {
     const url = window.location.href;
     const idPoste = url.substring(url.lastIndexOf('/') + 1);
 
+    const { alertMessage, handleShowAlertMessage } = useAlert();
+
     if (loading) {
         return <Loading />;
     }
 
     return(
         <>
+            {alertMessage.content !== "" && <AlertComponent message={alertMessage.content} severity={alertMessage.severity} />}
             <Appbar currentUser={user} />
-            <SectionPoste idPoste={idPoste} />
+            <SectionPoste handleShowAlertMessage={handleShowAlertMessage} idPoste={idPoste} />
         </>
 	)
 }

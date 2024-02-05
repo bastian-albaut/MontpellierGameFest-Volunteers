@@ -1,0 +1,16 @@
+.sectionJeuxContainer {
+    padding: 20px;
+    border: 1px solid $greyColor;
+    border-radius: 8px;
+    background-color: $whiteColor;
+    margin-bottom: 20px;
+  
+    .jeuxTitle {
+      color: $primaryColor;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+  
+    // Ajoutez d'autres styles spécifiques aux jeux ici
+  }
+  
