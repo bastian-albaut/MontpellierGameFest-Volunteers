@@ -8,10 +8,18 @@ import { useNavigate } from "react-router-dom";
 import { register } from "../../api";
 import { CheckBox } from "@mui/icons-material";
 import { User } from "../../types/User";
+import {FcGoogle} from "react-icons/fc";
 
 export default function Register(props: any) {
 
     const [formData, setFormData] = useState({firstName: '', lastName: '', address: ' ', email: '', password: '', file: '', associations: [] });
+
+    const navigate = useNavigate();
+
+    const handleGoogleSignIn = () => {
+        // Remplacez 'http://localhost:8080' par l'URL de base de votre backend si elle est différente
+        window.location.href = 'https://montpellier-game-fest-volunteers-api-vincentdub2.vercel.app/auth/google';
+    };
 
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -177,6 +185,10 @@ export default function Register(props: any) {
 
                 <FileInput selectedFile={selectedFile} setSelectedFile={setSelectedFile} handleFileSelect={handleFileSelect} />
                 <Button id={styles.buttonRegister} variant="contained" color="primary" type="submit" onClick={(event) => handleSignUp(event)} disabled={props.isLoadingLoginRegister} >S'inscrire</Button>
+                <Button id={styles.googleLogin} variant="outlined" color="primary" onClick={handleGoogleSignIn} disabled={props.isLoadingLoginRegister} size="medium">
+                    <FcGoogle className={styles.googleButton} />
+                    Continuer avec Google
+                </Button>
                 <Button variant="text" color="secondary" onClick={(e) => props.setHaveAccount(true)} disabled={props.isLoadingLoginRegister} >J'ai déjà un compte</Button>
             </form>
         </Box>

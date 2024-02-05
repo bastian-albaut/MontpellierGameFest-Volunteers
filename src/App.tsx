@@ -20,6 +20,8 @@ import PostePage from './pages/Poste/PostePage';
 import ContactPage from './pages/Contact/ContactPage';
 import Festival from './pages/Festival/Festival';
 import DashboardAdmin from './pages/Dashboard/DashboardAdmin';
+import OAuth2Callback from "./pages/OAuth2Callback/OAuth2Callback";
+import ResetMDP from "./pages/ResetMDP/ResetMDP";
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 
 import Acceuil from './pages/Festival/Acceuil'
@@ -144,6 +146,8 @@ const App = () => {
                     <Route path="/poste/:id" element={<PostePage />}/>
                     <Route path="/contact" element={<ContactPage />}/>
                     <Route path="/festival/:id" element={<Festival />}/>
+                    <Route path="/oauth2/callback" element={<OAuth2Callback />} />
+                    <Route path="/reset-password" element={<ResetMDP />}/>
                     <Route path="/verify-email" element={<VerifyEmail/>} />
                     <Route path="/gestionacceuil/:id" element={<Acceuil />}/>
                     <Route path="/mon-festival" element={<MonFestivalPage />} />

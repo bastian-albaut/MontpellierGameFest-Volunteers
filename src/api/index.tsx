@@ -48,6 +48,8 @@ export const addEspace = (data: any) => API.post('/espaces', data);
 export const addPosteEspace = (data: any) => API.post('/posteEspaces', data);
 export const deleteFestival = (id: string) => API.delete('/festivals/' + id);
 export const addCreneauEspace = (data: any) => API.post('/creneauEspaces', data);
+export const motsDePasseOublie = (email: string) => API.post('/reset-password', { email });
+export const resetPasswordApi = (password: any) => API.post('/update-password-with-token', password );
 export const apiVerifyEmail = (token: string) => API.post(`/emails/verify?token=${token}`);
 export const getSoirees = () => API.get('/events');
 export const updateCreneauEspace = (id: string, data: any) => API.put('/creneauEspaces/' + id, data);
